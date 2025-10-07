@@ -5,7 +5,7 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 function Landing(props){
     const {openModal} = useAuth()
-    const [inlineWidth, setInlineWidth] = useState(undefined);
+    const [inlineWidth, setInlineWidth] = useState('100%');
 
     const handleLogin = () => {
         openModal('login')
@@ -15,11 +15,18 @@ function Landing(props){
     }
 
     useEffect(() => {
-    if (window.innerWidth >= 1024) {
-      setInlineWidth(`${props.width}%`);
-    } else{
-        setInlineWidth(undefined)
-    }
+    const updateWidth = () => {
+      if (window.innerWidth >= 1024 && props.width) {
+        setInlineWidth(`${props.width}%`);
+      } else {
+        setInlineWidth("100%");
+      }
+    };
+
+    updateWidth(); // run on mount
+    window.addEventListener("resize", updateWidth);
+
+    return () => window.removeEventListener("resize", updateWidth);
   }, [props.width]);
 
     return (
@@ -27,7 +34,7 @@ function Landing(props){
         style={{ minHeight: '100%' }}
         className={`landing flex flex-col items-center justify-center w-full text-center`}
         > 
-            <div className="w-auto md:w-150 lg:w-auto px-4" style={{ width: inlineWidth }}>
+            <div className=" px-4" style={{ width: inlineWidth }}>
                 {props.heading && (
                 <div data-tina-field={tinaField(props, 'heading')}>
                     <TinaMarkdown

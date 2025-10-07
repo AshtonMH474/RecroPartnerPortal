@@ -7,7 +7,7 @@ blocks:
 
       ### Get in touch with Recro. We're here to answer your questions and
       discuss how we can help grow your career.
-    width: 35
+    width: 40
     buttons:
       - link: /signup
         label: Register
