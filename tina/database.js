@@ -35,7 +35,7 @@ export default isLocal
       }),
       databaseAdapter: new MongodbLevel({
         collectionName: `content-${process.env.GITHUB_BRANCH}`,
-        dbName: 'tina',
+        dbName: 'partner-tina',
         mongoUri: tinaMongoUrl,
       }),
       // other TinaCMS config here...

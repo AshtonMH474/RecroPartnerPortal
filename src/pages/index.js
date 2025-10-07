@@ -1,4 +1,5 @@
 import Landing from "@/components/Landing";
+import Nav from "@/components/Nav/Nav";
 import { useTina } from "tinacms/dist/react";
 
 
@@ -22,6 +23,7 @@ export default function Home({res}) {
   const {data} = useTina(res)
   return (
     <>
+    <Nav/>
     {data.page.blocks?.map((block,i) => {
       switch(block?.__typename){
         case "PageBlocksLanding":
