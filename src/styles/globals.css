@@ -47,3 +47,39 @@ body {
     background: radial-gradient(circle at 120% 185%, #B55A14 15%, #000000 90%);
   }
 }
+
+@media(max-height:450px){
+  .landing{
+    margin-top: 50px;
+  }
+}
+
+
+.bg-primary{
+  background-color: #B55914;
+}
+
+.bg-primary2:hover {
+  background-color: rgba(181, 89, 20, 0.6);
+}
+
+.primary-color{
+  color:#B55914
+}
+.secondary-text{
+  color:#C2C2BC;
+}
+.bg-secondary{
+  background-color: #3F3F38;
+}
+.block{
+  border: 1px white solid;
+  flex-direction: column;
+}
+.primary-border{
+  border: 1px solid #B55914;
+}
+.primary-border:hover {
+  border-color: rgba(181, 89, 20, 0.5);
+  cursor: pointer; 
+}

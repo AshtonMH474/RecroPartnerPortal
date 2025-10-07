@@ -1,6 +1,7 @@
 import { defineConfig } from "tinacms";
 import { LocalAuthProvider } from "tinacms";
 import { CustomAuthProvider } from "@/lib/custom_auth_provider";
+import pages from "./collections/pages/page";
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -35,30 +36,7 @@ export default defineConfig({
   // See docs on content modeling for more info on how to setup new content models: https://tina.io/docs/r/content-modelling-collections/
   schema: {
     collections: [
-      {
-        name: "post",
-        label: "Posts",
-        path: "content/posts",
-        fields: [
-          {
-            type: "string",
-            name: "title",
-            label: "Title",
-            isTitle: true,
-            required: true,
-          },
-          {
-            type: "rich-text",
-            name: "body",
-            label: "Body",
-            isBody: true,
-          },
-        ],
-        ui: {
-          // This is an DEMO router. You can remove this to fit your site
-          router: ({ document }) => `/demo/blog/${document._sys.filename}`,
-        },
-      },
+      pages
     ],
   },
 });
