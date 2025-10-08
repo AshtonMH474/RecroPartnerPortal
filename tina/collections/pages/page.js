@@ -29,7 +29,9 @@ const pages = {
       list: true,
       templates: [landingBlock],
     },
+    
   ],
+  
 };
 
 export default pages;

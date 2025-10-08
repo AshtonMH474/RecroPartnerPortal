@@ -1,12 +1,13 @@
 import Landing from "@/components/Landing";
 import Nav from "@/components/Nav/Nav";
+import Sidebar from "@/components/Sidebar/Sidebar";
 import { useTina } from "tinacms/dist/react";
 
 
 
 export async function getStaticProps() {
   const { client } = await import("../../tina/__generated__/databaseClient");
-  console.log(client.queries)
+  
   // Run TinaCMS queries in parallel
   const [pageData,navData] = await Promise.all([
     client.queries.page({ relativePath: "home.md" }),
@@ -30,6 +31,7 @@ export default function Home({res,nav}) {
   return (
     <>
     <Nav {...navContent.nav}/>
+    <Sidebar {...navContent.nav}/>
     {pageData.page.blocks?.map((block,i) => {
       switch(block?.__typename){
         case "PageBlocksLanding":
