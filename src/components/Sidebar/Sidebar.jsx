@@ -1,43 +1,3 @@
-// import { useEffect, useState } from "react";
-// import ProfileUser from "./ProfileUser";
-// import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-
-// export default function Sidebar({ sidebar_top_links, sidebar_bottom_links, onWidthChange }) {
-
-//   const [isOpen, setIsOpen] = useState(true);
-//   useEffect(() => {
-//     onWidthChange?.(isOpen ? 200 : 0);
-//   }, [isOpen, onWidthChange]);
-  
-//   return (
-//     <div className="fixed top-0 left-0 h-full z-[100] hidden lg:flex items-center">
-//       {/* Sidebar container */}
-//       <div
-//         className={`h-full min-w-[200px] bg-black/95 backdrop-blur-sm text-white shadow-lg 
-//         transition-all duration-500 ease-in-out
-//         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-//       `}
-//       >
-//         <div className="h-full px-6 py-10 overflow-y-auto">
-//           <ProfileUser
-//             top_links={sidebar_top_links}
-//             bottom_links={sidebar_bottom_links}
-//           />
-//         </div>
-//       </div>
-
-//       {/* Toggle circle button */}
-//       <button
-//         onClick={() => setIsOpen(!isOpen)}
-//         className={`absolute top-1/2 -translate-y-1/2  hover:bg-[#d46b19] text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md cursor-pointer transition-all duration-300
-//           ${isOpen ? "left-[170px]" : "left-0"}
-//         `}
-//       >
-//         {isOpen ? <IoChevronBack size={22} /> : <IoChevronForward size={22} />}
-//       </button>
-//     </div>
-//   );
-// }
 import { useEffect, useState } from "react";
 import ProfileUser from "./ProfileUser";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
@@ -91,7 +51,7 @@ export default function Sidebar({ res, onWidthChange }) {
           onClick={() => setIsOpen(!isOpen)}
           className={`absolute top-1/2 -translate-y-1/2
             rounded-full w-10 h-10 flex items-center justify-center cursor-pointer
-            bg-black hover:bg-[#d46b19] text-white
+            ${isOpen ? 'bg-black' : ''} hover:bg-[#d46b19] text-white
             shadow-md transition-all duration-300
             ${isOpen ? "left-[210px]" : "left-2"}
           `}

@@ -2,6 +2,7 @@ import { useAuth } from "@/context/auth";
 import { handleSignout } from "@/lib/auth_functions";
 import { useEffect, useState } from "react";
 import { tinaField } from "tinacms/dist/react";
+import IconRenderer from "../utils/IconRenderer";
 
 function MobileMenu({
   isVisible,
@@ -41,9 +42,12 @@ function MobileMenu({
     >
       {links?.map((link, i) => {
         // handle different link styles if needed
+                const icon = link?.icon && (
+                      <IconRenderer size="18px" color="currentColor" iconName={link.icon} />
+                );
                 const commonProps = {
                   "data-tina-field": tinaField(links[i],'label'),
-                  className:"capitalize py-2 text-white text-left w-full hover:text-white/80 transition-colors duration-300"
+                  className:"capitalize py-2 text-white text-left w-full hover:text-white/80 transition-colors duration-300 flex items-center gap-x-2"
                 }
                 if (link?.type == 'register'){
                     return <button onClick={handleRegister} key={i} {...commonProps}>{link.label}</button>
@@ -55,7 +59,7 @@ function MobileMenu({
                     return <button onClick={handleLogout} key={i} {...commonProps}>{link.label}</button>
                 }
                 if (link?.type == 'link'){
-                    return <a key={i} rel="noopener noreferrer"  href={`${link.link}`}><button  {...commonProps}>{link.label}</button></a>
+                    return <a key={i} rel="noopener noreferrer"  href={`${link.link}`}><button  {...commonProps}>{icon}{link.label}</button></a>
                 }
       })}
     </div>
