@@ -1,6 +1,6 @@
 ---
-logo: 'https://recro-landing-site.s3.us-east-1.amazonaws.com/RecroDarkModeLogo.png'
-height: 80
+logo: 'https://recro-landing-site.s3.us-east-1.amazonaws.com/officalDarkLogo.png'
+height: 50
 links:
   - link: /profile
     label: Edit Profile
@@ -13,8 +13,8 @@ links:
     type: link
   - link: /logout
     label: Logout
-    type: link
-  - link: recro-website.vercel.app/
+    type: logout
+  - link: 'https://recro-website.vercel.app/'
     label: Exit Portal
     type: link
 sidebar_top_links:
@@ -35,8 +35,9 @@ sidebar_top_links:
     type: link
     icon: FaGlobeEurope
 sidebar_bottom_links:
-  - link: recro-website.vercel.app/
+  - link: 'https://recro-website.vercel.app/'
     label: Exit Portal
     type: link
+    icon: FaDoorClosed
 ---
 

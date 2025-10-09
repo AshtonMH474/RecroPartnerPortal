@@ -31,7 +31,7 @@ function Landing(props){
 
     return (
         <div
-        style={{ minHeight: '100%' }}
+        style={{ minHeight: '100vh' }}
         className={`landing flex flex-col items-center justify-center w-full text-center`}
         > 
             <div className=" px-4" style={{ width: inlineWidth }}>

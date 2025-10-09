@@ -1,9 +1,11 @@
 import { useAuth } from "@/context/auth";
+import { handleSignout } from "@/lib/auth_functions";
 import { FaUser } from "react-icons/fa";
 import { tinaField } from "tinacms/dist/react";
+import { CiBellOn } from "react-icons/ci";
 
 function ProfileUser({links}) {
-    const {openModal} = useAuth()
+    const {openModal,setUser,user} = useAuth()
     const handleLogin = () => {
             openModal('login')
         }
@@ -11,8 +13,11 @@ function ProfileUser({links}) {
         openModal('register')
     }
   return (
+    <>
+    {user?.email && (<CiBellOn className="hidden lg:flex text-white h-15 w-17 cursor-pointer hover:text-[#B55914] transition-all duration-200"/>)}
     <div className="relative inline-block group">
       {/* Circle */}
+      
       <div
         style={{
           width: "50px",
@@ -20,7 +25,7 @@ function ProfileUser({links}) {
           borderRadius: "50%",
           backgroundColor: "#D9D9D9",
         }}
-        className="flex justify-center items-center cursor-pointer hover:bg-gray-300"
+        className="hidden lg:flex justify-center items-center cursor-pointer hover:bg-gray-300"
       >
         <FaUser className="text-[30px] font-bold text-black" />
       </div>
@@ -34,7 +39,7 @@ function ProfileUser({links}) {
                     className:"px-4 py-2 cursor-pointer"
                 }
                 const spanProps = {
-                    className:"relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-[#B55914] hover:after:w-full after:transition-all after:duration-300"
+                    className:"relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[1px] after:bg-[#B55914] hover:after:w-full after:transition-all after:duration-300"
                 }
 
                 if (link?.type == 'register'){
@@ -43,8 +48,11 @@ function ProfileUser({links}) {
                 if (link?.type == 'login'){
                     return <li onClick={handleLogin} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
                 }
+                if(link?.type == 'logout'){
+                    return <li onClick={() => handleSignout(setUser)} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
+                }
                 if (link?.type == 'link'){
-                    return <li key={i} {...commonProps}><a  rel="noopener noreferrer"  href={`https://${link.link}`}><span {...spanProps}>{link.label}</span></a></li>
+                    return <li key={i} {...commonProps}><a  rel="noopener noreferrer"  href={`${link.link}`}><span {...spanProps}>{link.label}</span></a></li>
                 }
                 else return null
             })}
@@ -52,6 +60,7 @@ function ProfileUser({links}) {
 
       </div>
     </div>
+    </>
   );
 }
 

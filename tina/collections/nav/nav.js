@@ -95,6 +95,14 @@ const nav = {
                     options:['link','register','login', 'logout'],
                     name:'type'
                 },
+                {
+                    name:'icon',
+                    type:'string',
+                    options:iconNames,
+                    ui:{
+                        component:IconPickerField
+                    }
+                },
             ]
         }
 

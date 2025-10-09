@@ -3,6 +3,7 @@ import { LocalAuthProvider } from "tinacms";
 import { CustomAuthProvider } from "@/lib/custom_auth_provider";
 import pages from "./collections/pages/page";
 import nav from "./collections/nav/nav";
+import footer from "./collections/footer/footer";
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -38,7 +39,8 @@ export default defineConfig({
   schema: {
     collections: [
       pages,
-      nav
+      nav,
+      footer
     ],
   },
 });
