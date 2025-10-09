@@ -26,7 +26,7 @@ export default function Sidebar({ res, onWidthChange }) {
   }, [isOpen, isLargeScreen, onWidthChange]);
 
   return (
-    <div className="fixed top-0 left-0 h-full z-[101] flex items-center">
+    <div className="fixed hidden lg:flex top-0 left-0 h-full z-[101] flex items-center">
       {/* Sidebar container */}
       <div
         className={`h-full w-[240px] 
