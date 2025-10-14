@@ -65,7 +65,7 @@ function Footer({res}) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
-                    className="relative bottom-5 flex  gap-6 sm:flex-row items-center justify-center sm:gap-30">
+                    className="relative bottom-5 flex flex-wrap  px-4  gap-6 sm:flex-row items-center justify-center md:gap-30">
                         {res.links?.map((link,i) => 
                             link.link ? (
                                 <Link data-tina-field={tinaField(res.links[i], 'label')} key={i} href={link.link}>{link.label}</Link>
