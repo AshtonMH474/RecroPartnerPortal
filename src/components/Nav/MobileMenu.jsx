@@ -3,10 +3,12 @@ import { handleSignout } from "@/lib/auth_functions";
 import { useEffect, useState } from "react";
 import { tinaField } from "tinacms/dist/react";
 import IconRenderer from "../utils/IconRenderer";
+import { useRouter } from "next/router";
 
 function MobileMenu({ isVisible, menuOpen, menuRef, toggleMenu, res }) {
   const [links, setLinks] = useState([]);
   const { openModal, setUser } = useAuth();
+  const router = useRouter()
 
   useEffect(() => {
     setLinks([...(res?.sidebar_top_links || []), ...(res?.links || [])]);
@@ -37,6 +39,7 @@ function MobileMenu({ isVisible, menuOpen, menuRef, toggleMenu, res }) {
   const handleLogout = () => {
     handleSignout(setUser);
     toggleMenu();
+    router.push('/')
   };
 
   const commonClass =
