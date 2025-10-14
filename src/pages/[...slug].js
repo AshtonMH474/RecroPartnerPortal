@@ -5,34 +5,26 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 import { useState } from "react";
 import { useTina } from "tinacms/dist/react";
 
-export async function getStaticPaths() {
+export async function getServerSideProps({ params, req }) {
+  const userToken = req.cookies.token; // your cookie name
+
+  if (!userToken) {
+    return {
+      redirect: { destination: "/", permanent: false },
+    };
+  }
+
   const { client } = await import("../../tina/__generated__/databaseClient");
-  const pages = await client.queries.pageConnection();
+  const filename = params.slug?.[0] + ".md";
 
-  const paths = pages?.data?.pageConnection?.edges.map(({ node }) => ({
-    params: { slug: [node._sys.filename] }, // array, works with [...slug].js
-  }));
-
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps({params}) {
-  const { client } = await import("../../tina/__generated__/databaseClient");
-  const filename = params.slug[0] + ".md";
-  // Run TinaCMS queries in parallel
-  const [pageData,navData,footerData] = await Promise.all([
+  const [pageData, navData, footerData] = await Promise.all([
     client.queries.page({ relativePath: filename }),
-    client.queries.nav({relativePath:'nav_authorized.md'}),
-    client.queries.footer({relativePath:'footer.md'})
+    client.queries.nav({ relativePath: "nav_authorized.md" }),
+    client.queries.footer({ relativePath: "footer.md" }),
   ]);
-  
-  
+
   return {
-    props: {
-      res: pageData,
-      nav:navData,
-      footer:footerData
-    },
+    props: { res: pageData, nav: navData, footer: footerData },
   };
 }
 

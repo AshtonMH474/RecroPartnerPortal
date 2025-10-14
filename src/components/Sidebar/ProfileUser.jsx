@@ -2,12 +2,17 @@ import { useAuth } from "@/context/auth";
 import { tinaField } from "tinacms/dist/react";
 import IconRenderer from "../utils/IconRenderer";
 import { handleSignout } from "@/lib/auth_functions";
+import { useRouter } from "next/router";
 
 export default function ProfileUser({ top_links, bottom_links }) {
   const { openModal, setUser } = useAuth();
-
+  const router = useRouter()
   const handleLogin = () => openModal("login");
   const handleRegister = () => openModal("register");
+  const handleLogout = () => {
+      handleSignout(setUser)
+      router.push('/')
+    }
 
   const renderLink = (link, i, isBottom = false) => {
     const commonProps = {
@@ -28,7 +33,7 @@ export default function ProfileUser({ top_links, bottom_links }) {
     const handleClick = () => {
       if (link?.type === "register") return handleRegister();
       if (link?.type === "login") return handleLogin();
-      if (link?.type === "logout") return handleSignout(setUser);
+      if (link?.type === "logout") return handleLogout;
     };
 
     if (link?.type === "link") {

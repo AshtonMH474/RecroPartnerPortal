@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { handleLogin } from "@/lib/auth_functions";
 import { useAuth } from "@/context/auth";
+import { useRouter } from "next/router";
 
 function Login({ onClose,modalData }) {
   const { setUser, openModal } = useAuth();
@@ -12,7 +13,7 @@ function Login({ onClose,modalData }) {
   const [isToken,setToken] = useState(false)
   const [loading,setLoading] = useState(false)
   const [formData, setFormData] = useState({ email: "", password: "" });
-    
+  const router = useRouter();
 
     useEffect(() => {
         const verify = async(token) => {
@@ -61,6 +62,7 @@ function Login({ onClose,modalData }) {
       alert("Please fill all the fields");
       return;
     }
+    
 
     try {
       setLoading(true)
@@ -70,6 +72,7 @@ function Login({ onClose,modalData }) {
         return;
       }
       onClose();
+      router.push("/dashboard");
     } catch (err) {
       alert("Failed to submit.");
     }finally{

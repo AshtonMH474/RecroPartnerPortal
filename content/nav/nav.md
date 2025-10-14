@@ -13,8 +13,8 @@ unauthorized_links:
   - link: recro-website.vercel.app/
     label: Exit Portal
     type: link
-logo: 'https://recro-landing-site.s3.us-east-1.amazonaws.com/RecroDarkModeLogo.png'
-height: 120
+logo: 'https://recro-landing-site.s3.us-east-1.amazonaws.com/officalDarkLogo.png'
+height: 50
 links:
   - link: /login
     label: Login

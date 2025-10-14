@@ -3,14 +3,20 @@ import { handleSignout } from "@/lib/auth_functions";
 import { FaUser } from "react-icons/fa";
 import { tinaField } from "tinacms/dist/react";
 import { CiBellOn } from "react-icons/ci";
+import { useRouter } from "next/router";
 
 function ProfileUser({links}) {
     const {openModal,setUser,user} = useAuth()
+    const router = useRouter()
     const handleLogin = () => {
             openModal('login')
-        }
+    }
     const handleRegister = () => {
         openModal('register')
+    }
+    const handleLogout = () => {
+      handleSignout(setUser)
+      router.push('/')
     }
   return (
     <>
@@ -49,7 +55,7 @@ function ProfileUser({links}) {
                     return <li onClick={handleLogin} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
                 }
                 if(link?.type == 'logout'){
-                    return <li onClick={() => handleSignout(setUser)} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
+                    return <li onClick={handleLogout} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
                 }
                 if (link?.type == 'link'){
                     return <li key={i} {...commonProps}><a  rel="noopener noreferrer"  href={`${link.link}`}><span {...spanProps}>{link.label}</span></a></li>
