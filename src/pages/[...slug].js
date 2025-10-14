@@ -1,3 +1,4 @@
+import Dashboard from "@/components/Dashboard/Dashboard";
 import Footer from "@/components/Footer";
 import Landing from "@/components/Landing";
 import Nav from "@/components/Nav/Nav";
@@ -35,7 +36,7 @@ function Slug({res,nav,footer}){
     const {data: navContent} = useTina(nav)
     const {data:footerContent} = useTina(footer)
     const [sidebarWidth, setSidebarWidth] = useState(200);
-
+    
     return (
     <>
     <Nav {...navContent.nav}/>
@@ -48,13 +49,16 @@ function Slug({res,nav,footer}){
       >
         
     {pageData.page.blocks?.map((block,i) => {
+      
       switch(block?.__typename){
         case "PageBlocksLanding":
                   return <Landing key={i}  {...block}/>;
+        case "PageBlocksDashboard":
+                  return <Dashboard key={i} {...block}/>
       }
     })}
 
-      <Footer res={footerContent.footer}/>
+      <Footer res={footerContent.footer} sidebarWidth={sidebarWidth}/>
       </div>
     </>
     );

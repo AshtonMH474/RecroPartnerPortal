@@ -1,3 +1,4 @@
+import clientPromise from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
@@ -13,7 +14,12 @@ export default async function handler(req, res) {
     }
 
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).json({ user });
+    const client = await clientPromise
+    const db = client.db('mydb')
+    const dbUser = await db.collection('users').findOne({email:user.email})
+    if (!dbUser) return res.status(401).json({ error: "Unauthrozied" });
+    const newUser = {...user,firstName:dbUser.firstName,lastName:dbUser.lastName,organization:dbUser.organization}
+    res.status(200).json({ user:newUser });
   } catch (err) {
     console.error("JWT verify failed:", err.message);
     res.status(401).json({ user: null });

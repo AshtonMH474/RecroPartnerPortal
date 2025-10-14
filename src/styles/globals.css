@@ -25,6 +25,7 @@ body {
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   background-color: black;
+  overflow-x: hidden;
 }
 .background.Home{
   position: fixed;

@@ -29,21 +29,23 @@ export default function Sidebar({ res, onWidthChange }) {
     <div className="fixed hidden lg:flex top-0 left-0 h-full z-[101] flex items-center">
       {/* Sidebar container */}
       <div
-        className={`h-full w-[240px] 
-          bg-black border-r border-[#222]
-          text-white shadow-lg
-          transition-all duration-500 ease-in-out transform
-          ${isOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}
-        `}
-      >
-        <div className="h-full px-6 ">
-          <Logo logo={res} />
-          <ProfileUser
-            top_links={res?.sidebar_top_links}
-            bottom_links={res?.sidebar_bottom_links}
-          />
-        </div>
+      className={`fixed top-0 left-0 h-full w-[240px]
+        bg-black border-r border-[#222]
+        text-white shadow-lg
+        transition-all duration-500 ease-in-out transform
+        ${isOpen
+          ? "translate-x-0 opacity-100 pointer-events-auto"
+          : "-translate-x-full opacity-0 pointer-events-none"}
+      `}
+    >
+      <div className="h-full px-6">
+        <Logo logo={res} />
+        <ProfileUser
+          top_links={res?.sidebar_top_links}
+          bottom_links={res?.sidebar_bottom_links}
+        />
       </div>
+    </div>
 
       {/* Toggle circle button (hidden on mobile) */}
       {isLargeScreen && (

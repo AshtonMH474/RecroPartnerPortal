@@ -4,6 +4,7 @@ import { CustomAuthProvider } from "@/lib/custom_auth_provider";
 import pages from "./collections/pages/page";
 import nav from "./collections/nav/nav";
 import footer from "./collections/footer/footer";
+import { categories } from "./collections/categories/categories";
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -40,7 +41,8 @@ export default defineConfig({
     collections: [
       pages,
       nav,
-      footer
+      footer,
+      categories
     ],
   },
 });

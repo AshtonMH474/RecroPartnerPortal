@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ContactUsForm from "./ContactUsForm";
 import { tinaField } from "tinacms/dist/react";
 
-function Footer({res}) {
+function Footer({res,sidebarWidth}) {
   const [showForm, setShowForm] = useState(false);
 
   const toggleForm = () => setShowForm((prev) => !prev);
@@ -55,7 +55,7 @@ function Footer({res}) {
                 exit={{ opacity: 0, y: 50 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-                <ContactUsForm />
+                <ContactUsForm sidebarWidth={sidebarWidth} />
                 </motion.div>
             )}
             </AnimatePresence>

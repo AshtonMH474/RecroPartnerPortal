@@ -2,14 +2,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
-function ContactUsForm() {
+function ContactUsForm({sidebarWidth}) {
     const router = useRouter()
     const [isCareers,setCareers] = useState(false)
     const [errors,setErrors] = useState({})
     
      // checks if ur in the careers section 
     useEffect(() => {
-      
       if(router.query.slug?.[0] === "careers") setCareers(true)
     },[])
     
@@ -75,7 +74,7 @@ function ContactUsForm() {
     }
   
     return (
-    <div className="flex justify-center items-center w-screen px-4 pb-16">
+    <div className="flex justify-center items-center w-screen px-4 pb-16" style={{paddingRight: sidebarWidth > 0 ? '240px' : ''}}>
       <div className="w-full max-w-[800px] bg-[#1A1A1E] rounded-[12px] p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
 

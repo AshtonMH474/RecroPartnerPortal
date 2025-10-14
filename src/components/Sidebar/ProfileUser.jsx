@@ -27,7 +27,7 @@ export default function ProfileUser({ top_links, bottom_links }) {
     };
 
     const icon = link.icon && (
-      <IconRenderer size="22px" color="currentColor" iconName={link.icon} />
+      <IconRenderer size="22px" color="white" iconName={link.icon} />
     );
 
     const handleClick = () => {
