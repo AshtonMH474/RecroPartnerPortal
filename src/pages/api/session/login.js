@@ -24,8 +24,9 @@ export default async function handler(req, res) {
       req,
       res,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      secure:false,
+      sameSite: "lax",
       maxAge: 60 * 60 * 3,
       path: "/",
     });
