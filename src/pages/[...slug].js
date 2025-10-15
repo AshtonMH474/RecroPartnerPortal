@@ -39,28 +39,31 @@ export async function getServerSideProps({ params, req,res }) {
   const { client } = await import("../../tina/__generated__/databaseClient");
   const filename = params.slug?.[0] + ".md";
 
-  const [pageData, navData, footerData,paperData] = await Promise.all([
+  const [pageData, navData, footerData,paperData,sheetData] = await Promise.all([
     client.queries.page({ relativePath: filename }),
     client.queries.nav({ relativePath: "nav_authorized.md" }),
     client.queries.footer({ relativePath: "footer.md" }),
-    client.queries.paperConnection()
+    client.queries.paperConnection(),
+    client.queries.sheetConnection()
   ]);
 
   return {
-    props: { res: pageData, nav: navData, footer: footerData, paper:paperData },
+    props: { res: pageData, nav: navData, footer: footerData, paper:paperData, sheets:sheetData },
   };
 }
 
 
 
-function Slug({res,nav,footer,paper}){
+function Slug({res,nav,footer,paper,sheets}){
   
     const {data: pageData} = useTina(res)
     const {data: navContent} = useTina(nav)
     const {data:footerContent} = useTina(footer)
     const {data:paperContent} = useTina(paper)
+    const {data:sheetContent} = useTina(sheets)
     const [sidebarWidth, setSidebarWidth] = useState(200);
     const allPapers = paperContent.paperConnection.edges.map(e => e.node);
+    const allSheets = sheetContent.sheetConnection.edges.map(e => e.node);
     
     const newWhitePapers = allPapers
     .sort((a, b) => {
@@ -69,6 +72,14 @@ function Slug({res,nav,footer,paper}){
     return dateB - dateA; // most recent first
   })
   .slice(0, 8); 
+
+  const newDataSheets = allSheets
+    .sort((a, b) => {
+    const dateA = new Date(a.lastUpdated);
+    const dateB = new Date(b.lastUpdated);
+    return dateB - dateA; // most recent first
+  })
+  .slice(0, 8);
     return (
     <>
     <Nav {...navContent.nav}/>
@@ -86,7 +97,7 @@ function Slug({res,nav,footer,paper}){
         case "PageBlocksLanding":
                   return <Landing key={i}  {...block}/>;
         case "PageBlocksDashboard":
-                  return <Dashboard key={i} props={block} papers={newWhitePapers}/>
+                  return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets}/>
       }
     })}
 

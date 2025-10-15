@@ -5,7 +5,7 @@ import Filters from "./Filters"
 import { useEffect, useState } from "react"
 import Cards from "./Cards/Cards"
 
-function Dashboard({props,papers}){
+function Dashboard({props,papers,sheets}){
     const {user} = useAuth()
     const router = useRouter()
     const [active,setActive] = useState(props?.filters[0].filter || '')
@@ -26,7 +26,7 @@ function Dashboard({props,papers}){
             setCards([])
         }
         if(active == 'sheets'){
-            setCards([])
+            setCards(sheets)
         }
     },[active,cards])
     
