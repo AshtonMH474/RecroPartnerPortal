@@ -38,5 +38,11 @@ export const papers = {
             }
         }
 
-    ]
+    ],
+    indexes: [
+        {
+          name: "lastUpdatedDesc",
+          fields: [{ name: "lastUpdated", order: "desc" }], // 👈 descending order
+        },
+      ],
 }

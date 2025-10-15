@@ -60,7 +60,15 @@ function Slug({res,nav,footer,paper}){
     const {data:footerContent} = useTina(footer)
     const {data:paperContent} = useTina(paper)
     const [sidebarWidth, setSidebarWidth] = useState(200);
+    const allPapers = paperContent.paperConnection.edges.map(e => e.node);
     
+    const newWhitePapers = allPapers
+    .sort((a, b) => {
+    const dateA = new Date(a.lastUpdated);
+    const dateB = new Date(b.lastUpdated);
+    return dateB - dateA; // most recent first
+  })
+  .slice(0, 8); 
     return (
     <>
     <Nav {...navContent.nav}/>
@@ -78,7 +86,7 @@ function Slug({res,nav,footer,paper}){
         case "PageBlocksLanding":
                   return <Landing key={i}  {...block}/>;
         case "PageBlocksDashboard":
-                  return <Dashboard key={i} props={block} papers={paperContent}/>
+                  return <Dashboard key={i} props={block} papers={newWhitePapers}/>
       }
     })}
 

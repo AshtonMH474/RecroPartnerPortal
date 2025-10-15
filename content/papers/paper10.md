@@ -1,5 +1,5 @@
 ---
-title: Title
+title: Title1
 pdf: >-
   https://recro-landing-site.s3.us-east-1.amazonaws.com/CapabilityStatements/capability-pdf.pdf
 description: >
@@ -16,6 +16,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/cyber.md
-lastUpdated: '2025-10-15T15:22:23.854Z'
+lastUpdated: '2025-10-15T20:02:55.278Z'
 ---
 

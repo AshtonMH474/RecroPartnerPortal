@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PlusMinusButton from "./PlusMinus";
 import { downloadPdf } from "@/lib/download";
 import { useAuth } from "@/context/auth";
+import { tinaField } from "tinacms/dist/react";
 
 function Card({ card }) {
   const {user} = useAuth()
@@ -23,7 +24,7 @@ function Card({ card }) {
     >
       <div className="flex justify-between">
         <div className="flex pl-4 pt-4">
-          <div className="w-[70px] h-[70px] mb-4 bg-primary rounded-lg flex justify-center items-center">
+          <div data-tina-field={tinaField(card,'category')} className="w-[70px] h-[70px] mb-4 bg-primary rounded-lg flex justify-center items-center">
             <IconRenderer
               size={"48px"}
               color={"#FAF3E0"}
@@ -32,10 +33,11 @@ function Card({ card }) {
           </div>
 
           <div className="pl-4 w-[100%] relative bottom-1">
-            <h2 className="font-bold text-[22px]">{card.title}</h2>
+            <h2 data-tina-field={tinaField(card,'title')} className="font-bold text-[22px]">{card.title}</h2>
             <AnimatePresence initial={false}>
               {expanded ? (
                 <motion.div
+                  data-tina-field={tinaField(card,'description')}
                   key="expanded"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -51,6 +53,7 @@ function Card({ card }) {
                 </motion.div>
               ) : (
                 <motion.div
+                  data-tina-field={tinaField(card,'description')}
                   key="collapsed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
