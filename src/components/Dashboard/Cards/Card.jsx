@@ -4,10 +4,12 @@ import { BsDownload } from "react-icons/bs";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PlusMinusButton from "./PlusMinus";
+import { downloadPdf } from "@/lib/download";
+import { useAuth } from "@/context/auth";
 
 function Card({ card }) {
+  const {user} = useAuth()
   const [expanded, setExpanded] = useState(false);
-
   function changeTime(date) {
     const d = new Date(date);
     return d.toLocaleString("en-US", { month: "short", year: "numeric" });
@@ -21,7 +23,7 @@ function Card({ card }) {
     >
       <div className="flex justify-between">
         <div className="flex pl-4 pt-4">
-          <div className="w-[70px] h-[70px] bg-primary rounded-lg flex justify-center items-center">
+          <div className="w-[70px] h-[70px] mb-4 bg-primary rounded-lg flex justify-center items-center">
             <IconRenderer
               size={"48px"}
               color={"#FAF3E0"}
@@ -74,7 +76,7 @@ function Card({ card }) {
             Updated Last: {changeTime(card.lastUpdated)}
           </h3>
           <div className="flex items-center justify-center pl-14 gap-x-2">
-            <BsDownload className="text-[32px]" />
+            <BsDownload onClick={() => downloadPdf(card,user)} className="text-[32px] cursor-pointer" />
             <PlusMinusButton expanded={expanded} setExpanded={setExpanded} />
           </div>
         </div>
