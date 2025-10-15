@@ -5,6 +5,8 @@ import pages from "./collections/pages/page";
 import nav from "./collections/nav/nav";
 import footer from "./collections/footer/footer";
 import { categories } from "./collections/categories/categories";
+import { papers } from "./collections/papers/papers";
+import { sheets } from "./collections/sheets/sheets";
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -42,7 +44,9 @@ export default defineConfig({
       pages,
       nav,
       footer,
-      categories
+      categories,
+      papers,
+      sheets
     ],
   },
 });
