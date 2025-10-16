@@ -1,10 +1,13 @@
 import { handleDownload } from "./auth_functions";
 
 export async function downloadPdf(content,user){
+  console.log(content)
     
     if (!content) return;
 
   const pdfUrl = content?.pdf;
+  const type = content?.__typename
+  const relativePath = content?._sys?.relativePath
   if (!pdfUrl) {
     console.error("No PDF URL found");
     return;
@@ -13,7 +16,7 @@ export async function downloadPdf(content,user){
 
        
     try{
-        await handleDownload(user,pdfUrl)
+        await handleDownload(user,pdfUrl,type,relativePath)
     }catch(e){
         console.log(e)
     }

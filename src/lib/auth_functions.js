@@ -78,14 +78,16 @@ export async function checkUser(setUser) {
 }
 
 
-export async function handleDownload(user,pdfUrl) {
+export async function handleDownload(user,pdfUrl,type,relativePath) {
   try {
       const res = await fetch("/api/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
              email:user.email,
-             pdfUrl:pdfUrl
+             pdfUrl:pdfUrl,
+             type: type,
+             relativePath:relativePath
         }),
       });
       const data = await res.json();
