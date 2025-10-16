@@ -4,14 +4,16 @@ import Heading from "./Heading"
 import Filters from "./Filters"
 import { useEffect, useState } from "react"
 import Cards from "./Cards/Cards"
+import Buttons from "./Buttons"
 
 function Dashboard({props,papers,sheets}){
     const {user} = useAuth()
     const router = useRouter()
     const [active,setActive] = useState(props?.filters[0].filter || '')
     const [recent,setRecent] = useState([])
+    const [buttons,setButtons] = useState(props?.filters[0].buttons || [])
     const [cards,setCards] = useState([])
-    
+    // console.log(props)
     
     
     if(!user){
@@ -22,9 +24,24 @@ function Dashboard({props,papers,sheets}){
     }
 
     useEffect(() => {
-    if (active === 'papers') setCards(papers)
-    else if (active === 'recent') setCards(recent)
-    else if (active === 'sheets') setCards(sheets)
+    async function  updateValues() {
+        if (active === 'papers'){
+          await setCards(papers)
+        }
+        else if (active === 'recent'){
+            await setCards(recent)
+        }
+        else if (active === 'sheets') {
+            await setCards(sheets)
+        }
+        let filter = props?.filters.find((filter) => filter.filter == active)
+        await setButtons(filter?.buttons || [])
+        
+    }
+
+    updateValues()
+    
+    
     }, [active, recent, papers, sheets])
 
     useEffect(() => {
@@ -56,6 +73,7 @@ function Dashboard({props,papers,sheets}){
                    <Filters active={active} setActive={setActive} props={props} user={user}/>
                 </div>
                 <Cards cards={cards}/>
+                <Buttons buttons={buttons} /> 
             </div>
         </div>
     )

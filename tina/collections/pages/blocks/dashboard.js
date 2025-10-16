@@ -34,8 +34,33 @@ export const dashboardBlock = {
                     ui:{
                         component:IconPickerField
                     }
+                },
+                {
+                    name:'buttons',
+                    label:'Buttons',
+                    type:'object',
+                    list:true,
+                    fields:[
+                        {
+                            name:'label',
+                            type:'string',
+                            label:'Label'
+                        },
+                        {
+                            name:'link',
+                            label:'Link',
+                            type:'string'
+                        },
+                        {
+                            name:'style',
+                            type:'string',
+                            label:'style',
+                            options:['border','button']
+                        }
+                    ]
                 }
             ]
-        }
+        },
+        
     ]
 }
