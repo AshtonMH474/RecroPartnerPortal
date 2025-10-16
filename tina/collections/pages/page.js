@@ -1,5 +1,6 @@
 import { dashboardBlock } from "./blocks/dashboard";
 import { landingBlock } from "./blocks/landing";
+import { opportunitesBlock } from "./blocks/opportunites";
 
 const pages = {
   name: "page",
@@ -28,7 +29,7 @@ const pages = {
       label: "Blocks",
       type: "object",
       list: true,
-      templates: [landingBlock,dashboardBlock],
+      templates: [landingBlock,dashboardBlock,opportunitesBlock],
     },
     
   ],

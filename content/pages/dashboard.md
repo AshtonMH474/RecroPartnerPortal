@@ -27,5 +27,21 @@ blocks:
             link: /sheets
             style: button
     _template: dashboard
+  - heading: |
+      # **Opportunities** for You
+    filters:
+      - label: 'By Interests '
+        filter: intrests
+        icon: FaTag
+      - label: 'New Releases '
+        filter: new
+        icon: FaStar
+    labelView: 'View More '
+    labelIntrested: 'Interested? '
+    buttons:
+      - label: 'View All Opportunities '
+        style: button
+        link: '/opportunities '
+    _template: opportunites
 ---
 

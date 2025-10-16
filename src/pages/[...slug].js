@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useTina } from "tinacms/dist/react";
 import jwt from 'jsonwebtoken';
 import cookie from "cookie";
+import Opportunites from "@/components/Opportunites/Opportunites";
 
 export async function getServerSideProps({ params, req,res }) {
   const userToken = req.cookies.token; // your cookie name
@@ -100,6 +101,7 @@ function Slug({res,nav,footer,paper,sheets}){
                   return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets}/>
       }
     })}
+    <Opportunites/>
 
       <Footer res={footerContent.footer} sidebarWidth={sidebarWidth}/>
       </div>

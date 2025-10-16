@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import Cards from "./Cards/Cards"
 import Buttons from "./Buttons"
 
+
 function Dashboard({props,papers,sheets}){
     const {user} = useAuth()
     const router = useRouter()
@@ -13,7 +14,6 @@ function Dashboard({props,papers,sheets}){
     const [recent,setRecent] = useState([])
     const [buttons,setButtons] = useState(props?.filters[0].buttons || [])
     const [cards,setCards] = useState([])
-    // console.log(props)
     
     
     if(!user){
@@ -70,7 +70,7 @@ function Dashboard({props,papers,sheets}){
             <div className="mt-32 flex flex-col pl-16">
                 <div>
                    <Heading props={props} user={user} />
-                   <Filters active={active} setActive={setActive} props={props} user={user}/>
+                   <Filters recent={recent} active={active} setActive={setActive} props={props} user={user}/>
                 </div>
                 <Cards cards={cards}/>
                 <Buttons buttons={buttons} /> 

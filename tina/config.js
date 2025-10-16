@@ -7,6 +7,7 @@ import footer from "./collections/footer/footer";
 import { categories } from "./collections/categories/categories";
 import { papers } from "./collections/papers/papers";
 import { sheets } from "./collections/sheets/sheets";
+import { opportunites } from "./collections/opportunites/opportunites";
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -46,7 +47,8 @@ export default defineConfig({
       footer,
       categories,
       papers,
-      sheets
+      sheets,
+      opportunites
     ],
   },
 });
