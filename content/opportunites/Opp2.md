@@ -4,6 +4,7 @@ agency: Agency
 type: Partership
 location: 'Fairfax, VA'
 status: open
+date: 2025-10-31T00:00:00.000Z
 description: >
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget sapien
   at risus varius facilisis. In hac habitasse platea dictumst. Praesent
