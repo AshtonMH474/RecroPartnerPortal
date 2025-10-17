@@ -40,31 +40,34 @@ export async function getServerSideProps({ params, req,res }) {
   const { client } = await import("../../tina/__generated__/databaseClient");
   const filename = params.slug?.[0] + ".md";
 
-  const [pageData, navData, footerData,paperData,sheetData] = await Promise.all([
+  const [pageData, navData, footerData,paperData,sheetData,oppData] = await Promise.all([
     client.queries.page({ relativePath: filename }),
     client.queries.nav({ relativePath: "nav_authorized.md" }),
     client.queries.footer({ relativePath: "footer.md" }),
     client.queries.paperConnection(),
-    client.queries.sheetConnection()
+    client.queries.sheetConnection(),
+    client.queries.opportunitesConnection()
   ]);
 
   return {
-    props: { res: pageData, nav: navData, footer: footerData, paper:paperData, sheets:sheetData },
+    props: { res: pageData, nav: navData, footer: footerData, paper:paperData, sheets:sheetData, opp:oppData },
   };
 }
 
 
 
-function Slug({res,nav,footer,paper,sheets}){
+function Slug({res,nav,footer,paper,sheets,opp}){
   
     const {data: pageData} = useTina(res)
     const {data: navContent} = useTina(nav)
     const {data:footerContent} = useTina(footer)
     const {data:paperContent} = useTina(paper)
     const {data:sheetContent} = useTina(sheets)
+    const {data: oppContent} = useTina(opp)
     const [sidebarWidth, setSidebarWidth] = useState(200);
     const allPapers = paperContent.paperConnection.edges.map(e => e.node);
     const allSheets = sheetContent.sheetConnection.edges.map(e => e.node);
+    const allOpps = oppContent.opportunitesConnection.edges.map(e => e.node);
     
     const newWhitePapers = allPapers
     .sort((a, b) => {
@@ -99,11 +102,13 @@ function Slug({res,nav,footer,paper,sheets}){
                   return <Landing key={i}  {...block}/>;
         case "PageBlocksDashboard":
                   return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets}/>
+        case 'PageBlocksOpportunites':
+          return <Opportunites key={i} props={block} opportunites={allOpps}/>
       }
     })}
-    <Opportunites/>
+    
 
-      <Footer res={footerContent.footer} sidebarWidth={sidebarWidth}/>
+      <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
       </div>
     </>
     );

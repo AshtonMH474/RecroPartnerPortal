@@ -40,7 +40,8 @@ export default async function handler(req, res) {
             : databaseClient.queries.sheet;
 
         const result = await queryFn({ relativePath: dl.relativePath });
-        return result.data.sheet || result.data.paper;
+        if(result) return result.data.sheet || result.data.paper;
+        else return
       } catch (err) {
         console.warn(`Failed to load ${dl.type} ${dl.relativePath}:`, err.message);
         return null;

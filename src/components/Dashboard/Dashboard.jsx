@@ -54,7 +54,6 @@ function Dashboard({props,papers,sheets}){
 
             const data = await res.json();
             setRecent(data.downloads.slice(0,8))
-            console.log(data)
             
             } catch (err) {
             console.error("Failed to fetch downloads:", err);

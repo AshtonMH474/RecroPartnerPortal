@@ -1,8 +1,26 @@
-function Opportunites(){
+import { useState } from "react"
+import Filters from "../Dashboard/Filters"
+import Heading from "./Heading"
+import Buttons from "./Buttons"
+import Cards from "./Cards/Cards"
+
+function Opportunites({props,opportunites}){
+    console.log(opportunites)
+    const [active,setActive] = useState(props?.filters[0].filter || '')
     return(
-        <div style={{minHeight:'100vh'}} className="bg-black">
+        <div className="bg-black pb-20">
             <div className="pt-20 pl-16">
-                <h2 className="text-[32px]  lg:text-[40px] xl:text-[50px] font-bold mb-4">Opportunities for You</h2>
+                <div className="pr-16">
+                    
+                    <div className="flex flex-col items-center justify-center">
+                        <Heading props={props}/>
+                        <Filters props={props} setActive={setActive} active={active}/>
+                    </div>
+                    
+                    
+                    <Cards cards={opportunites} />
+                </div>
+                <Buttons buttons={props?.buttons}/>
             </div>
         </div>
     )
