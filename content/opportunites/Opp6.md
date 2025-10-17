@@ -1,7 +1,10 @@
 ---
-title: TitleTest
-pdf: >-
-  https://recro-landing-site.s3.us-east-1.amazonaws.com/CapabilityStatements/capability-pdf.pdf
+title: Title
+agency: Agency
+type: Partership
+location: 'Fairfax, VA'
+status: open
+date: 2025-11-01T00:00:00.000Z
 description: >
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget sapien
   at risus varius facilisis. In hac habitasse platea dictumst. Praesent
@@ -15,7 +18,6 @@ description: >
   adipiscing elit. Curabitur eget sapien at risus varius facilisis. In hac
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
-category: content/categories/cloud.md
-lastUpdated: '2025-10-16T14:12:22.920Z'
+category: content/categories/tech.md
 ---
 
