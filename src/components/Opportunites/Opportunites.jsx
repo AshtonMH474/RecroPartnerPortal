@@ -5,10 +5,11 @@ import Buttons from "./Buttons"
 import Cards from "./Cards/Cards"
 
 function Opportunites({props,opportunites}){
-    console.log(opportunites)
     const [active,setActive] = useState(props?.filters[0].filter || '')
     const [cards,setCards] = useState([])
 
+    if(!opportunites) return null
+    
     useEffect(() => {
         if (active == "new"){
             setCards(opportunites.sort((a,b) => {
@@ -19,7 +20,6 @@ function Opportunites({props,opportunites}){
         }else{
             setCards(opportunites)
         }
-        console.log(active)
     },[active])
     return(
         <div className="bg-black pb-20">

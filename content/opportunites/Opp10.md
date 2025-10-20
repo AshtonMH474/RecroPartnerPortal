@@ -3,7 +3,7 @@ title: Title111
 agency: Agency
 type: Partership
 location: 'Fairfax, VA'
-status: inReview
+status: In Review
 date: 2026-10-24T00:00:00.000Z
 description: >
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget sapien

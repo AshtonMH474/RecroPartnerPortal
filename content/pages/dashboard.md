@@ -37,7 +37,7 @@ blocks:
         filter: new
         icon: FaStar
     labelView: 'View More '
-    labelIntrested: 'Interested? '
+    labelIntrested: Interested?
     buttons:
       - label: 'View All Opportunities '
         style: button

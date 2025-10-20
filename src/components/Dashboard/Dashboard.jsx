@@ -15,14 +15,9 @@ function Dashboard({props,papers,sheets}){
     const [buttons,setButtons] = useState(props?.filters[0].buttons || [])
     const [cards,setCards] = useState([])
     
-    
-    if(!user){
-        router.push('/')
-        return (
-            <div style={{minHeight:'100vh'}}></div>
-        )
-    }
 
+
+    
     useEffect(() => {
     async function  updateValues() {
         if (active === 'papers'){
@@ -62,11 +57,21 @@ function Dashboard({props,papers,sheets}){
 
         getDownloads();
     }, [user?.email]); 
+
+
+    useEffect(() => {
+        if (!user) router.push("/");
+    }, [user, router]);
+
+    if (!user) {
+        // placeholder while redirect happens
+        return <div style={{ minHeight: "100vh" }}></div>;
+    }
     
 
     return(
-        <div style={{minHeight:'100vh'}}>
-            <div className="mt-32 flex flex-col pl-16">
+        <div className="pb-20" style={{minHeight:'100vh'}}>
+            <div className="mt-32  flex flex-col pl-16">
                 <div>
                    <Heading props={props} user={user} />
                    <Filters recent={recent} active={active} setActive={setActive} props={props} user={user}/>

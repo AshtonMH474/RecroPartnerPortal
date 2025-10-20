@@ -14,9 +14,9 @@ function ProfileUser({links}) {
     const handleRegister = () => {
         openModal('register')
     }
-    const handleLogout = () => {
-      handleSignout(setUser)
-      router.push('/')
+    const handleLogout = async () => {
+      await handleSignout(setUser)
+      await router.push('/')
     }
   return (
     <>

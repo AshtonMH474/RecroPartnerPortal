@@ -5,6 +5,7 @@ import Register from "@/components/Register";
 import NewPasswordModal from "@/components/New-Password";
 import ChangePassword from "@/components/ChangePassword";
 import { checkUser } from "@/lib/auth_functions";
+import OppModal from "@/components/Opportunites/OppModal";
 
 const AuthContext = createContext();
 
@@ -49,6 +50,9 @@ const refreshUser = useCallback(() => {
       )}
       {activeModal === "changePassword" && (
         <ChangePassword token={modalData?.token} onClose={closeModal} />
+      )}
+      {activeModal == 'Opp' && (
+        <OppModal opp={modalData} onClose={closeModal}/>
       )}
       
     </AuthContext.Provider>

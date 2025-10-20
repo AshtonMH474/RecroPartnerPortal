@@ -30,7 +30,7 @@ export const opportunites = {
                             type:'string',
                             label:'Status',
                             name:'status',
-                            options:['open','inReview', 'closed']
+                            options:['open','In Review', 'closed']
                 },
                 {
                     name:'date',

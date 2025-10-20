@@ -19,6 +19,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/logic-eng.md
-lastUpdated: '2025-10-20T15:50:04.507Z'
+lastUpdated: '2025-10-20T18:16:50.416Z'
 ---
 
