@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Filters from "../Dashboard/Filters"
 import Heading from "./Heading"
 import Buttons from "./Buttons"
@@ -7,6 +7,20 @@ import Cards from "./Cards/Cards"
 function Opportunites({props,opportunites}){
     console.log(opportunites)
     const [active,setActive] = useState(props?.filters[0].filter || '')
+    const [cards,setCards] = useState([])
+
+    useEffect(() => {
+        if (active == "new"){
+            setCards(opportunites.sort((a,b) => {
+                const dateA = new Date(a?.lastUpdated);
+                const dateB = new Date(b?.lastUpdated);
+                return dateB - dateA;
+            }).slice(0,6))
+        }else{
+            setCards(opportunites)
+        }
+        console.log(active)
+    },[active])
     return(
         <div className="bg-black pb-20">
             <div className="pt-20 pl-16">
@@ -18,7 +32,7 @@ function Opportunites({props,opportunites}){
                     </div>
                     
                     
-                    <Cards cards={opportunites} />
+                    <Cards cards={cards} props={props} />
                 </div>
                 <Buttons buttons={props?.buttons}/>
             </div>

@@ -19,5 +19,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/tech.md
+lastUpdated: '2025-10-20T15:49:48.264Z'
 ---
 

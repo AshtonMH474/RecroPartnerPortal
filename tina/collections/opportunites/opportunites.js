@@ -1,3 +1,5 @@
+import { LastUpdatedField } from "../../components/LastUpdated";
+
 export const opportunites = {
             name:'opportunites',
             label:'Opportunites',
@@ -46,5 +48,14 @@ export const opportunites = {
                     type: "reference",
                     collections: ["category"], // must match the name of your other collection
                 },
+                {
+                            name: 'lastUpdated',
+                            label: 'Last Updated',
+                            type: 'string',
+                            ui: {
+                                // Prevent editing manually
+                                component:LastUpdatedField
+                            }
+                }
             ]
 }

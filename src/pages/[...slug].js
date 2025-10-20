@@ -38,6 +38,11 @@ export async function getServerSideProps({ params, req,res }) {
     }
 
   const { client } = await import("../../tina/__generated__/databaseClient");
+  if (params.slug?.[0].startsWith(".well-known")) {
+    return {
+      notFound: true,
+    };
+  }
   const filename = params.slug?.[0] + ".md";
 
   const [pageData, navData, footerData,paperData,sheetData,oppData] = await Promise.all([
