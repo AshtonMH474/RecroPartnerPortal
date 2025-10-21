@@ -1,5 +1,5 @@
 import clientPromise from "@/lib/mongodb";
-import { getTinaClient } from "@/lib/tinaClient";
+import { tinaClient } from "@/lib/tinaClient";
 import fs from "fs";
 import path from "path";
 export default async function handler(req, res) {
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       .sort({ downloadedAt: -1 }) // newest first
       .toArray();
 
-      const tinaClient = getTinaClient()
+      
       const contentDir = path.join(process.cwd(), "content");
 
     const content = await Promise.all(

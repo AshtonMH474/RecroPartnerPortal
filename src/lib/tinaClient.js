@@ -1,10 +1,11 @@
 import databaseClient from "../../tina/__generated__/databaseClient";
 
-let client;
+// Use a global variable that persists across hot reloads & lambda invocations
+let cached = globalThis.__tinaClient;
 
-export function getTinaClient() {
-  if (!client) {
-    client = databaseClient;
-  }
-  return client;
+if (!cached) {
+  cached = { client: databaseClient };
+  globalThis.__tinaClient = cached;
 }
+
+export const tinaClient = cached.client;
