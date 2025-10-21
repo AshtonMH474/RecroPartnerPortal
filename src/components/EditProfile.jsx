@@ -24,8 +24,12 @@ function EditProfile({onClose}){
             transition={{ duration: 0.4 }}
             className="relative z-[1001] w-[90%] max-w-[1500px] max-h-[90%] overflow-y-auto bg-[#1A1A1E] rounded-[12px] p-6"
         >
+            <div className="flex justify-end">
+                <IoMdClose onClick={onClose} className="cursor-pointer text-white text-[24px] hover:text-primary transition" />
+            </div>
+            
             <div className="flex justify-center">
-                <div>
+                <div className="flex items-center gap-x-4">
                     <div
                             style={{
                               width: "50px",
@@ -39,7 +43,7 @@ function EditProfile({onClose}){
                     </div>
                     <h2 className="font-bold text-[26px]">Edit Profile</h2>
                 </div>
-                <IoMdClose onClick={onClose} className="cursor-pointer text-white text-[24px] hover:text-primary transition" />
+                
             </div>
         </motion.div>
 

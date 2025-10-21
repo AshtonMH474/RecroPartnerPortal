@@ -1,3 +1,6 @@
+import { EventEmitter } from "events";
+EventEmitter.defaultMaxListeners = 30; // ⬅️ add this at the very top
+
 import databaseClient from "../../tina/__generated__/databaseClient";
 
 // Use a global variable that persists across hot reloads & lambda invocations
