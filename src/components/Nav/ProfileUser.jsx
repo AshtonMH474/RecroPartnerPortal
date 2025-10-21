@@ -14,6 +14,9 @@ function ProfileUser({links}) {
     const handleRegister = () => {
         openModal('register')
     }
+    const handleEdit = () => {
+      openModal('Edit')
+    }
     const handleLogout = async () => {
       await handleSignout(setUser)
       await router.push('/')
@@ -56,6 +59,9 @@ function ProfileUser({links}) {
                 }
                 if(link?.type == 'logout'){
                     return <li onClick={handleLogout} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
+                }
+                if(link?.type == 'edit profile'){
+                  return <li onClick={handleEdit} key={i} {...commonProps}><span {...spanProps}>{link.label}</span></li>
                 }
                 if (link?.type == 'link'){
                     return <li key={i} {...commonProps}><a  rel="noopener noreferrer"  href={`${link.link}`}><span {...spanProps}>{link.label}</span></a></li>

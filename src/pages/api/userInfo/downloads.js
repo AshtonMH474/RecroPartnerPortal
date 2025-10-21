@@ -1,5 +1,5 @@
 import clientPromise from "@/lib/mongodb";
-import databaseClient from "../../../../tina/__generated__/databaseClient";
+import { getTinaClient } from "@/lib/tinaClient";
 import fs from "fs";
 import path from "path";
 export default async function handler(req, res) {
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       .sort({ downloadedAt: -1 }) // newest first
       .toArray();
 
-
+      const tinaClient = getTinaClient()
       const contentDir = path.join(process.cwd(), "content");
 
     const content = await Promise.all(
@@ -48,8 +48,8 @@ export default async function handler(req, res) {
       try {
         const queryFn =
           dl.type === "Paper"
-            ? databaseClient.queries.paper
-            : databaseClient.queries.sheet;
+            ? tinaClient.queries.paper
+            : tinaClient.queries.sheet;
 
         const result = await queryFn({ relativePath: dl.relativePath });
         return result?.data?.paper || result?.data?.sheet || null;

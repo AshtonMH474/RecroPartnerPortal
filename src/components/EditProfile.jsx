@@ -1,4 +1,5 @@
-function EditProfile(){
+import { motion } from "framer-motion"
+function EditProfile({onClose}){
     return(
         <div
       className="fixed inset-0 z-[1000] flex justify-center items-center"
