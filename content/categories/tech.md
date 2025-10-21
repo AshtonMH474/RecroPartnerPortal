@@ -1,5 +1,5 @@
 ---
-category: tech
+category: Emerging Tech
 icon: FaRegLightbulb
 ---
 

@@ -6,7 +6,7 @@ import NewPasswordModal from "@/components/New-Password";
 import ChangePassword from "@/components/ChangePassword";
 import { checkUser } from "@/lib/auth_functions";
 import OppModal from "@/components/Opportunites/OppModal";
-import EditProfile from "@/components/EditProfile";
+import EditProfile from "@/components/EditProfile/EditProfile";
 
 const AuthContext = createContext();
 

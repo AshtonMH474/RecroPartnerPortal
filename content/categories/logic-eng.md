@@ -1,5 +1,5 @@
 ---
-category: logic-eng
+category: Logic Engineering
 icon: FaCodeBranch
 ---
 

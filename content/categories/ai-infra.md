@@ -1,5 +1,5 @@
 ---
-category: ai-infra
+category: AI Infrastructure
 icon: FaRobot
 ---
 
