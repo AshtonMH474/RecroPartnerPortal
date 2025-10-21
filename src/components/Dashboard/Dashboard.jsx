@@ -71,7 +71,7 @@ function Dashboard({props,papers,sheets}){
 
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>
-            <div className="mt-32  flex flex-col pl-16">
+            <div className="mt-20  flex flex-col pl-16">
                 <div>
                    <Heading props={props} user={user} />
                    <Filters recent={recent} active={active} setActive={setActive} props={props} user={user}/>

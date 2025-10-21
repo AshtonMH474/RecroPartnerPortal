@@ -36,7 +36,7 @@ const nav = {
                 {
                     type:'string',
                     label:'Link,Register,Login?',
-                    options:['link','register','login', 'logout'],
+                    options:['link','register','login', 'logout','edit profile'],
                     name:'type'
                 },
             ]
@@ -60,7 +60,7 @@ const nav = {
                 {
                     type:'string',
                     label:'Link,Register,Login?',
-                    options:['link','register','login', 'logout'],
+                    options:['link','register','login', 'logout','edit profile'],
                     name:'type'
                 },
                 {
@@ -92,7 +92,7 @@ const nav = {
                 {
                     type:'string',
                     label:'Link,Register,Login?',
-                    options:['link','register','login', 'logout'],
+                    options:['link','register','login', 'logout','edit profile'],
                     name:'type'
                 },
                 {

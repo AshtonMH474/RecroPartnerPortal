@@ -1,5 +1,7 @@
 import clientPromise from "@/lib/mongodb";
 import databaseClient from "../../../../tina/__generated__/databaseClient";
+import fs from "fs";
+import path from "path";
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -29,10 +31,20 @@ export default async function handler(req, res) {
       .toArray();
 
 
+      const contentDir = path.join(process.cwd(), "content");
+
     const content = await Promise.all(
   downloads
     .filter(dl => dl?.relativePath && ["Paper", "Sheet"].includes(dl?.type))
     .map(async (dl) => {
+      let type;
+      if(dl?.type == 'Paper') type='\papers'
+      else type = '\sheets'
+      const filePath = path.join(contentDir,type, dl.relativePath.replace(/\\/g, "/"));
+      if (!fs.existsSync(filePath)) {
+        return null;
+      }
+
       try {
         const queryFn =
           dl.type === "Paper"
@@ -40,10 +52,9 @@ export default async function handler(req, res) {
             : databaseClient.queries.sheet;
 
         const result = await queryFn({ relativePath: dl.relativePath });
-        if(result) return result.data.sheet || result.data.paper;
-        else return
+        return result?.data?.paper || result?.data?.sheet || null;
       } catch (err) {
-        console.warn(`Failed to load ${dl.type} ${dl.relativePath}:`, err.message);
+        console.error(`Error loading ${dl.type} ${dl.relativePath}:`, err);
         return null;
       }
     })

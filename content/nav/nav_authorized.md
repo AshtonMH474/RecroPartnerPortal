@@ -4,7 +4,7 @@ height: 50
 links:
   - link: /profile
     label: Edit Profile
-    type: link
+    type: edit profile
   - link: /activity
     label: My Activity
     type: link
