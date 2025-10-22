@@ -16,6 +16,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/cyber.md
-lastUpdated: '2025-10-15T20:02:55.278Z'
+lastUpdated: '2025-10-22T21:20:03.519Z'
 ---
 

@@ -10,7 +10,7 @@ blocks:
         icon: FaClock
         buttons:
           - label: View Full Activity
-            link: /my-activity
+            link: /activity
             style: button
       - label: New White Papers
         filter: papers

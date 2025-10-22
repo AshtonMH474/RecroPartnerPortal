@@ -1,3 +1,4 @@
+import { activityBlock } from "./blocks/activity";
 import { dashboardBlock } from "./blocks/dashboard";
 import { landingBlock } from "./blocks/landing";
 import { opportunitesBlock } from "./blocks/opportunites";
@@ -29,7 +30,7 @@ const pages = {
       label: "Blocks",
       type: "object",
       list: true,
-      templates: [landingBlock,dashboardBlock,opportunitesBlock],
+      templates: [landingBlock,dashboardBlock,opportunitesBlock,activityBlock],
     },
     
   ],

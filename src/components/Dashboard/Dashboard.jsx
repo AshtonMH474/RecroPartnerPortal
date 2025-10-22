@@ -49,6 +49,10 @@ function Dashboard({props,papers,sheets}){
 
             const data = await res.json();
             setRecent(data.downloads.slice(0,8))
+            if(data.downloads.length == 0){
+                await setActive('papers' || 'sheets')
+            }
+            
             
             } catch (err) {
             console.error("Failed to fetch downloads:", err);
@@ -56,6 +60,7 @@ function Dashboard({props,papers,sheets}){
         }
 
         getDownloads();
+        
     }, [user?.email]); 
 
 
@@ -67,6 +72,8 @@ function Dashboard({props,papers,sheets}){
         // placeholder while redirect happens
         return <div style={{ minHeight: "100vh" }}></div>;
     }
+    
+
     
 
     return(

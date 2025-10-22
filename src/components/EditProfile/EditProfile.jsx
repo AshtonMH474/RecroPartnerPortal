@@ -44,6 +44,25 @@ function EditProfile({onClose}){
     );
   };
 
+  const handleClose = async () => {
+    if(!user.interests){
+        let obj = {};
+        if(!activeCategories.length){
+            obj.categories = 'You Must Select at Least One Interest'
+        }
+        if(!formData.firstName.length || !formData.lastName.length){
+            obj.name = 'First Name and Last Name must be filled'
+        }
+        if(obj.name || obj.categories){
+            setErrors(obj)
+            return
+        }
+    await handleSubmit()
+    }
+     await onClose()
+        
+    }
+
   const  handleSubmit = async () => {
      let obj = {};
      if(!activeCategories.length){
@@ -98,14 +117,14 @@ function EditProfile({onClose}){
     },[])
 
     useEffect(() => {
-        setActiveCategories(user.interests)
+        setActiveCategories(user.interests || [])
     },[user])
     
 
     return(
         <div
       className="fixed inset-0 z-[1000] flex justify-center items-center"
-      onClick={onClose}
+      onClick={handleClose}
     >
             <motion.div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -125,7 +144,7 @@ function EditProfile({onClose}){
             className="relative z-[1001] w-[90%] max-w-[1500px] max-h-[90%] overflow-y-auto bg-[#1A1A1E] rounded-[12px] p-6"
         >
             <div className="flex justify-end">
-                <IoMdClose onClick={onClose} className="cursor-pointer text-white text-[24px] hover:text-primary transition" />
+                <IoMdClose onClick={handleClose} className="cursor-pointer text-white text-[24px] hover:text-primary transition" />
             </div>
             
             <EditProfileForm errors={errors} formData={formData} setFormData={setFormData}/>

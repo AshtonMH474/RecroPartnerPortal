@@ -27,7 +27,6 @@ export default async function handler(req, res) {
     const downloads = await db
       .collection("downloads")
       .find({ userId: mongoUser._id })
-      .sort({ downloadedAt: -1 }) // newest first
       .toArray();
 
       

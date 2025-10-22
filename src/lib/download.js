@@ -1,7 +1,6 @@
 import { handleDownload } from "./auth_functions";
 
 export async function downloadPdf(content,user){
-  console.log(content)
     
     if (!content) return;
 

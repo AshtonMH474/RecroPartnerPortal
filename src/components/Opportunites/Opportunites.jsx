@@ -3,24 +3,46 @@ import Filters from "../Dashboard/Filters"
 import Heading from "./Heading"
 import Buttons from "./Buttons"
 import Cards from "./Cards/Cards"
+import { useAuth } from "@/context/auth"
 
 function Opportunites({props,opportunites}){
     const [active,setActive] = useState(props?.filters[0].filter || '')
     const [cards,setCards] = useState([])
+    const {user,openModal} = useAuth()
+
+    const handleClose = async () => {
+        let obj = {}
+    }
+
+    useEffect(() => {
+    // only run once user is loaded
+    if(user == 'loading') return
+    if (user && (!user.interests || user.interests.length === 0)) {
+      openModal("Edit");
+    }
+  }, [user]);
 
     if(!opportunites) return null
     
     useEffect(() => {
-        if (active == "new"){
-            setCards(opportunites.sort((a,b) => {
+
+        let newOpps = opportunites.sort((a,b) => {
                 const dateA = new Date(a?.lastUpdated);
                 const dateB = new Date(b?.lastUpdated);
                 return dateB - dateA;
-            }).slice(0,6))
+            })
+        if (active == "new"){
+            setCards(newOpps.slice(0,6))
         }else{
-            setCards(opportunites)
+                const userInterests = user?.interests || [];
+            
+                const filtered = newOpps.filter(opportunity =>
+                userInterests.includes(opportunity.category._sys.filename));
+            
+                
+                setCards(filtered.slice(0,6))
         }
-    },[active])
+    },[active,user])
     return(
         <div className="bg-black pb-20">
             <div className="pt-20 pl-16">

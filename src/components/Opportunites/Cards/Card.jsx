@@ -5,7 +5,7 @@ import { TinaMarkdown } from "tinacms/dist/rich-text"
 
 
 function Card({card,props}){
-    // console.log(card)
+ 
     const {openModal} = useAuth()
     card.intrested = props.labelIntrested
     return(

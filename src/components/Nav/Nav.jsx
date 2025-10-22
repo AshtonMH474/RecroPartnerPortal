@@ -1,10 +1,11 @@
 import { useAuth } from "@/context/auth"
 import Logo from "./Logo"
 import ProfileUser from "./ProfileUser"
-import {useRef, useState } from "react";
+import {useEffect, useRef, useState } from "react";
 import MenuToggle from "./MenuToogle";
 import MobileMenu from "./MobileMenu";
 import { CiBellOn } from "react-icons/ci";
+import { useRouter } from "next/router";
 
 export default function Nav(props){
   
@@ -13,7 +14,8 @@ export default function Nav(props){
     const menuRef = useRef(null)
     const [menuOpen, setMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-
+     const router = useRouter();
+     const {openModal} = useAuth()
   
 
 
@@ -26,6 +28,39 @@ export default function Nav(props){
       setTimeout(() => setMenuOpen(true), 10);
     }
   };
+
+   useEffect(() => {
+    if (!router.isReady) return;
+
+    if (router.asPath.includes("#resetpassword")) {
+      const hash = router.asPath.split("#")[1];
+      let token = null;
+
+      if (hash) {
+        const params = new URLSearchParams(hash.split("?")[1]);
+        token = params.get("token");
+      }
+
+      if (token) {
+        openModal("changePassword", { token });
+        router.replace("/", undefined, { shallow: true });
+      }
+    }
+    if(router.asPath.includes('#verify')){
+      const hash = router.asPath.split("#")[1];
+      let token = null;
+
+      if (hash) {
+        const params = new URLSearchParams(hash.split("?")[1]);
+        token = params.get("token");
+      }
+
+      if (token) {
+        openModal("login", { token });
+        router.replace("/", undefined, { shallow: true });
+      }
+    }
+  }, [router.isReady]);
 
     
     
