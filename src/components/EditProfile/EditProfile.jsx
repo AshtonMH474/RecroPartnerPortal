@@ -5,8 +5,9 @@ import { useAuth } from "@/context/auth";
 import { MdSaveAlt } from "react-icons/md";
 import EditProfileForm from "./EditProfileForm";
 import EditCategories from "./EditCategories";
+import { checkUser } from "@/lib/auth_functions";
 function EditProfile({onClose}){
-    const {user} = useAuth()
+    const {user,setUser} = useAuth()
 
     if(!user) return null
 
@@ -43,7 +44,7 @@ function EditProfile({onClose}){
     );
   };
 
-  const handleSubmit = () => {
+  const  handleSubmit = async () => {
      let obj = {};
      if(!activeCategories.length){
         obj.categories = 'You Must Select at Least One Interest'
@@ -56,7 +57,27 @@ function EditProfile({onClose}){
         return
      }
 
-     onClose()
+     try{
+        const res = await fetch('/api/userInfo/save', {
+            method:'PUT',
+            headers: {"Content-Type": 'application/json'},
+            body:JSON.stringify({
+                interests:activeCategories,
+                firstName:formData.firstName,
+                lastName:formData.lastName,
+                email:user.email
+            })
+
+        })
+
+        if(res.ok){
+            await checkUser(setUser)
+            await onClose()
+        }
+     }catch(e){
+        console.error('Error:' + e)
+     }
+
   }
 
 
@@ -67,6 +88,7 @@ function EditProfile({onClose}){
              if(res.ok){
                 const data = await res.json()
                 setCategories(data.categories)
+               
              }
             }catch(e){
                 console.log('Error grabbing Intrestes:', e)
@@ -74,6 +96,10 @@ function EditProfile({onClose}){
         }
        categories()
     },[])
+
+    useEffect(() => {
+        setActiveCategories(user.interests)
+    },[user])
     
 
     return(
@@ -103,7 +129,7 @@ function EditProfile({onClose}){
             </div>
             
             <EditProfileForm errors={errors} formData={formData} setFormData={setFormData}/>
-            <EditCategories categories={categories} activeCategories={activeCategories} toggleCategory={toggleCategory}/>
+            <EditCategories categories={categories} activeCategories={activeCategories} toggleCategory={toggleCategory} user={user}/>
            
             <div className="flex justify-center pt-8 ">
                 <button onClick={handleSubmit} className="flex justify-center items-center bg-primary capitalize cursor-pointer text-[22px] px-4 py-2 w-[160px] rounded-xl hover:opacity-80 text-white flex items-center gap-x-1">Save <MdSaveAlt className="text-[26px] mb-1"/></button>

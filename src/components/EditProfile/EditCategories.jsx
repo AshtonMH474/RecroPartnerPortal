@@ -1,6 +1,7 @@
 import IconRenderer from "../utils/IconRenderer";
 
-function EditCategories({categories,activeCategories,toggleCategory}){
+function EditCategories({categories,activeCategories,toggleCategory,user}){
+ 
     return(
         <div className="flex justify-center flex-wrap gap-x-4 pt-4 gap-y-2">
                                 {categories?.map((cat,i) => {
