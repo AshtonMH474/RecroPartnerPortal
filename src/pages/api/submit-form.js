@@ -14,9 +14,9 @@ export default async function handler(req, res) {
   }
 
 
-  // if(isFreeEmail(email)){
-  //   return res.status(403).json({ error: "Free email providers are not allowed. Please use your company email." });
-  // }
+  if(isFreeEmail(email)){
+    return res.status(403).json({ error: "Free email providers are not allowed. Please use your company email." });
+  }
   
   try {
     // 1️⃣ Setup email transport

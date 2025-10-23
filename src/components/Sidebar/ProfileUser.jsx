@@ -13,6 +13,9 @@ export default function ProfileUser({ top_links, bottom_links }) {
       handleSignout(setUser)
       router.push('/')
     }
+  const handleEdit = () => {
+      openModal('Edit')
+    }
 
   const renderLink = (link, i, isBottom = false) => {
     const commonProps = {
@@ -33,7 +36,10 @@ export default function ProfileUser({ top_links, bottom_links }) {
     const handleClick = () => {
       if (link?.type === "register") return handleRegister();
       if (link?.type === "login") return handleLogin();
-      if (link?.type === "logout") return handleLogout;
+      if (link?.type === "logout") return handleLogout();
+      if(link?.type == 'edit profile'){
+                  return handleEdit()
+      }
     };
 
     if (link?.type === "link") {

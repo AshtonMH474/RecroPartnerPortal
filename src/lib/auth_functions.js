@@ -97,3 +97,17 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
       console.error(err);
     }
 }
+
+
+ export async function getCategories(setCategories) {
+            try{
+             const res = await fetch('/api/categories')
+             if(res.ok){
+                const data = await res.json()
+                setCategories(data.categories)
+               
+             }
+            }catch(e){
+                console.log('Error grabbing Intrestes:', e)
+            }
+}

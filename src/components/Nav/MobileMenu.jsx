@@ -41,6 +41,10 @@ function MobileMenu({ isVisible, menuOpen, menuRef, toggleMenu, res }) {
     toggleMenu();
     router.push('/')
   };
+  const handleEdit = () => {
+      toggleMenu()
+      openModal('Edit')
+  }
 
   const commonClass =
     "capitalize py-2 text-white text-left w-full hover:text-white/80 transition-colors duration-300 flex items-center gap-x-2";
@@ -86,6 +90,10 @@ function MobileMenu({ isVisible, menuOpen, menuRef, toggleMenu, res }) {
               {label}
             </button>
           );
+
+        if(link?.type == 'edit profile'){
+                  return <li onClick={handleEdit} key={i} className={commonClass}>{link.label}</li>
+        }
 
         if (link?.type === "link")
           return (

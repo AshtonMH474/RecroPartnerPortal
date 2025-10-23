@@ -97,3 +97,32 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+
+.collapse__content {
+  max-height: var(--collapse-height, 0);
+  
+  transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.collapse__content p {
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  /* transform: translateY(-4px); */
+  /* opacity: 0; */
+}
+
+.collapse__content[style*="--collapse-height: 60px"] p {
+  opacity: 0;
+  
+}
+
+.collapse__content[style*="--collapse-height:"] p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+

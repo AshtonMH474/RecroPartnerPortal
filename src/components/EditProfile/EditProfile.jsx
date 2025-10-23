@@ -5,7 +5,7 @@ import { useAuth } from "@/context/auth";
 import { MdSaveAlt } from "react-icons/md";
 import EditProfileForm from "./EditProfileForm";
 import EditCategories from "./EditCategories";
-import { checkUser } from "@/lib/auth_functions";
+import { checkUser, getCategories } from "@/lib/auth_functions";
 function EditProfile({onClose}){
     const {user,setUser} = useAuth()
 
@@ -57,7 +57,7 @@ function EditProfile({onClose}){
             setErrors(obj)
             return
         }
-    await handleSubmit()
+        await handleSubmit()
     }
      await onClose()
         
@@ -101,19 +101,7 @@ function EditProfile({onClose}){
 
 
     useEffect(() => {
-        async function categories() {
-            try{
-             const res = await fetch('/api/categories')
-             if(res.ok){
-                const data = await res.json()
-                setCategories(data.categories)
-               
-             }
-            }catch(e){
-                console.log('Error grabbing Intrestes:', e)
-            }
-        }
-       categories()
+       getCategories(setCategories)
     },[])
 
     useEffect(() => {

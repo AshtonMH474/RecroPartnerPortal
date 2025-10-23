@@ -10,9 +10,7 @@ function Opportunites({props,opportunites}){
     const [cards,setCards] = useState([])
     const {user,openModal} = useAuth()
 
-    const handleClose = async () => {
-        let obj = {}
-    }
+    
 
     useEffect(() => {
     // only run once user is loaded

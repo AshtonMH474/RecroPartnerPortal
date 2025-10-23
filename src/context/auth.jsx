@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
 
 const refreshUser = useCallback(() => {
     checkUser(setUser);
-    
   }, []);
 
   // Run once on mount
