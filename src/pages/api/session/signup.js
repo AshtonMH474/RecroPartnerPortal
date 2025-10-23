@@ -39,26 +39,25 @@ export default async function handler(req, res) {
 
   // Send verification email
 
-  // const transporter = nodemailer.createTransport({
-  //   host: process.env.SMTP_HOST,
-  //   port: Number(process.env.SMTP_PORT),
-  //   secure: process.env.SMTP_SECURE === "true",
-  //   auth: {
-  //     user: process.env.SMTP_USER,
-  //     pass: process.env.SMTP_PASS,
-  //   },
-  // });
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 
-  // const verificationUrl = `${process.env.NEXTAUTH_URL}/api/session/verify?token=${verificationToken}`;
   const verificationUrl = `${process.env.NEXTAUTH_URL}/#verify?token=${verificationToken}`;
-  console.log(verificationUrl)
-  // await transporter.sendMail({
-  //   from: `"Recro" <${process.env.SMTP_FROM}>`,
-  //   to: email,
-  //   subject: "Verify your email",
-  //   html: `<p>Hi ${firstName} ${lastName},</p>
-  //          <p>Click <a href="${verificationUrl}">here</a> to verify your email. This link expires in 10 minutes.</p>`,
-  // });
+ 
+  await transporter.sendMail({
+    from: `${process.env.SMTP_USER}`,
+    to: email,
+    subject: "Verify your email",
+    html: `<p>Hi ${firstName} ${lastName},</p>
+           <p>Click <a href="${verificationUrl}">here</a> to verify your email. This link expires in 10 minutes.</p>`,
+  });
 
   res.status(201).json({ ok: true });
 }
