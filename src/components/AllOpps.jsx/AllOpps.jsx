@@ -110,25 +110,30 @@ function AllOpps({props,opps}){
     return(
         <div className="pb-20" style={{minHeight:'90%'}}>
             <div className="mt-20 xl:mt-40  flex flex-col items-center justify-center pl-16">
-                <div className="flex flex-col items-center">
-                    <Heading props={props} />
-                    <Filters allCards={allCards} setCards={setCards} onSubmit={onSubmit} categories={categories} setFormData={setFormData} formData={formData} filters={props.filters}/>
+                <div className="mx-auto ">
+                    <div className="pl-14 max-w-[900px]">
+                            <div className="flex flex-col">
+                                <Heading props={props} />
+                            </div>
+                            <div>
+                                <Filters  allCards={allCards} setCards={setCards} onSubmit={onSubmit} categories={categories} setFormData={setFormData} formData={formData} filters={props.filters}/>
+                            </div>
+                    </div>
+                <AnimatePresence mode="wait" custom={direction}>
+                            <motion.div
+                            key={startIndex} // triggers animation on page change
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                            className="max-w-[1400px]"
+                            >
+                            <Cards cards={visibleCards} props={props}/>
+                            </motion.div>
+                        </AnimatePresence>
                 </div>
-               <AnimatePresence mode="wait" custom={direction}>
-                        <motion.div
-                        key={startIndex} // triggers animation on page change
-                        custom={direction}
-                        variants={variants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
-                        className="max-w-[1400px]"
-                        >
-                        <Cards cards={visibleCards} props={props}/>
-                        </motion.div>
-                    </AnimatePresence>
-                    
             </div>
             <Pagination totalPages={totalPages} currentPage={startIndex / visibleCount} goToPage={goToPage}/>
         </div>

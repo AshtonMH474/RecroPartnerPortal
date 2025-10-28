@@ -8,16 +8,16 @@ blocks:
     filters:
       - label: Name
         filter: name
+      - label: Agency
+        filter: agency
+      - label: Type
+        filter: type
       - label: 'Interests '
         filter: interests
       - label: Date
         filter: date
       - label: Status
         filter: state
-      - label: Agency
-        filter: agency
-      - label: Type
-        filter: type
     _template: allOpps
 ---
 

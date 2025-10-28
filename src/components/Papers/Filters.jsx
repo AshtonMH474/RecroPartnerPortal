@@ -42,97 +42,99 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
 
       
     return(
-        <div className="flex flex-wrap gap-x-4 gap-y-4">
-           {filters?.map((filter, i) => {
-                if (filter.filter === "name")
-                    return (
-                        <input
-                        data-tina-field={useTina(filter,'label')}
-                        name={filter.filter}
-                        onChange={handleChange}
-                        key={i}
-                        value={formData.name || ''}
-                        placeholder={filter.label}
-                        className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
-                        />
-                    );
-                if(filter.filter == 'date') return (
-                    <DateDropdown 
-                    key={i} 
-                    formData={formData} 
-                    filter={filter} 
-                    handleChange={handleChange}/> 
-                )
-                if (filter.filter === "interests")
-                    return (
-                        <div data-tina-field={useTina(filter,'label')} key={i} className="relative" ref={dropdownRef}>
-                        <button
-                            type="button"
-                            onClick={() => setOpen(!open)}
-                            className="px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
-                        >
-                            Interests {selectedInterests.length > 0 && `(${selectedInterests.length})`}
-                        </button>
-                        {open && (
-                                <InterestDropdown 
-                                categories={categories} 
-                                selectedInterests={selectedInterests} 
-                                toggleInterest={toggleInterest}/>
-                        )}
-                        </div>
-                    );
-                  if(filter.filter == 'agency')
-                    return(
-                  
-                        <input
-                        data-tina-field={useTina(filter,'label')}
-                        name={filter.filter}
-                        onChange={handleChange}
-                        key={i}
-                        value={formData.agency || ''}
-                        placeholder={filter.label}
-                        className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
-                        />
-                    );
+      <div>
+              <div className="flex flex-wrap gap-x-4 gap-y-4">
+                {filters?.map((filter, i) => {
+                      if (filter.filter === "name")
+                          return (
+                              <input
+                              data-tina-field={useTina(filter,'label')}
+                              name={filter.filter}
+                              onChange={handleChange}
+                              key={i}
+                              value={formData.name || ''}
+                              placeholder={filter.label}
+                              className="px-4  focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                              />
+                          );
+                      if(filter.filter == 'date') return (
+                          <DateDropdown 
+                          key={i} 
+                          formData={formData} 
+                          filter={filter} 
+                          handleChange={handleChange}/> 
+                      )
+                      if (filter.filter === "interests")
+                          return (
+                              <div data-tina-field={useTina(filter,'label')} key={i} className="relative" ref={dropdownRef}>
+                              <div
+                                  
+                                  onClick={() => setOpen(!open)}
+                                  className="self-start flex px-8  py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
+                              >
+                                  {filter.label} {selectedInterests.length > 0 && `(${selectedInterests.length})`}
+                              </div>
+                              {open && (
+                                      <InterestDropdown 
+                                      categories={categories} 
+                                      selectedInterests={selectedInterests} 
+                                      toggleInterest={toggleInterest}/>
+                              )}
+                              </div>
+                          );
+                        if(filter.filter == 'agency')
+                          return(
+                        
+                              <input
+                              data-tina-field={useTina(filter,'label')}
+                              name={filter.filter}
+                              onChange={handleChange}
+                              key={i}
+                              value={formData.agency || ''}
+                              placeholder={filter.label}
+                              className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                              />
+                          );
 
-                  if(filter.filter == 'type')
-                    return(
-                        <input
-                        data-tina-field={useTina(filter,'label')}
-                        name={filter.filter}
-                        onChange={handleChange}
-                        key={i}
-                        value={formData.type || ''}
-                        placeholder={filter.label}
-                        className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
-                        />
-                  )
-                  if(filter.filter == 'state') {
-                    return <StateDropdown key={i} handleChange={handleChange} filter={filter} formData={formData}/>
-                  }
-                  
-            })}
+                        if(filter.filter == 'type')
+                          return(
+                              <input
+                              data-tina-field={useTina(filter,'label')}
+                              name={filter.filter}
+                              onChange={handleChange}
+                              key={i}
+                              value={formData.type || ''}
+                              placeholder={filter.label}
+                              className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                              />
+                        )
+                        if(filter.filter == 'state') {
+                          return <StateDropdown key={i} handleChange={handleChange} filter={filter} formData={formData}/>
+                        }
+                        
+                  })}
 
-            <button
-            onClick={() => {
-                setFormData({
-                name: '',
-                interests: [],
-                date: '',
-                agency:'',
-                state:'',
-                type:''
-                });
-                setSelectedInterests([]); 
-                setCards(allCards)
-            }}
-            className="bg-primary capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
-            >
-                Clear
-            </button>
-            <button onClick={onSubmit}  className="bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white">
-                Search
-            </button>
+                  <button
+                  onClick={() => {
+                      setFormData({
+                      name: '',
+                      interests: [],
+                      date: '',
+                      agency:'',
+                      state:'',
+                      type:''
+                      });
+                      setSelectedInterests([]); 
+                      setCards(allCards)
+                  }}
+                  className="bg-primary capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
+                  >
+                      Clear
+                  </button>
+                  <button onClick={onSubmit}  className="bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white">
+                      Search
+                  </button>
+              </div>
         </div>
     )
 

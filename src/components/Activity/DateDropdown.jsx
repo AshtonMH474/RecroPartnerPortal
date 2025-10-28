@@ -30,13 +30,13 @@ export default function DateDropdown({filter,handleChange,formData}){
             {formData.date.length < 1 && (<button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className="capitalize px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
+                className="capitalize px-8 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
                     {filter.label}
                 </button>)}
                 {formData.date.length > 1 && (<button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className="capitalize px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
+                className="capitalize px-8 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
                     {formData.date}
                 </button>)}
             {open && (

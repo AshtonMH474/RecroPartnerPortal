@@ -26,13 +26,13 @@ export default function StateDropdown({filter,handleChange,formData}){
                 {formData.state.length < 1 && (<button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className="capitalize px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
+                className="capitalize px-8  py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
                     {filter.label}
                 </button>)}
                 {formData.state.length > 1 && (<button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className="capitalize px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
+                className="capitalize px-8 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
                     {formData.state}
                 </button>)}
                 {open && (
