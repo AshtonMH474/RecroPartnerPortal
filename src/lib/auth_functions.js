@@ -111,3 +111,24 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
                 console.log('Error grabbing Intrestes:', e)
             }
 }
+
+export async function saveOpp(user,filename) {
+  try{
+    const res = await fetch('/api/userInfo/intrested-opp',{
+       method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+             email:user.email,
+              type:'opp',
+              filename:filename
+        }),
+    })
+    if(res.ok){
+      const data = await res.json()
+      return data
+    }
+    return
+  }catch (err) {
+      console.error(err);
+  }
+}

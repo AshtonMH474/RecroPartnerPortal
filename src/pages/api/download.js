@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         .status(400)
         .json({ error: "Missing email, pdfUrl, type, or relativePath" });
     }
-
+    
     const client = await clientPromise;
     const db = client.db("mydb");
 

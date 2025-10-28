@@ -1,13 +1,23 @@
 import IconRenderer from "@/components/utils/IconRenderer"
 import { useAuth } from "@/context/auth"
+import { saveOpp } from "@/lib/auth_functions"
 import { tinaField } from "tinacms/dist/react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 
 
 function Card({card,props}){
- 
-    const {openModal} = useAuth()
+    
+    const {openModal,user} = useAuth()
     card.intrested = props.labelIntrested
+    console.log(card)
+    async function save(){
+        try{
+            await saveOpp(user,card?._sys?.relativePath)
+            alert("Successfully Saved Opportunity\n We will email you!")
+        }catch(e){
+            alert("There was an Error Saving: " + e )
+        }
+    }
     return(
         <div className="cursor-pointer border border-white/15 rounded-[8px] bg-[#1A1A1E] w-[400px] h-[360px] px-4 py-6">
             <div className="pl-2">
@@ -31,7 +41,7 @@ function Card({card,props}){
                     }} />
                     <div className="flex gap-x-4">
                         <button data-tina-field={tinaField(props,'labelView')} onClick={() => openModal('Opp',card)} className="bg-primary capitalize cursor-pointer text-[18px] px-4 py-2 w-auto rounded hover:opacity-80 text-white">{props.labelView}</button>
-                        <button data-tina-field={tinaField(props,'labelIntrested')} className="px-4 capitalize py-2 border text-[18px] primary-border rounded hover:text-white/80 transition-colors duration-300">{props.labelIntrested}</button>
+                        <button onClick={save} data-tina-field={tinaField(props,'labelIntrested')} className="px-4 capitalize py-2 border text-[18px] primary-border rounded hover:text-white/80 transition-colors duration-300">{props.labelIntrested}</button>
                     </div>
                 </div>
             </div>
