@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import DateDropdown from "../Activity/DateDropdown";
 import InterestDropdown from "../Activity/InterestDropdown";
-import { useTina } from "tinacms/dist/react";
+import { tinaField } from "tinacms/dist/react";
 import StateDropdown from "../AllOpps.jsx/StateDropdown";
 
 function Filters({allCards,setCards,setFormData,categories,formData, filters,onSubmit}){
@@ -47,8 +47,9 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                 {filters?.map((filter, i) => {
                       if (filter.filter === "name")
                           return (
+                        <div data-tina-field={tinaField(filter,'label')}>
                               <input
-                              data-tina-field={useTina(filter,'label')}
+                              
                               name={filter.filter}
                               onChange={handleChange}
                               key={i}
@@ -56,6 +57,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                               placeholder={filter.label}
                               className="px-4  focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
                               />
+                          </div>
                           );
                       if(filter.filter == 'date') return (
                           <DateDropdown 
@@ -66,7 +68,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                       )
                       if (filter.filter === "interests")
                           return (
-                              <div data-tina-field={useTina(filter,'label')} key={i} className="relative" ref={dropdownRef}>
+                              <div data-tina-field={tinaField(filter,'label')} key={i} className="relative" ref={dropdownRef}>
                               <div
                                   
                                   onClick={() => setOpen(!open)}
@@ -86,7 +88,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                           return(
                         
                               <input
-                              data-tina-field={useTina(filter,'label')}
+                              data-tina-field={tinaField(filter,'label')}
                               name={filter.filter}
                               onChange={handleChange}
                               key={i}
@@ -99,7 +101,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                         if(filter.filter == 'type')
                           return(
                               <input
-                              data-tina-field={useTina(filter,'label')}
+                              data-tina-field={tinaField(filter,'label')}
                               name={filter.filter}
                               onChange={handleChange}
                               key={i}

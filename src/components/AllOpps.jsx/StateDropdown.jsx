@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { tinaField } from "tinacms/dist/react";
 
 export default function StateDropdown({filter,handleChange,formData}){
         const dropdownRef = useRef(null); 
@@ -22,7 +23,7 @@ export default function StateDropdown({filter,handleChange,formData}){
         }, []);
 
         return(
-            <div  ref={dropdownRef}>
+            <div  ref={dropdownRef} data-tina-field={tinaField(filter,'label')}>
                 {formData.state.length < 1 && (<button
                 type="button"
                 onClick={() => setOpen(!open)}

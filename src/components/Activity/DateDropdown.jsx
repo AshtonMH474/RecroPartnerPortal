@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useTina } from "tinacms/dist/react";
+import { tinaField, useTina } from "tinacms/dist/react";
 
 
 export default function DateDropdown({filter,handleChange,formData}){
@@ -26,7 +26,7 @@ export default function DateDropdown({filter,handleChange,formData}){
 
 
     return (
-        <div  ref={dropdownRef}>
+        <div  ref={dropdownRef} data-tina-field={tinaField(filter,'label')}>
             {formData.date.length < 1 && (<button
                 type="button"
                 onClick={() => setOpen(!open)}

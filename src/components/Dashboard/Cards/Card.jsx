@@ -62,6 +62,7 @@ function Card({ card }) {
 
             <section
               ref={contentRef}
+              data-tina-field={tinaField(card,'description')}
               className={`collapse__content transition-[max-height,opacity] duration-500 ease-in-out  `}
             >
               <TinaMarkdown

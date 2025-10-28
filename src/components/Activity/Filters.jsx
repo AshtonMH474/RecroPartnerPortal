@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { clear } from "./functions";
 import InterestDropdown from "./InterestDropdown";
 import DateDropdown from "./DateDropdown";
+import { tinaField } from "tinacms/dist/react";
 
 function Filters({active,setCards,setAllCards,recent, filters, setFormData, categories,onSubmit,formData }) {
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -42,7 +43,7 @@ const toggleInterest = useCallback((category) => {
       {filters?.map((filter, i) => {
         if (filter.filter === "name")
           return (
-            <input
+            <input data-tina-field={tinaField(filter,'label')}
               name={filter.filter}
               onChange={handleChange}
               key={i}
@@ -62,7 +63,7 @@ const toggleInterest = useCallback((category) => {
 
         if (filter.filter === "interests")
           return (
-            <div key={i} className="relative" ref={dropdownRef}>
+            <div data-tina-field={tinaField(filter,'label')} key={i} className="relative" ref={dropdownRef}>
               <button
                 type="button"
                 onClick={() => setOpen(!open)}
