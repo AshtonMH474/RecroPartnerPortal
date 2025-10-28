@@ -1,31 +1,28 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { clear } from "./functions";
+import InterestDropdown from "./InterestDropdown";
+import DateDropdown from "./DateDropdown";
 
 function Filters({active,setCards,setAllCards,recent, filters, setFormData, categories,onSubmit,formData }) {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null); 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const handleChange = useCallback((e) => {
+  setFormData(prev => ({
+    ...prev,
+    [e.target.name]: e.target.value,
+  }));
+}, [setFormData]);
 
-  const toggleInterest = (category) => {
-    let updated;
-    if (selectedInterests.includes(category)) {
-      updated = selectedInterests.filter((c) => c !== category);
-    } else {
-      updated = [...selectedInterests, category];
-    }
-    setSelectedInterests(updated);
-    setFormData((prev) => ({
-      ...prev,
-      interests: updated,
-    }));
-    
-  };
+const toggleInterest = useCallback((category) => {
+  setSelectedInterests(prev => {
+    const updated = prev.includes(category)
+      ? prev.filter(c => c !== category)
+      : [...prev, category];
+    setFormData(prevData => ({ ...prevData, interests: updated }));
+    return updated;
+  });
+}, [setFormData]);
 
   // Close dropdown if click happens outside
   useEffect(() => {
@@ -56,29 +53,11 @@ function Filters({active,setCards,setAllCards,recent, filters, setFormData, cate
           );
 
          if(filter.filter == 'date') return (
-                  <select
-                  key={i}
-                  name={filter.filter}
-                  value={formData.date || ""}
-                  onChange={handleChange}
-                  className="px-4 py-2 border primary-border rounded-xl bg-transparent 
-                            text-white focus:outline-none focus:border-primary capitalize 
-                            appearance-none transition-colors duration-300"
-                >
-                  <option value="" disabled hidden className="bg-[#1A1A1E] text-white">
-                    Date
-                  </option>
-                  <option value="month" className="bg-[#1A1A1E] text-white">
-                    1 Month
-                  </option>
-                  <option value="year" className="bg-[#1A1A1E] text-white">
-                    1 Year
-                  </option>
-                  <option value="all" className="bg-[#1A1A1E] text-white">
-                    All
-                  </option>
-                </select>
-               
+                <DateDropdown 
+                key={i} 
+                formData={formData} 
+                filter={filter} 
+                handleChange={handleChange}/> 
             )
 
         if (filter.filter === "interests")
@@ -92,23 +71,10 @@ function Filters({active,setCards,setAllCards,recent, filters, setFormData, cate
                 Interests {selectedInterests.length > 0 && `(${selectedInterests.length})`}
               </button>
               {open && (
-                <div className="absolute mt-1 bg-[#1A1A1E] border primary-border rounded-xl w-[200px] z-10">
-                  {categories?.map((cat, j) => (
-                    <div
-                      key={j}
-                      className="flex items-center px-4 py-2 cursor-pointer hover:bg-white/10"
-                      onClick={() => toggleInterest(cat.category)}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedInterests.includes(cat.category)}
-                        readOnly
-                        className="mr-2"
-                      />
-                      <span className="capitalize text-white">{cat.category}</span>
-                    </div>
-                  ))}
-                </div>
+                    <InterestDropdown 
+                    categories={categories} 
+                    selectedInterests={selectedInterests} 
+                    toggleInterest={toggleInterest}/>
               )}
             </div>
           );
@@ -121,7 +87,7 @@ function Filters({active,setCards,setAllCards,recent, filters, setFormData, cate
             interests: [],
             date: ''
             });
-            setSelectedInterests([]); // 👈 reset local checkbox state
+            setSelectedInterests([]); 
         }}
         className="bg-primary capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
         >

@@ -9,6 +9,8 @@ import jwt from 'jsonwebtoken';
 import cookie from "cookie";
 import Opportunites from "@/components/Opportunites/Opportunites";
 import Activity from "@/components/Activity/Activity";
+import Papers from "@/components/Papers/Papers";
+import AllOpps from "@/components/AllOpps.jsx/AllOpps";
 
 export async function getServerSideProps({ params, req,res }) {
   const userToken = req.cookies.token; // your cookie name
@@ -50,9 +52,9 @@ export async function getServerSideProps({ params, req,res }) {
     client.queries.page({ relativePath: filename }),
     client.queries.nav({ relativePath: "nav_authorized.md" }),
     client.queries.footer({ relativePath: "footer.md" }),
-    client.queries.paperConnection(),
-    client.queries.sheetConnection(),
-    client.queries.opportunitesConnection()
+    client.queries.paperConnection({first: parseInt(process.env.LIMIT) || 50}),
+    client.queries.sheetConnection({first: parseInt(process.env.LIMIT) || 50 }),
+    client.queries.opportunitesConnection({first: parseInt(process.env.LIMIT) || 50 })
   ]);
 
   return {
@@ -112,10 +114,14 @@ function Slug({res,nav,footer,paper,sheets,opp}){
           return <Opportunites key={i} props={block} opportunites={allOpps}/>
         case 'PageBlocksActivity':
           return <Activity key={i} props={block}/>
+        case 'PageBlocksPapers':
+          return <Papers key={i} props={block} papers={allPapers}/>
+        case 'PageBlocksSheets':
+          return <Papers key={i} props={block} papers={allSheets}/>
+        case 'PageBlocksAllOpps':
+          return <AllOpps key={i} props={block} opps={allOpps}/>
       }
     })}
-    
-
       <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
       </div>
     </>

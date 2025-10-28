@@ -92,7 +92,6 @@ function Activity({props}){
         formData.interests.some(
             (interest) => card.category.category === interest
         );
-
         // ---- Match by name ----
         const matchesName =
         formData.name.trim().length === 0 ||
