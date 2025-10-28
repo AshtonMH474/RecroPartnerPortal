@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import DateDropdown from "../Activity/DateDropdown";
 import InterestDropdown from "../Activity/InterestDropdown";
 import { useTina } from "tinacms/dist/react";
+import StateDropdown from "../AllOpps.jsx/StateDropdown";
 
 function Filters({allCards,setCards,setFormData,categories,formData, filters,onSubmit}){
     const [selectedInterests, setSelectedInterests] = useState([]);
@@ -9,10 +10,12 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
     const dropdownRef = useRef(null); 
 
     const handleChange = useCallback((e) => {
+      
       setFormData(prev => ({
         ...prev,
         [e.target.name]: e.target.value,
       }));
+      
     }, [setFormData]);
 
     const toggleInterest = useCallback((category) => {
@@ -78,13 +81,47 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                         )}
                         </div>
                     );
+                  if(filter.filter == 'agency')
+                    return(
+                  
+                        <input
+                        data-tina-field={useTina(filter,'label')}
+                        name={filter.filter}
+                        onChange={handleChange}
+                        key={i}
+                        value={formData.agency || ''}
+                        placeholder={filter.label}
+                        className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                        />
+                    );
+
+                  if(filter.filter == 'type')
+                    return(
+                        <input
+                        data-tina-field={useTina(filter,'label')}
+                        name={filter.filter}
+                        onChange={handleChange}
+                        key={i}
+                        value={formData.type || ''}
+                        placeholder={filter.label}
+                        className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                        />
+                  )
+                  if(filter.filter == 'state') {
+                    return <StateDropdown key={i} handleChange={handleChange} filter={filter} formData={formData}/>
+                  }
+                  
             })}
+
             <button
             onClick={() => {
                 setFormData({
                 name: '',
                 interests: [],
-                date: ''
+                date: '',
+                agency:'',
+                state:'',
+                type:''
                 });
                 setSelectedInterests([]); 
                 setCards(allCards)

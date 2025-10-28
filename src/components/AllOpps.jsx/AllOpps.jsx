@@ -1,15 +1,80 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import Cards from "../Opportunites/Cards/Cards"
 import Heading from "../Opportunites/Heading"
 import Pagination from "../Pagination";
 import { AnimatePresence,motion } from "framer-motion";
+import Filters from "../Papers/Filters";
+import { getCategories } from "@/lib/auth_functions";
 
 function AllOpps({props,opps}){
-    console.log(opps)
+ 
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
+    const allCards = opps
      const [cards,setCards] = useState(opps)
+     const [categories,setCategories] = useState([])
+     const [formData,setFormData] = useState({
+            name:'',
+            interests:[],
+            date:'',
+            state:'',
+            agency:'',
+            type:''
+
+    })
+
+    function onSubmit() {
+        console.log(cards)
+        const filteredCards = allCards.filter((card) => {
+        const cardDate = new Date(card.lastUpdated);
+        const now = new Date();
+
+        // ---- Match by interests ----
+        const matchesInterest =
+        formData.interests.length === 0 ||
+        formData.interests.some(
+            (interest) => card.category.category === interest
+        );
+        // ---- Match by name ----
+        const matchesName =
+        formData.name.trim().length === 0 ||
+        card.title.toLowerCase().includes(formData.name.toLowerCase());
+
+        const matchesAgency =
+        formData.agency.trim().length === 0 ||
+        card.agency.toLowerCase().includes(formData.agency.toLowerCase());
+
+        const matchesType =
+        formData.type.trim().length === 0 ||
+        card.type.toLowerCase().includes(formData.type.toLowerCase());
+
+        // ---- Match by date ----
+        let matchesDate = true; // default (show all)
+        if (formData.date && formData.date.length > 0 && formData.date !== "all") {
+        if (formData.date === "month") {
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(now.getMonth() - 1);
+            matchesDate = cardDate >= oneMonthAgo;
+        } else if (formData.date === "year") {
+            const oneYearAgo = new Date();
+            oneYearAgo.setFullYear(now.getFullYear() - 1);
+            matchesDate = cardDate >= oneYearAgo;
+        }
+        }
+
+
+        let matchesStatus = true;
+        if (formData.state) {
+        matchesStatus = card.status === formData.state;
+        }
+
+        // ---- Must satisfy all filters ----
+        return matchesInterest && matchesName && matchesDate && matchesStatus && matchesAgency && matchesType;
+    });
+
+    setCards(filteredCards);
+}
 
 
     const visibleCount = 6
@@ -36,11 +101,18 @@ function AllOpps({props,opps}){
             }),
     };
 
+
+    useEffect(() =>{
+        getCategories(setCategories)
+    },[])
+
+
     return(
-        <div className="pb-20" style={{minHeight:'100vh'}}>
-            <div className="mt-20  flex flex-col items-center pl-16">
-                <div>
+        <div className="pb-20" style={{minHeight:'90%'}}>
+            <div className="mt-20 xl:mt-40  flex flex-col items-center justify-center pl-16">
+                <div className="flex flex-col items-center">
                     <Heading props={props} />
+                    <Filters allCards={allCards} setCards={setCards} onSubmit={onSubmit} categories={categories} setFormData={setFormData} formData={formData} filters={props.filters}/>
                 </div>
                <AnimatePresence mode="wait" custom={direction}>
                         <motion.div
@@ -51,7 +123,7 @@ function AllOpps({props,opps}){
                         animate="center"
                         exit="exit"
                         transition={{ duration: 0.4, ease: "easeInOut" }}
-                        
+                        className="max-w-[1400px]"
                         >
                         <Cards cards={visibleCards} props={props}/>
                         </motion.div>

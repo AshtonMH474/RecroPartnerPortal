@@ -91,7 +91,7 @@ function Papers({props,papers}){
                         <Heading props={props}/>
                     </div>
                     <div>
-                        <Filters allCards={allCards} setCards={setCards} setFormData={setFormData} categories={categories} formData={formData} filters={props.filters} setCards={setCards} onSubmit={onSubmit}/>
+                        <Filters allCards={allCards} setCards={setCards} setFormData={setFormData} categories={categories} formData={formData} filters={props.filters}  onSubmit={onSubmit}/>
                     </div>
                     <div className="">
                     <AnimatePresence mode="wait" custom={direction}>

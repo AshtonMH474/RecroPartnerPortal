@@ -27,14 +27,20 @@ export default function DateDropdown({filter,handleChange,formData}){
 
     return (
         <div  ref={dropdownRef}>
-            <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            className="px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
-                Date
-            </button>
+            {formData.date.length < 1 && (<button
+                type="button"
+                onClick={() => setOpen(!open)}
+                className="capitalize px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
+                    {filter.label}
+                </button>)}
+                {formData.date.length > 1 && (<button
+                type="button"
+                onClick={() => setOpen(!open)}
+                className="capitalize px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
+                    {formData.date}
+                </button>)}
             {open && (
-                <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl min-w-[250px] z-10">
+                <div className="cursor-pointer absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl min-w-[250px] z-10">
                     {options.map((opt, i) => (
                         <div
                         key={i}
