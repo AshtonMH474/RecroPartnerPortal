@@ -107,7 +107,7 @@ function AllOpps({props,opps}){
 
 
     return(
-        <div className="pb-20" style={{minHeight:'90%'}}>
+        <div className="pb-20" style={{minHeight:'100dvh'}}>
             <div className="mt-20 xl:mt-40  flex flex-col items-center justify-center pl-16">
                 <div className="mx-auto ">
                     <div className="pl-14 max-w-[900px]">
@@ -118,7 +118,7 @@ function AllOpps({props,opps}){
                                 <Filters  allCards={allCards} setCards={setCards} onSubmit={onSubmit} categories={categories} setFormData={setFormData} formData={formData} filters={props.filters}/>
                             </div>
                     </div>
-                <AnimatePresence mode="wait" custom={direction}>
+                    <AnimatePresence mode="wait" custom={direction}>
                             <motion.div
                             key={startIndex} // triggers animation on page change
                             custom={direction}
