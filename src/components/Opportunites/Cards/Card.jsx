@@ -9,7 +9,6 @@ function Card({card,props}){
     
     const {openModal,user} = useAuth()
     card.intrested = props.labelIntrested
-    console.log(card)
     async function save(){
         try{
             await saveOpp(user,card?._sys?.relativePath)

@@ -11,6 +11,7 @@ import Opportunites from "@/components/Opportunites/Opportunites";
 import Activity from "@/components/Activity/Activity";
 import Papers from "@/components/Papers/Papers";
 import AllOpps from "@/components/AllOpps.jsx/AllOpps";
+import MyOpps from "@/components/MyOpps/MyOpps";
 
 export async function getServerSideProps({ params, req,res }) {
   const userToken = req.cookies.token; // your cookie name
@@ -120,6 +121,8 @@ function Slug({res,nav,footer,paper,sheets,opp}){
           return <Papers key={i} props={block} papers={allSheets}/>
         case 'PageBlocksAllOpps':
           return <AllOpps key={i} props={block} opps={allOpps}/>
+        case 'PageBlocksMyOpps':
+          return <MyOpps key={i} props={block}/>
       }
     })}
       <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />

@@ -25,7 +25,6 @@ function AllOpps({props,opps}){
     })
 
     function onSubmit() {
-        console.log(cards)
         const filteredCards = allCards.filter((card) => {
         const cardDate = new Date(card.lastUpdated);
         const now = new Date();

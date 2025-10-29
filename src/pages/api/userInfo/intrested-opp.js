@@ -34,7 +34,7 @@ export default async function handler(req,res) {
             { _id: existingOpp._id },
             {
             $set: {
-                downloadedAt: new Date(),
+                savedAt: new Date(),
             },
             }
         );
@@ -51,7 +51,7 @@ export default async function handler(req,res) {
             type,
             relativePath:filename,
             intrested:true,
-            downloadedAt: new Date(),
+            savedAt: new Date(),
         });
 
         return res
