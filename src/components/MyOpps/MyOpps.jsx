@@ -6,9 +6,11 @@ import { getCategories } from "@/lib/auth_functions";
 import { AnimatePresence,motion } from "framer-motion";
 import Cards from "../Opportunites/Cards/Cards";
 import Pagination from "../Pagination";
+import DashboardFilters from "../Dashboard/Filters";
 
 
 function MyOpps({props}){
+    console.log(props)
     const {user} = useAuth()
     const [allCards,setAllCards] = useState([])
     const [cards,setCards] = useState([])
@@ -23,7 +25,7 @@ function MyOpps({props}){
 
     })
     const cardOptions = {setAllCards,setCards}
-
+    const [active,setActive] = useState(props?.options[0].filter)
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const visibleCount = 6
@@ -73,6 +75,14 @@ function MyOpps({props}){
         useEffect(() =>{
                 getCategories(setCategories)
         },[])
+
+
+    useEffect(() => {
+        if(active == 'intrested'){
+            let filteredCards = cards.filter((card) => card.submitted == true)
+            setCards(filteredCards)
+        }else setCards(allCards)
+    },[active])
 
 
 
@@ -135,8 +145,11 @@ function MyOpps({props}){
             <div className="mt-20 xl:mt-40  flex flex-col items-center justify-center pl-16">
                 <div className="mx-auto ">
                     <div className="pl-14 max-w-[900px]">
-                        <div className="flex flex-col">
+                        <div className="flex  flex-wrap items-center gap-x-4">
                                 <Heading props={props} />
+                                <div className="pb-4">
+                                    <DashboardFilters active={active} setActive={setActive} props={props}/>
+                                </div>
                         </div>
                         <div>
                             <Filters onSubmit={onSubmit} allCards={allCards} setCards={setCards}  categories={categories} setFormData={setFormData} formData={formData} filters={props.filters} />

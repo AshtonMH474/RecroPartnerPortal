@@ -5,6 +5,13 @@ blocks:
       # **My** Opportunities
     labelView: View More
     labelSaved: Save?
+    options:
+      - label: Saved
+        filter: saved
+        icon: FaDownload
+      - label: Submitted
+        filter: intrested
+        icon: FaRegCheckCircle
     filters:
       - label: Name
         filter: name

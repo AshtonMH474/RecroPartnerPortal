@@ -1,3 +1,7 @@
+import { IconPickerField } from "../../../components/IconPicker";
+import * as FaIcons from "react-icons/fa";
+const iconNames = Object.keys(FaIcons);
+
 export const myOpps = {
     name:'myOpps',
     label:'My Opportunites',
@@ -16,6 +20,33 @@ export const myOpps = {
             name:'labelSaved',
             type:'string',
             label:'Label for Saved Opportunites'
+        },
+        {
+            name:'options',
+            label:'Options for Cards',
+            list:true,
+            type:'object',
+            fields:[
+                {
+                    name:'label',
+                    type:'string',
+                    label:'Label for Options of Cards'
+                },
+                {
+                    type:'string',
+                    label:'Type of Cards',
+                    name:'filter',
+                    options:['saved','intrested']
+                },
+                {
+                                    type:'string',
+                                    name:'icon',
+                                    options:iconNames,
+                                    ui:{
+                                        component:IconPickerField
+                                    }
+                                },
+            ]
         },
         {
             name:'filters',
