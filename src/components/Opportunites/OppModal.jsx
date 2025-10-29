@@ -8,12 +8,20 @@ import { MdOutlineDateRange } from "react-icons/md";
 import { CiClock1 } from "react-icons/ci";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { useEffect } from "react";
+import { useAuth } from "@/context/auth";
+import { saveOpp } from "@/lib/auth_functions";
 
 
 
 function OppModal({opp,onClose}){
-
-
+    const {user} = useAuth()
+    async function save(intrested){
+            try{
+                await saveOpp(user,opp?._sys?.relativePath,intrested)
+            }catch(e){
+                alert("There was an Error Saving: " + e )
+            }
+    }
 
     useEffect(() => {
     // Lock scrolling when modal opens
@@ -77,7 +85,7 @@ function OppModal({opp,onClose}){
             </div>
             <div className="flex flex-wrap lg:flex-row gap-y-3 pt-3 gap-x-4  pb-4">
                  <button className="bg-primary capitalize cursor-pointer text-[20px] px-4 py-2 w-auto rounded hover:opacity-80 text-white flex items-center gap-x-1">Save <MdSaveAlt className="text-[20px]"/></button>
-                 <button className="px-4 capitalize py-2 border text-[20px] primary-border rounded hover:text-white/80 transition-colors duration-300">{opp.intrested}</button>
+                 <button onClick={() => save(true)} className="px-4 capitalize py-2 border text-[20px] primary-border rounded hover:text-white/80 transition-colors duration-300">Interested?</button>
                  <button className="px-4 capitalize py-2 border text-[20px] border-[#B55914] rounded  flex gap-x-1 items-center justify-center"><MdOutlineDateRange className="text-[#2563EB]"/>Deadline: {new Date(opp.date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</button>
                  <button className="px-4 capitalize py-2 border text-[20px] border-[#B55914] rounded  flex items-center gap-x-1 capitalize"><CiClock1 className="text-[#EAB308] text-[25px]"/>Status: {opp.status}</button>
             </div>

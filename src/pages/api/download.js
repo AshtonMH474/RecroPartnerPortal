@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       );
 
       return res
-        .status(200)
+        .status(201)
         .json({ success: true, message: "Download timestamp updated" });
     }
 

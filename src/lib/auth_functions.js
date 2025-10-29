@@ -112,7 +112,7 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
             }
 }
 
-export async function saveOpp(user,filename) {
+export async function saveOpp(user,filename,intrested) {
   try{
     const res = await fetch('/api/userInfo/intrested-opp',{
        method: "POST",
@@ -120,7 +120,28 @@ export async function saveOpp(user,filename) {
         body: JSON.stringify({
              email:user.email,
               type:'opp',
-              filename:filename
+              filename:filename,
+              intrested:intrested
+        }),
+    })
+    if(res.ok){
+      const data = await res.json()
+      return data
+    }
+    return
+  }catch (err) {
+      console.error(err);
+  }
+}
+
+export async function deleteOpp(user,filename) {
+  try{
+    const res = await fetch('/api/userInfo/delete-opp',{
+       method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+             email:user.email,
+              filename:filename,
         }),
     })
     if(res.ok){

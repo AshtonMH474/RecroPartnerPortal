@@ -22,7 +22,7 @@ function MyOpps({props}){
             type:''
 
     })
-
+    const cardOptions = {setAllCards,setCards}
 
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
@@ -57,7 +57,6 @@ function MyOpps({props}){
                     if (!res.ok) throw new Error(`Error: ${res.status}`);
         
                     const data = await res.json();
-                    
                     setAllCards(data.opps)
                     setCards(data.opps)
                    return 
@@ -154,7 +153,7 @@ function MyOpps({props}){
                             transition={{ duration: 0.4, ease: "easeInOut" }}
                             className="max-w-[1400px]"
                             >
-                                <Cards cards={visibleCards} props={props}/>
+                                <Cards cardOptions={cardOptions}  cards={visibleCards} props={props}/>
                             </motion.div>
                         </AnimatePresence>
                 </div>

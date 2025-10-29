@@ -13,9 +13,9 @@ export const allOppsBlock = {
             label:'Label for Viewing Opportunites'
         },
         {
-            name:'labelIntrested',
+            name:'labelSaved',
             type:'string',
-            label:'Label for Intrested Opportunites'
+            label:'Label for Saved Opportunites'
         },
         {
             name:'filters',

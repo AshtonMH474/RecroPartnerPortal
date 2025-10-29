@@ -47,12 +47,12 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                 {filters?.map((filter, i) => {
                       if (filter.filter === "name")
                           return (
-                        <div data-tina-field={tinaField(filter,'label')}>
+                        <div key={i} data-tina-field={tinaField(filter,'label')}>
                               <input
                               
                               name={filter.filter}
                               onChange={handleChange}
-                              key={i}
+                              
                               value={formData.name || ''}
                               placeholder={filter.label}
                               className="px-4  focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"

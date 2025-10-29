@@ -4,7 +4,7 @@ blocks:
   - heading: |
       # **My** Opportunities
     labelView: View More
-    labelIntrested: Interested?
+    labelSaved: Save?
     filters:
       - label: Name
         filter: name

@@ -4,7 +4,7 @@ import clientPromise from "@/lib/mongodb";
 export default async function handler(req,res) {
     if(req.method !== 'POST')return res.status(405).json({ error: "Method not allowed" });
     try {
-        const {email,filename,type} = req.body;
+        const {email,filename,type,intrested} = req.body;
 
         if (!email || !filename) {
         return res
@@ -28,6 +28,8 @@ export default async function handler(req,res) {
             relativePath:filename,
         });
 
+        
+
         if (existingOpp) {
         
         await db.collection("users_opportunites").updateOne(
@@ -35,6 +37,7 @@ export default async function handler(req,res) {
             {
             $set: {
                 savedAt: new Date(),
+                intrested:intrested
             },
             }
         );
@@ -50,12 +53,12 @@ export default async function handler(req,res) {
             email,
             type,
             relativePath:filename,
-            intrested:true,
+            intrested:intrested,
             savedAt: new Date(),
         });
 
         return res
-        .status(200)
+        .status(201)
         .json({ success: true, message: "Opportunity successfully saved" });
 
     }catch(e){

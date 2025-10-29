@@ -27,7 +27,7 @@ export default async function handler(req,res) {
         .sort({ savedAt: -1 })
         .toArray();
         
-
+        
 
         const contentDir = path.join(process.cwd(), "content");
 
@@ -45,7 +45,14 @@ export default async function handler(req,res) {
                 const queryFn = tinaClient.queries.opportunites;
         
                 const result = await queryFn({ relativePath: dl.relativePath });
-                return result?.data?.opportunites  || null;
+                let oppData = result?.data?.opportunites  || null;
+                return {
+                    ...oppData,
+                     submitted: dl.intrested,
+                     saved:true,
+                    savedAt: dl.savedAt,
+                    _id: dl._id,
+                }
               } catch (err) {
                 console.error(`Error loading  ${dl.relativePath}:`, err);
                 return null;
@@ -58,7 +65,7 @@ export default async function handler(req,res) {
         success: true,
         email,
         count: opps.length,
-        opps:filteredContent,
+        opps:filteredContent
         });
     }catch(e){
         console.error("Error fetching opportunites:", error);
