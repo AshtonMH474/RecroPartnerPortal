@@ -6,12 +6,14 @@ import Pagination from "../Pagination";
 import { AnimatePresence,motion } from "framer-motion";
 import Filters from "../Papers/Filters";
 import { getCategories } from "@/lib/auth_functions";
+import { useAuth } from "@/context/auth";
 
 function AllOpps({props,opps}){
- 
+    const {user} = useAuth()
+    const [yourOpps,setYourOpps] = useState([])
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
-    const allCards = opps
+    const [allCards,setAllCards] = useState(opps)
      const [cards,setCards] = useState(opps)
      const [categories,setCategories] = useState([])
      const [formData,setFormData] = useState({
@@ -23,6 +25,45 @@ function AllOpps({props,opps}){
             type:''
 
     })
+
+    useEffect(() => {
+        async function fetchYourOpps() {
+            try {
+            if (!user?.email) return; // don't run until user is ready
+            const res = await fetch(`/api/userInfo/getOpps?email=${encodeURIComponent(user.email)}`);
+            if (!res.ok) throw new Error(`Error: ${res.status}`);
+            const data = await res.json();
+            setYourOpps(data.opps || []);
+            } catch (err) {
+            console.error("Failed to fetch user's opportunities:", err);
+            }
+        }
+        fetchYourOpps();
+    }, [user]); // ✅ only refetch when user changes
+
+        useEffect(() => {
+        if (!user || !opps?.length) return;
+
+        let newOpps = [...opps].sort((a, b) => {
+            const dateA = new Date(a?.lastUpdated);
+            const dateB = new Date(b?.lastUpdated);
+            return dateB - dateA;
+        });
+
+         const yourOppIds = new Set(yourOpps.map(o => o._sys.filename));
+        
+
+        const merged = newOpps.map(card => ({
+            ...card,
+            saved: yourOppIds.has(card._sys.filename),
+        }));
+
+
+       
+
+        setCards(merged);
+        setAllCards(merged);
+        }, [ user, yourOpps, opps]);
 
     function onSubmit() {
         const filteredCards = allCards.filter((card) => {

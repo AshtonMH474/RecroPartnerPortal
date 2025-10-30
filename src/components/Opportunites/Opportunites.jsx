@@ -9,7 +9,7 @@ function Opportunites({props,opportunites}){
     const [active,setActive] = useState(props?.filters[0].filter || '')
     const [cards,setCards] = useState([])
     const {user,openModal} = useAuth()
-
+    const [yourOpps,setYourOpps] = useState([])
     
 
     useEffect(() => {
@@ -21,26 +21,61 @@ function Opportunites({props,opportunites}){
   }, [user]);
 
     if(!opportunites) return null
-    
-    useEffect(() => {
 
-        let newOpps = opportunites.sort((a,b) => {
-                const dateA = new Date(a?.lastUpdated);
-                const dateB = new Date(b?.lastUpdated);
-                return dateB - dateA;
-            })
-        if (active == "new"){
-            setCards(newOpps.slice(0,6))
-        }else{
-                const userInterests = user?.interests || [];
-            
-                const filtered = newOpps.filter(opportunity =>
-                userInterests.includes(opportunity.category._sys.filename));
-            
-                
-                setCards(filtered.slice(0,6))
+
+    
+   
+    useEffect(() => {
+        async function fetchYourOpps() {
+            try {
+            if (!user?.email) return; // don't run until user is ready
+            const res = await fetch(`/api/userInfo/getOpps?email=${encodeURIComponent(user.email)}`);
+            if (!res.ok) throw new Error(`Error: ${res.status}`);
+            const data = await res.json();
+            setYourOpps(data.opps || []);
+            } catch (err) {
+            console.error("Failed to fetch user's opportunities:", err);
+            }
         }
-    },[active,user])
+        fetchYourOpps();
+    }, [user]); // ✅ only refetch when user changes
+
+
+    useEffect(() => {
+        if (!user || !opportunites?.length) return;
+
+        let newOpps = [...opportunites].sort((a, b) => {
+            const dateA = new Date(a?.lastUpdated);
+            const dateB = new Date(b?.lastUpdated);
+            return dateB - dateA;
+        });
+
+         const yourOppIds = new Set(yourOpps.map(o => o._sys.filename));
+        
+
+        const merged = newOpps.map(card => ({
+            ...card,
+            saved: yourOppIds.has(card._sys.filename),
+        }));
+
+        if (active === "new") {
+            setCards(merged.slice(0, 6));
+            return;
+        }
+
+        const userInterests = user?.interests || [];
+        const filtered = merged
+            .filter(o => userInterests.includes(o.category._sys.filename))
+            .slice(0, 6);
+
+       
+
+        setCards(filtered);
+        }, [active, user, yourOpps, opportunites]);
+        
+
+
+ 
     return(
         <div className="bg-black pb-20">
             <div className="pt-20 pl-16">

@@ -4,7 +4,7 @@ import { useAuth } from "@/context/auth"
 import { deleteOpp, saveOpp } from "@/lib/auth_functions"
 import { tinaField } from "tinacms/dist/react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 
@@ -12,7 +12,9 @@ function Card({cardOptions,card,props}){
     const {setAllCards,setCards} = cardOptions || {};
     const {openModal,user} = useAuth()
      const [checked, setChecked] = useState(card?.saved == true);
-    // card.intrested = props.labelIntrested
+    useEffect(() => {
+        setChecked(card?.saved == true);
+    }, [card]);
     async function save(intrested){
         try{
             await saveOpp(user,card?._sys?.relativePath,intrested)
