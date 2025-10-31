@@ -7,7 +7,7 @@ import { AnimatePresence,motion } from "framer-motion";
 import Cards from "../Opportunites/Cards/Cards";
 import Pagination from "../Pagination";
 import DashboardFilters from "../Dashboard/Filters";
-import Tickets from "../Tickets/tickets";
+import Tickets from "../Tickets/Tickets";
 
 
 function MyOpps({props}){
