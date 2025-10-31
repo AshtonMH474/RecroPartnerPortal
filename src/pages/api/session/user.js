@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const db = client.db('mydb')
     const dbUser = await db.collection('users').findOne({email:user.email})
     if (!dbUser) return res.status(401).json({ error: "Unauthrozied" });
-    const newUser = {...user,firstName:dbUser.firstName,lastName:dbUser.lastName,organization:dbUser.organization,interests:dbUser?.interests}
+    const newUser = {...user,hubspotID:dbUser.hubspotContactId,firstName:dbUser.firstName,lastName:dbUser.lastName,organization:dbUser.organization,interests:dbUser?.interests}
     res.status(200).json({ user:newUser });
   } catch (err) {
     console.error("JWT verify failed:", err.message);

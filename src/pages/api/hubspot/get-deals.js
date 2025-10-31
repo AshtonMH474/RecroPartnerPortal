@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
+const HUBSPOT_API_URL =
+  process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 
 export default async function handler(req, res) {
@@ -10,33 +11,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Expect partner email as a query param: ?email=partner@example.com
-    const { email } = req.query;
-    if (!email) return res.status(400).json({ error: "Missing partner email" });
+    const { hubspotID } = req.query;
+    if (!hubspotID)
+      return res.status(400).json({ error: "Missing hubspotID in query" });
 
-    const searchPayload = {
-      filterGroups: [
-        {
-          filters: [
-            { propertyName: "partner_email", operator: "EQ", value: email },
-          ],
-        },
-      ],
-      properties: [
-        "dealname",
-        "filename",
-        "partner_email",
-        "closedate",
-        "amount",
-        "dealstage",
-        "pipeline",
-      ],
-      limit: 100, // adjust as needed
-    };
-
-    const response = await axios.post(
-      `${HUBSPOT_API_URL}/crm/v3/objects/deals/search`,
-      searchPayload,
+    // 🔹 Step 1: Get all associated ticket IDs for this contact
+    const associationsRes = await axios.get(
+      `${HUBSPOT_API_URL}/crm/v4/objects/contacts/${hubspotID}/associations/tickets`,
       {
         headers: {
           Authorization: `Bearer ${HUBSPOT_TOKEN}`,
@@ -45,9 +26,54 @@ export default async function handler(req, res) {
       }
     );
 
-    return res.status(200).json({ deals: response.data.results });
+    const ticketAssociations = associationsRes.data.results || [];
+    const ticketIds = ticketAssociations.map((assoc) => assoc.toObjectId);
+
+    if (ticketIds.length === 0) {
+      return res.status(200).json({ success: true, tickets: [] });
+    }
+
+    // 🔹 Step 2: Fetch full ticket details (Batch Read)
+    const ticketsRes = await axios.post(
+      `${HUBSPOT_API_URL}/crm/v3/objects/tickets/batch/read`,
+      {
+         properties: [
+      "subject",
+      "content",
+      "hs_pipeline",
+      "hs_pipeline_stage",
+      "createdate",
+      "hs_ticket_priority",
+      "hs_ticket_category",
+      "hs_lastmodifieddate",
+      // 👇 your custom fields
+      "filename",
+      "partner_email",
+      "amount",
+      "location",
+      "agency",
+      "type",
+      "category",
+      "iconname",
+    ],
+        inputs: ticketIds.map((id) => ({ id })),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      tickets: ticketsRes.data.results,
+    });
   } catch (error) {
-    console.error("HubSpot fetch deals error:", error.response?.data || error);
-    return res.status(500).json({ error: "Failed to fetch deals from HubSpot" });
+    console.error("HubSpot fetch tickets error:", error.response?.data || error);
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch tickets from HubSpot" });
   }
 }

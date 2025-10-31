@@ -171,9 +171,14 @@ export async function deleteOpp(user,filename) {
   }
 }
 
-export async function fetchPartnerDeals(email) {
-  const res = await fetch(`/api/hubspot/get-deals?email=${email}`);
+export async function fetchPartnerTickets(user) {
+  const hubspotID = user?.hubspotID;
+  if (!hubspotID) {
+    throw new Error("Missing hubspotID for HubSpot request");
+  }
+
+  const res = await fetch(`/api/hubspot/get-deals?hubspotID=${encodeURIComponent(hubspotID)}`);
   if (!res.ok) throw new Error("Failed to fetch deals");
   const data = await res.json();
-  return data.deals;
+  return data;
 }

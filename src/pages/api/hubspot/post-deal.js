@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 
@@ -12,68 +11,138 @@ export default async function handler(req, res) {
     const { opportunity, user } = req.body;
     if (!user) return res.status(401).json({ error: "Unauthorized" });
 
-    // Extract fields
+    const contactId = user.hubspotID;
+    if (!contactId)
+      return res.status(400).json({ error: "User does not have a HubSpot contact ID" });
+
+    // Extract opportunity details
     const subject = opportunity.title;
-    const filename = opportunity?._sys?.relativePath;
-    const partner_email = user?.email;
+    const filename = opportunity?._sys?.relativePath || "";
+    const partner_email = user?.email || "";
     const description = extractText(opportunity.description);
     const location = opportunity?.location || "";
     const agency = opportunity?.agency || "";
     const type = opportunity?.type || "";
     const category = opportunity?.category?.category || "";
-    const icon_name = opportunity?.category?.iconName || "";
+    const icon_name = opportunity?.category?.icon || "";
     const estValue = opportunity?.value || 0;
 
-    // Prepare ticket payload
-const ticketData = {
-  properties: {
-    // Required HubSpot ticket fields
-    subject: subject,                   // Title of the ticket
-    content: description || "",         // Main body / description of the ticket
-    hs_pipeline: "0",                   // Replace with your pipeline ID
-    hs_pipeline_stage: "1",             // Replace with your initial stage ID
 
-    // Optional / custom fields
-    filename: filename || "",
-    partner_email: partner_email || "",
-    amount: estValue || 0,
-    location: location || "",
-    agency: agency || "",
-    type: type || "",
-    category: category || "",
-    iconname: icon_name || "",
-    // status: "new",                       // Default status for new tickets
-  },
-};
+    
 
-    await axios.post(`${HUBSPOT_API_URL}/crm/v3/objects/tickets`, ticketData, {
-      headers: {
-        Authorization: `Bearer ${HUBSPOT_TOKEN}`,
-        "Content-Type": "application/json",
+      const associationsRes = await axios.get(
+      `${HUBSPOT_API_URL}/crm/v4/objects/contacts/${contactId}/associations/tickets`,
+      {
+        headers: {
+          Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const ticketAssociations = associationsRes.data.results || [];
+    const ticketIds = ticketAssociations.map((assoc) => assoc.toObjectId);
+
+    let duplicateFound = false;
+
+    if (ticketIds.length > 0) {
+      // Batch read tickets to check for duplicates
+      const ticketsRes = await axios.post(
+        `${HUBSPOT_API_URL}/crm/v3/objects/tickets/batch/read`,
+        {
+          properties: ["subject", "filename", "partner_email"],
+          inputs: ticketIds.map((id) => ({ id })),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Compare by subject + filename + partner_email to detect duplicates
+      duplicateFound = ticketsRes.data.results.some((t) => {
+        const props = t.properties || {};
+        return (
+          props.partner_email === partner_email &&
+          (props.filename === filename || props.subject === subject)
+        );
+      });
+    }
+
+    if (duplicateFound) {
+      return res.status(200).json({
+        success: false,
+        message: "Ticket already exists for this contact and opportunity",
+      });
+    }
+
+    // 1️⃣ Create ticket
+    const ticketData = {
+      properties: {
+        subject,
+        content: description || "",
+        hs_pipeline: "0", // update with your actual pipeline ID
+        hs_pipeline_stage: "3", // update with your actual stage ID
+        filename,
+        partner_email,
+        amount: estValue,
+        location,
+        agency,
+        type,
+        category,
+        iconname: icon_name,
+         source_type: "FORM",
+        hs_ticket_priority: "MEDIUM"
       },
-    });
+    };
 
-    return res.status(200).json({ success: true, message: "Ticket created in HubSpot" });
+    const createTicketResponse = await axios.post(
+      `${HUBSPOT_API_URL}/crm/v3/objects/tickets`,
+      ticketData,
+      {
+        headers: {
+          Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const ticketId = createTicketResponse.data.id;
+
+    // 2️⃣ Associate the ticket with the contact
+    await axios.put(
+  `${HUBSPOT_API_URL}/crm/v3/objects/tickets/${ticketId}/associations/contact/${contactId}/16`,
+  {},
+  {
+    headers: {
+      Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+  }
+);
+
+    return res.status(200).json({
+      success: true,
+      message: "Ticket created and associated with HubSpot contact",
+    });
   } catch (error) {
     console.error("HubSpot ticket error:", {
       message: error.message,
       details: error.response?.data,
     });
-    return res.status(500).json({ error: "Failed to create ticket in HubSpot" });
+    return res
+      .status(500)
+      .json({ error: "Failed to create or associate ticket in HubSpot" });
   }
 }
 
-
 function extractText(node) {
   if (!node) return "";
-
-  // If node has a "text" property, return it
   if (node.text) return node.text;
-
-  // If node has children, recursively extract their text
   if (node.children && Array.isArray(node.children)) {
     return node.children.map(extractText).join(" ");
   }
-
   return "";
 }

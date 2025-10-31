@@ -20,13 +20,14 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
 
     const toggleInterest = useCallback((category) => {
       setSelectedInterests(prev => {
-        const updated = prev.includes(category)
-          ? prev.filter(c => c !== category)
-          : [...prev, category];
-        setFormData(prevData => ({ ...prevData, interests: updated }));
-        return updated;
+        if (prev.includes(category)) return prev.filter(c => c !== category);
+        return [...prev, category];
       });
-    }, [setFormData]);
+    }, []);
+
+    useEffect(() => {
+      setFormData(prev => ({ ...prev, interests: selectedInterests }));
+    }, [selectedInterests, setFormData]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
