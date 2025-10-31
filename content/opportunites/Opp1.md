@@ -3,6 +3,7 @@ title: Title1
 agency: Agency
 type: DOD
 location: 'Fairfax, VA'
+value: 1000000
 status: open
 date: 2025-11-30T00:00:00.000Z
 description: >
@@ -19,6 +20,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/ai-infra.md
-lastUpdated: '2025-10-28T21:14:14.651Z'
+lastUpdated: '2025-10-31T14:29:50.724Z'
 ---
 

@@ -3,6 +3,7 @@ title: Title
 agency: Agency
 type: Partership
 location: 'Fairfax, VA'
+value: 1000000
 status: open
 date: 2025-10-31T00:00:00.000Z
 description: >
@@ -19,6 +20,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/cloud.md
-lastUpdated: '2025-10-20T15:49:21.692Z'
+lastUpdated: '2025-10-31T14:26:23.399Z'
 ---
 

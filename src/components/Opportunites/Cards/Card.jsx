@@ -17,7 +17,7 @@ function Card({cardOptions,card,props}){
     }, [card]);
     async function save(intrested){
         try{
-            await saveOpp(user,card?._sys?.relativePath,intrested)
+            await saveOpp(user,card,intrested)
         }catch(e){
             alert("There was an Error Saving: " + e )
         }

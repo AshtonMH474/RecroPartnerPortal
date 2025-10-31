@@ -58,9 +58,6 @@ function AllOpps({props,opps}){
             saved: yourOppIds.has(card._sys.filename),
         }));
 
-
-       
-
         setCards(merged);
         setAllCards(merged);
         }, [ user, yourOpps, opps]);
@@ -149,9 +146,9 @@ function AllOpps({props,opps}){
 
     return(
         <div className="pb-20" style={{minHeight:'100dvh'}}>
-            <div className="mt-20 xl:mt-40  flex flex-col items-center justify-center pl-16">
+            <div className="mt-20 xl:mt-40  max-w-[1400px] mx-auto pl-16">
                 <div className="mx-auto ">
-                    <div className="pl-14 max-w-[900px]">
+                    <div className="pl-6 max-w-[900px]">
                             <div className="flex flex-col">
                                 <Heading props={props} />
                             </div>

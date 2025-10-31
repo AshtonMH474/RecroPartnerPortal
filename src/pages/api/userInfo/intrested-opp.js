@@ -5,7 +5,6 @@ export default async function handler(req,res) {
     if(req.method !== 'POST')return res.status(405).json({ error: "Method not allowed" });
     try {
         const {email,filename,type,intrested} = req.body;
-
         if (!email || !filename) {
         return res
             .status(400)

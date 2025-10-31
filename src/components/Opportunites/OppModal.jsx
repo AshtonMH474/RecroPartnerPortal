@@ -17,7 +17,7 @@ function OppModal({opp,onClose}){
     const {user} = useAuth()
     async function save(intrested){
             try{
-                await saveOpp(user,opp?._sys?.relativePath,intrested)
+                await saveOpp(user,opp,intrested)
             }catch(e){
                 alert("There was an Error Saving: " + e )
             }

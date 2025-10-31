@@ -3,6 +3,7 @@ title: Title
 agency: Agency
 type: Partership
 location: 'Fairfax, VA'
+value: 1000000
 status: In Review
 date: 2025-11-01T00:00:00.000Z
 description: >
@@ -19,6 +20,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/logic-eng.md
-lastUpdated: '2025-10-20T18:19:04.894Z'
+lastUpdated: '2025-10-31T14:26:49.923Z'
 ---
 

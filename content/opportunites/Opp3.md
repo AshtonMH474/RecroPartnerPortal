@@ -3,6 +3,7 @@ title: Title
 agency: Agency
 type: Partership
 location: 'Fairfax, VA'
+value: 1000000
 status: closed
 date: 2025-10-29T00:00:00.000Z
 description: >
@@ -19,6 +20,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/ai-infra.md
-lastUpdated: '2025-10-20T15:49:31.049Z'
+lastUpdated: '2025-10-31T14:26:31.140Z'
 ---
 

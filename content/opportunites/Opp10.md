@@ -3,6 +3,7 @@ title: Title111
 agency: Agency
 type: Partership
 location: 'Fairfax, VA'
+value: 1000000
 status: In Review
 date: 2026-10-24T00:00:00.000Z
 description: >
@@ -19,6 +20,6 @@ description: >
   habitasse platea dictumst. Praesent tincidunt, purus at pulvinar fermentum,
   nulla massa luctus tortor, vitae tincidunt orci enim id nulla. Integer
 category: content/categories/itass.md
-lastUpdated: '2025-10-20T15:50:12.180Z'
+lastUpdated: '2025-10-31T14:26:15.929Z'
 ---
 

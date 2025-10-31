@@ -27,6 +27,11 @@ export const opportunites = {
                     label:'Location'
                 },
                 {
+                    name:'value',
+                    type:'number',
+                    label:'Estimated Value ($)'
+                },
+                {
                             type:'string',
                             label:'Status',
                             name:'status',

@@ -2,7 +2,7 @@ import { useAuth } from "@/context/auth";
 import { useEffect, useState } from "react";
 import Heading from "../Opportunites/Heading";
 import Filters from "../Papers/Filters";
-import { getCategories } from "@/lib/auth_functions";
+import { fetchPartnerDeals, getCategories } from "@/lib/auth_functions";
 import { AnimatePresence,motion } from "framer-motion";
 import Cards from "../Opportunites/Cards/Cards";
 import Pagination from "../Pagination";
@@ -10,7 +10,7 @@ import DashboardFilters from "../Dashboard/Filters";
 
 
 function MyOpps({props}){
-    console.log(props)
+    
     const {user} = useAuth()
     const [allCards,setAllCards] = useState([])
     const [cards,setCards] = useState([])
@@ -59,15 +59,17 @@ function MyOpps({props}){
                     if (!res.ok) throw new Error(`Error: ${res.status}`);
         
                     const data = await res.json();
+                    
                     setAllCards(data.opps)
                     setCards(data.opps)
+                   console.log(data.opps)
                    return 
                     
                     } catch (err) {
                     console.error("Failed to fetch downloads:", err);
                     }
                 }
-        
+                console.log(fetchPartnerDeals(user?.email))
                 getOpps();
                 
         }, [user?.email]); 
@@ -142,9 +144,9 @@ function MyOpps({props}){
 
     return(
         <div className="pb-20" style={{minHeight:'100dvh'}}>
-            <div className="mt-20 xl:mt-40  flex flex-col items-center justify-center pl-16">
+            <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto pl-16">
                 <div className="mx-auto ">
-                    <div className="pl-14 max-w-[900px]">
+                    <div className="pl-6 max-w-[900px]">
                         <div className="flex  flex-wrap items-center gap-x-4">
                                 <Heading props={props} />
                                 <div className="pb-4">
