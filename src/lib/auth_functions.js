@@ -11,7 +11,7 @@ export async function handleSignout(setUser){
     }
  }
 
-  export async function  handleSignup(info){
+  export async function  handleSignup(info,phone){
     const {email,firstName,lastName,password,organization} = info
     try {
       const res = await fetch("/api/session/signup", {
@@ -22,7 +22,8 @@ export async function handleSignout(setUser){
              password:password,
              firstName:firstName,
             lastName:lastName ,
-            organization:organization
+            organization:organization,
+            phone:phone
         }),
       });
       const data = await res.json();
@@ -135,7 +136,7 @@ export async function saveOpp(user, opp, interested) {
 
     // 2️⃣ If user is interested, call HubSpot sync route
     if (interested) {
-      await fetch('/api/hubspot/post-deal', {
+      let fetchI = await fetch('/api/hubspot/post-deal', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -143,6 +144,11 @@ export async function saveOpp(user, opp, interested) {
           user: user// optional: any info your API route needs
         }),
       });
+
+      if(fetchI.ok){
+        const data = await fetchI.json();
+        return data.message;
+      }
     }
 
     return data;

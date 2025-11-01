@@ -62,7 +62,8 @@ export default async function handler(req, res) {
           email: user.email,
           firstname: user.firstName || "",
           lastname: user.lastName || "",
-          company: user.organzation || ""
+          company: user.organzation || "",
+          phone: user.phone || ""
         }
       })
     });

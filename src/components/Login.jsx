@@ -14,10 +14,11 @@ function Login({ onClose,modalData }) {
   const [loading,setLoading] = useState(false)
   const [formData, setFormData] = useState({ email: "", password: "" });
   const router = useRouter();
-
+  
     useEffect(() => {
         const verify = async(token) => {
             if(token){
+                 
                 setToken(true)
                 await fetch(`/api/session/verify?token=${token}`)
                 
@@ -62,6 +63,8 @@ function Login({ onClose,modalData }) {
       alert("Please fill all the fields");
       return;
     }
+
+ 
     
 
     try {

@@ -65,7 +65,7 @@ function MyOpps({props}){
                     
                     setAllCards(data.opps)
                     setCards(data.opps)
-                   console.log(data.opps)
+                   
                    return 
                     
                     } catch (err) {
@@ -87,7 +87,7 @@ function MyOpps({props}){
       try {
         setLoading(true);
         const data = await fetchPartnerTickets(user);
-        console.log(data)
+        
         setTickets(data.tickets || []);
       } catch (err) {
         console.error("Failed to fetch tickets:", err);

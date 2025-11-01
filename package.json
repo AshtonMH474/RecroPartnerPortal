@@ -28,6 +28,8 @@
     "nodemailer": "^6.10.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.66.0",
+    "react-phone-number-input": "^3.4.13",
     "tinacms": "^2.9.0",
     "tinacms-gitprovider-github": "^3.0.1"
   },

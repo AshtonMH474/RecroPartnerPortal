@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   try {
     const { opportunity, user } = req.body;
     if (!user) return res.status(401).json({ error: "Unauthorized" });
-
+    
     const contactId = user.hubspotID;
     if (!contactId)
       return res.status(400).json({ error: "User does not have a HubSpot contact ID" });
@@ -26,6 +26,10 @@ export default async function handler(req, res) {
     const category = opportunity?.category?.category || "";
     const icon_name = opportunity?.category?.icon || "";
     const estValue = opportunity?.value || 0;
+    const program = opportunity?.program || "";
+    const samlink = opportunity?.samLink || "";
+    const vehicle = opportunity?.vehicle || "";
+
 
 
     
@@ -50,7 +54,7 @@ export default async function handler(req, res) {
       const ticketsRes = await axios.post(
         `${HUBSPOT_API_URL}/crm/v3/objects/tickets/batch/read`,
         {
-          properties: ["subject", "filename", "partner_email"],
+          properties: ["filename", "partner_email"],
           inputs: ticketIds.map((id) => ({ id })),
         },
         {
@@ -74,7 +78,7 @@ export default async function handler(req, res) {
     if (duplicateFound) {
       return res.status(200).json({
         success: false,
-        message: "Ticket already exists for this contact and opportunity",
+        message: "Opportunity already exists for this contact",
       });
     }
 
@@ -84,7 +88,7 @@ export default async function handler(req, res) {
         subject,
         content: description || "",
         hs_pipeline: "0", // update with your actual pipeline ID
-        hs_pipeline_stage: "3", // update with your actual stage ID
+        hs_pipeline_stage: "1", // update with your actual stage ID
         filename,
         partner_email,
         amount: estValue,
@@ -93,6 +97,9 @@ export default async function handler(req, res) {
         type,
         category,
         iconname: icon_name,
+        // program,
+        // samlink,
+        // vehicle,
          source_type: "FORM",
         hs_ticket_priority: "MEDIUM"
       },
@@ -125,7 +132,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: "Ticket created and associated with HubSpot contact",
+      message: "Opportunity created and associated with contact",
     });
   } catch (error) {
     console.error("HubSpot ticket error:", {

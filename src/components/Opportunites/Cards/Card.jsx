@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check,X } from "lucide-react";
 import IconRenderer from "@/components/utils/IconRenderer"
 import { useAuth } from "@/context/auth"
 import { deleteOpp, saveOpp } from "@/lib/auth_functions"
@@ -12,12 +12,14 @@ function Card({cardOptions,card,props}){
     const {setAllCards,setCards} = cardOptions || {};
     const {openModal,user} = useAuth()
      const [checked, setChecked] = useState(card?.saved == true);
+     const [hovered, setHovered] = useState(false);
     useEffect(() => {
         setChecked(card?.saved == true);
     }, [card]);
     async function save(intrested){
         try{
             await saveOpp(user,card,intrested)
+            card.saved = true;
         }catch(e){
             alert("There was an Error Saving: " + e )
         }
@@ -32,9 +34,15 @@ function Card({cardOptions,card,props}){
                 await setAllCards(allCards => allCards.filter(c => c.id !== card.id))
                 setChecked(true)
             }
+            card.saved = false;
         }catch(e){
             alert("There was an Error Saving: " + e )
         }
+    }
+
+    function handleSaveChange(newVal) {
+        setChecked(newVal);
+        card.saved = newVal; // optional: update local data
     }
     return(
         <div className="cursor-pointer border border-white/15 rounded-[8px] bg-[#1A1A1E] w-[400px] h-[360px] px-4 py-6">
@@ -58,8 +66,8 @@ function Card({cardOptions,card,props}){
                         p:(p) => <p className="text-[#C2C2BC] text-[14px] truncate-8" {...p} />
                     }} />
                     <div className="flex gap-x-4">
-                        <button data-tina-field={tinaField(props,'labelView')} onClick={() => openModal('Opp',card)} className="bg-primary capitalize cursor-pointer text-[18px] px-4 py-2 w-auto rounded hover:opacity-80 text-white">{props.labelView}</button>
-                         <motion.button
+                        <button data-tina-field={tinaField(props,'labelView')} onClick={() => openModal('Opp',card,handleSaveChange)} className="bg-primary capitalize cursor-pointer text-[18px] px-4 py-2 w-auto rounded hover:opacity-80 text-white">{props.labelView}</button>
+                            <motion.button
                             data-tina-field={tinaField(props,'labelIntrested')}
                             onClick={() => {
                                 
@@ -70,23 +78,33 @@ function Card({cardOptions,card,props}){
                             className={`rounded px-4 py-2 relative flex items-center justify-center   border primary-border transition-all duration-300 
                                 ${checked ? "bg-primary " : "border-gray-400"}`}
                             whileTap={{ scale: 0.9 }}
+                            onMouseEnter={() => setHovered(true)}  
+                            onMouseLeave={() => setHovered(false)} 
                             >
-                            {checked && (
-                                <motion.div
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                >
-                                <Check className="text-white w-5 h-5" />
-                                </motion.div>
-                            )}
-                            {!checked && (
-                                <motion.div
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                >
-                                    {props.labelSaved}
-                                </motion.div>
-                            )}
+                                {checked && (
+                                    <motion.div
+                                    key={hovered ? "x" : "check"}
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    exit={{ scale: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                                                >
+                                                                {hovered ? (
+                                        <X className="text-white w-5 h-5" />
+                                    ) : (
+                                        <Check className="text-white w-5 h-5" />
+          )}
+                                    </motion.div>
+                                )}
+                                {!checked && (
+                                    <motion.div
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                     transition={{ duration: 0.2 }}
+                                    >
+                                        {props.labelSaved}
+                                    </motion.div>
+                                )}
                             </motion.button>
                         
                     </div>

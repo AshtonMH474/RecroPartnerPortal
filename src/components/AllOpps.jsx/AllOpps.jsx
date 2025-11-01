@@ -167,7 +167,7 @@ function AllOpps({props,opps}){
                             transition={{ duration: 0.4, ease: "easeInOut" }}
                             className="max-w-[1400px]"
                             >
-                            <Cards cards={visibleCards} props={props}/>
+                            <Cards  cards={visibleCards} props={props}/>
                             </motion.div>
                         </AnimatePresence>
                 </div>

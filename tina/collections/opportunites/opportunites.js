@@ -26,6 +26,21 @@ export const opportunites = {
                     type:'string',
                     label:'Location'
                 },
+                 {
+                    name:'vehicle',
+                    type:'string',
+                    label:'Contract Vehicle'
+                },
+                {
+                    name:'program',
+                    type:'string',
+                    label:'Program'
+                },
+                {
+                    name:'samLink',
+                    type:'string',
+                    label:'SAM.gov Link'
+                },
                 {
                     name:'value',
                     type:'number',

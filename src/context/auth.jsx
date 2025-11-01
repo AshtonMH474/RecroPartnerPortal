@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState("loading");
   const [activeModal, setActiveModal] = useState(null);
   const [modalData, setModalData] = useState(null);
+  
 
 
 const refreshUser = useCallback(() => {
@@ -25,15 +26,18 @@ const refreshUser = useCallback(() => {
     refreshUser();
   }, [refreshUser]);
 
-  const openModal = (type, data = null) => {
-    setActiveModal(type);
-    setModalData(data);
-  };
+ const openModal = (type, data = null, onChange = null) => {
+  setActiveModal(type);
+  setModalData({ data, onChange }); // ✅ store both the opp and the callback
+};
+
 
   const closeModal = () => {
     setActiveModal(null);
     setModalData(null);
   };
+
+ 
 
   return (
     <AuthContext.Provider value={{ user, setUser, openModal, closeModal,refreshUser }}>
@@ -41,7 +45,7 @@ const refreshUser = useCallback(() => {
 
       {/* Centralized modal rendering */}
       {activeModal === "login" && (
-        <Login onClose={closeModal} setUser={setUser} modalData={modalData} />
+        <Login onClose={closeModal} setUser={setUser} modalData={modalData?.data} />
       )}
       {activeModal === "register" && (
         <Register onClose={closeModal} />
@@ -50,10 +54,10 @@ const refreshUser = useCallback(() => {
         <NewPasswordModal onClose={closeModal} />
       )}
       {activeModal === "changePassword" && (
-        <ChangePassword token={modalData?.token} onClose={closeModal} />
+        <ChangePassword token={modalData?.data?.token} onClose={closeModal} />
       )}
       {activeModal == 'Opp' && (
-        <OppModal opp={modalData} onClose={closeModal}/>
+        <OppModal opp={modalData.data} onClose={closeModal} onSaveChange={modalData?.onChange}/>
       )}
       {activeModal == 'Edit' && (
         <EditProfile onClose={closeModal}/>

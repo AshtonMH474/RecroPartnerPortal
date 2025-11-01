@@ -9,7 +9,8 @@ import { isFreeEmail } from 'free-email-domains-list';
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { email, password, firstName,lastName,organization } = req.body;
+  const { email, password, firstName,lastName,organization,phone } = req.body;
+ 
 
   // Block free email domains
   if (isFreeEmail(email)) {
@@ -31,6 +32,7 @@ export default async function handler(req, res) {
     firstName,
     lastName,
     organization,
+    phone,
     verified: false,
     verificationToken,
     verificationExpires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes in ms

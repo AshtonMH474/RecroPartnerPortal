@@ -125,4 +125,42 @@ body {
   opacity: 1;
 }
 
+/* Outer container normally */
+.PhoneInput {
+  border: none; 
+  border-radius: 6px;
+  background-color: #2A2A2E; /* matches your design */
+  overflow: hidden; /* keeps inner input and flag inside rounded corners */
+}
 
+/* Outer container on focus */
+.PhoneInput.PhoneInput--focus {
+  border: 1px solid white;
+  border-radius: 6px;
+}
+
+/* Inner input text */
+.PhoneInputInput {
+  color: white;
+  background-color: transparent;
+  border: none; /* remove inner input border */
+  outline: none;
+  width: 100%;
+  /* padding: 10px; */
+}
+
+/* Placeholder */
+.PhoneInputInput::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+/* Country select dropdown */
+.PhoneInputCountrySelect {
+  color: black;
+  background-color: white;
+}
+
+/* Arrow color */
+.PhoneInputCountrySelectArrow {
+  color: white;
+}

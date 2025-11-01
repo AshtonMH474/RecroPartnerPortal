@@ -1,8 +1,10 @@
 import { useState,useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
-import { motion } from "framer-motion";
+import { motion, number } from "framer-motion";
 import { handleSignup } from "@/lib/auth_functions";
 import { useAuth } from "@/context/auth";
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 function Register({onClose}){
     const { openModal } = useAuth();
     const [errors,setErrors] = useState({})
@@ -16,7 +18,7 @@ function Register({onClose}){
     confirmPassword:''
     });
     const [verified,setVerified] = useState(false)
-
+    const [phone, setPhone] = useState("");
     const [cooldown, setCooldown] = useState(0);
 
     useEffect(() => {
@@ -66,9 +68,15 @@ function Register({onClose}){
         setErrors(obj)
         return
     }
+    if(!phone || !isValidPhoneNumber(phone)){
+        obj.number = 'Please Enter a Valid Phone Number'
+        setErrors(obj)
+        return
+    }
+    
     try {
       setLoading(true); // <-- show "Sending..."
-      let res = await handleSignup(formData);
+      let res = await handleSignup(formData,phone);
 
       if (res.verified === false) {
         setVerified(true);
@@ -153,14 +161,28 @@ function Register({onClose}){
             placeholder="Company Email"
             className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
           />
-          <input
+
+          <div className="flex flex-col sm:flex-row gap-4">
+             <PhoneInput
+              placeholder="Enter phone number"
+              value={phone}
+              onChange={setPhone}
+              defaultCountry="US" // or whatever default
+              className="w-[50%] p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
+              containerStyle={{ border: '2px solid blue', borderRadius: '5px' }}
+              inputStyle={{ backgroundColor: 'lightblue', color: 'darkblue', padding: '10px' }}
+            />
+
+            <input
               type="text"
               name="organization"
               value={formData.organization}
               onChange={handleChange}
               placeholder="Organization"
-              className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
+              className="w-full sm:w-1/2 p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
             />
+          </div>
+         
           <input
             type="password"
             name="password"
@@ -177,7 +199,7 @@ function Register({onClose}){
             placeholder="Re-enter Password"
             className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
           />
-
+          {errors?.number && <div className="text-red-600">{errors.number}</div>}
           {errors?.password && <div className="text-red-600">{errors.password}</div>}
           {errors?.pass && <div className="text-red-600">{errors.pass}</div>}
           {errors?.error && <div className="text-red-600">{errors.error}</div>}
