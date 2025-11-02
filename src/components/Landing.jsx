@@ -2,6 +2,7 @@ import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import Link from "next/link";
 
 function Landing(props){
     const {openModal} = useAuth()

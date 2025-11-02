@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
    const verificationUrl = `${process.env.NEXTAUTH_URL}/#verify?token=${verificationToken}`
   await transporter.sendMail({
-    from: `"Recro" <${process.env.SMTP_FROM}>`,
+    from: `"Recro: Resend Verify Email" <${process.env.SMTP_FROM}>`,
     to: email,
     subject: "Verify your email (Resent)",
     html: `<p>Click <a href="${verificationUrl}">here</a> to verify your email. This link expires in 10 minutes.</p>`,

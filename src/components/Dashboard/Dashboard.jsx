@@ -9,9 +9,9 @@ import Buttons from "./Buttons"
 
 function Dashboard({props,papers,sheets}){
     const {user} = useAuth()
-    const [active,setActive] = useState(props?.filters[0].filter || '')
+    const [active, setActive] = useState(props?.filters?.[0]?.filter || '');
+    const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
     const [recent,setRecent] = useState([])
-    const [buttons,setButtons] = useState(props?.filters[0].buttons || [])
     const [cards,setCards] = useState([])
     
     
@@ -28,7 +28,7 @@ function Dashboard({props,papers,sheets}){
         else if (active === 'sheets') {
             await setCards(sheets)
         }
-        let filter = props?.filters.find((filter) => filter.filter == active)
+        let filter = props?.filters?.find((filter) => filter.filter == active)
         await setButtons(filter?.buttons || [])
         
     }

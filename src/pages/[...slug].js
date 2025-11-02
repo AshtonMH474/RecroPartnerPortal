@@ -13,56 +13,6 @@ import Papers from "@/components/Papers/Papers";
 import AllOpps from "@/components/AllOpps.jsx/AllOpps";
 import MyOpps from "@/components/MyOpps/MyOpps";
 
-// export async function getServerSideProps({ params, req,res }) {
-//   const userToken = req.cookies.token; // your cookie name
-  
-//   if (!userToken) {
-//     return {
-//       redirect: { destination: "/", permanent: false },
-//     };
-//   }
-//   const decoded = jwt.decode(userToken);
-
-//     // Check if expired
-//     if (!decoded || Date.now() >= decoded.exp * 1000) {
-//       console.log('Token expired');
-//       res.setHeader(
-//       "Set-Cookie",
-//       cookie.serialize("token", "", {
-//         httpOnly: true,
-//         secure: process.env.NODE_ENV === "production",
-//         expires: new Date(0), // immediately expire
-//         sameSite: "lax",
-//         path: "/",
-//       })
-//     );
-//       return {
-//         redirect: { destination: '/', permanent: false },
-//       };
-//     }
-
-//   const { client } = await import("../../tina/__generated__/databaseClient");
-//   if (params.slug?.[0].startsWith(".well-known")) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//   const filename = params.slug?.[0] + ".md";
-
-//   const [pageData, navData, footerData,paperData,sheetData,oppData] = await Promise.all([
-//     client.queries.page({ relativePath: filename }),
-//     client.queries.nav({ relativePath: "nav_authorized.md" }),
-//     client.queries.footer({ relativePath: "footer.md" }),
-//     client.queries.paperConnection({first: parseInt(process.env.LIMIT) || 50}),
-//     client.queries.sheetConnection({first: parseInt(process.env.LIMIT) || 50 }),
-//     client.queries.opportunitesConnection({first: parseInt(process.env.LIMIT) || 50 })
-//   ]);
-
-//   return {
-//     props: { res: pageData, nav: navData, footer: footerData, paper:paperData, sheets:sheetData, opp:oppData },
-//   };
-// }
-
 
 export async function getServerSideProps({ params, req, res }) {
   try {
@@ -76,7 +26,7 @@ export async function getServerSideProps({ params, req, res }) {
     if (accessToken) {
       try {
         decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-        console.log("✅ Access token valid", decoded);
+        console.log("✅ Access token valid");
       } catch {
         accessToken = null; // token expired or invalid
       }

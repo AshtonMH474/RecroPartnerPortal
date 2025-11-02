@@ -13,7 +13,7 @@ import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
     const {user} = useAuth()
-    const [active,setActive] = useState(props.type[0].filter)
+    const [active, setActive] = useState(props?.filters?.[0]?.filter || '');
     const [recent,setRecent] = useState([])
     const [cards,setCards] = useState([])
     const [allCards, setAllCards] = useState([]);

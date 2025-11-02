@@ -41,7 +41,7 @@ export default async function handler(req, res) {
   const resetUrl = `${process.env.NEXTAUTH_URL}/#resetpassword?token=${resetToken}`;
 
   await transporter.sendMail({
-    from: `"Recro" <${process.env.SMTP_FROM}>`,
+    from: `"Recro: Forgot Password" <${process.env.SMTP_FROM}>`,
     to: email,
     subject: "Reset your password",
     html: `<p>You requested to reset your password.</p>

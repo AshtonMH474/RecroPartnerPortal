@@ -6,7 +6,7 @@ import Cards from "./Cards/Cards"
 import { useAuth } from "@/context/auth"
 
 function Opportunites({props,opportunites}){
-    const [active,setActive] = useState(props?.filters[0].filter || '')
+    const [active, setActive] = useState(props?.filters?.[0]?.filter || '');
     const [cards,setCards] = useState([])
     const {user,openModal} = useAuth()
     const [yourOpps,setYourOpps] = useState([])

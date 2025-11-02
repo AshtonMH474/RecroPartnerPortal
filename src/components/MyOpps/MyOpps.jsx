@@ -15,7 +15,7 @@ function MyOpps({props}){
     
     const {user} = useAuth()
     const [allCards,setAllCards] = useState([])
-    const [loading,setLoading] = useState(false)
+    
     const [cards,setCards] = useState([])
     const [categories,setCategories] = useState([])
     const [tickets,setTickets] = useState([])
@@ -29,7 +29,8 @@ function MyOpps({props}){
 
     })
     const cardOptions = {setAllCards,setCards}
-    const [active,setActive] = useState(props?.options[0].filter)
+    const [active,setActive] = useState(props?.options?.[0]?.filter || '')
+    
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const visibleCount = 6
@@ -86,15 +87,13 @@ function MyOpps({props}){
 
     const getTickets = async () => {
       try {
-        setLoading(true);
+        
         const data = await fetchPartnerTickets(user);
         
         setTickets(data.tickets || []);
       } catch (err) {
         console.error("Failed to fetch tickets:", err);
         setError(err.message);
-      } finally {
-        setLoading(false);
       }
     };
 
