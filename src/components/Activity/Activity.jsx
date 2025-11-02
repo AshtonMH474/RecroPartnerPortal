@@ -12,7 +12,7 @@ import { clear } from "./functions"
 import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
-    console.log(props)
+    
     const {user} = useAuth()
     const [active, setActive] = useState(props?.type?.[0]?.filter || '');
     const [recent,setRecent] = useState([])
