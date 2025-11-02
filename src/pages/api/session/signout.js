@@ -5,6 +5,7 @@ export default async function handler(req, res) {
 
   // Delete the token cookie
   deleteCookie("token", { req, res, path: "/" });
+  deleteCookie("refresh_token", { req, res, path: "/" });
 
   res.status(200).json({ ok: true });
 }

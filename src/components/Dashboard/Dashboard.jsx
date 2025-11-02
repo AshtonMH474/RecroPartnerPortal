@@ -9,7 +9,6 @@ import Buttons from "./Buttons"
 
 function Dashboard({props,papers,sheets}){
     const {user} = useAuth()
-    const router = useRouter()
     const [active,setActive] = useState(props?.filters[0].filter || '')
     const [recent,setRecent] = useState([])
     const [buttons,setButtons] = useState(props?.filters[0].buttons || [])
@@ -64,9 +63,9 @@ function Dashboard({props,papers,sheets}){
     }, [user?.email]); 
 
 
-    useEffect(() => {
-        if (!user) router.push("/");
-    }, [user, router]);
+    // useEffect(() => {
+    //     if (!user) router.push("/");
+    // }, [user, router]);
 
     if (!user) {
         // placeholder while redirect happens
