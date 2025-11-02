@@ -70,7 +70,7 @@ export default function Nav(props){
             <div className="lg:hidden"><Logo logo={props} /></div>
             <ProfileUser links={props.links} />
             <div className="flex items-center lg:hidden">
-              {user?.email && (<CiBellOn className=" text-white h-10 w-10 cursor-pointer hover:text-[#B55914] transition-all duration-200"/>)}
+              {/* {user?.email && (<CiBellOn className=" text-white h-10 w-10 cursor-pointer hover:text-[#B55914] transition-all duration-200"/>)} */}
               <MenuToggle menuOpen={menuOpen} toggleMenu={toggleMenu} buttonRef={buttonRef} />
             </div>
             

@@ -23,7 +23,7 @@ function ProfileUser({links}) {
     }
   return (
     <>
-    {user?.email && (<CiBellOn className="hidden lg:flex text-white h-15 w-17 cursor-pointer hover:text-[#B55914] transition-all duration-200"/>)}
+    {/* {user?.email && (<CiBellOn className="hidden lg:flex text-white h-15 w-17 cursor-pointer hover:text-[#B55914] transition-all duration-200"/>)} */}
     <div className="relative inline-block group">
       {/* Circle */}
       

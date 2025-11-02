@@ -67,6 +67,16 @@ export const myOpps = {
                 },
             ]
         },
+        {
+            name:'noOppsText',
+            label:'No Opportunites Text',
+            type:'string',
+        },
+        {
+            name:'noOppsLink',
+            label:'No Opportuinties Link',
+            type:'string',
+        }
         
     ]
 }

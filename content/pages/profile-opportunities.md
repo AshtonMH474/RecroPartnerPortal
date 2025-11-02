@@ -25,6 +25,8 @@ blocks:
         filter: date
       - label: Status
         filter: state
+    noOppsText: Browse Opportunities
+    noOppsLink: /opportunities
     _template: myOpps
 ---
 

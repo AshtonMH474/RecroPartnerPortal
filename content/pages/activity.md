@@ -17,6 +17,7 @@ blocks:
         filter: interests
       - label: Date
         filter: date
+    noActivityText: Browse
     _template: activity
 ---
 

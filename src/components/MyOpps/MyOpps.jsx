@@ -8,6 +8,7 @@ import Cards from "../Opportunites/Cards/Cards";
 import Pagination from "../Pagination";
 import DashboardFilters from "../Dashboard/Filters";
 import Tickets from "../Tickets/Tickets";
+import { tinaField } from "tinacms/dist/react";
 
 
 function MyOpps({props}){
@@ -181,17 +182,44 @@ function MyOpps({props}){
                     </div>
                         <AnimatePresence mode="wait" custom={direction}>
                             <motion.div
-                            key={startIndex} // triggers animation on page change
-                            custom={direction}
-                            variants={variants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
-                            className="max-w-[1400px]"
+                                key={startIndex}
+                                custom={direction}
+                                variants={variants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ duration: 0.4, ease: "easeInOut" }}
+                                className="max-w-[1400px]"
                             >
-                               {active != 'intrested' && cards.length > 0 && cards[0]?._sys?.filename && ( <Cards cardOptions={cardOptions}  cards={visibleCards} props={props}/>)}
-                               {active == 'intrested' && (<Tickets cards={tickets}/>)}
+                                {active !== "intrested" ? (
+                                cards.length > 0 && cards[0]?._sys?.filename ? (
+                                    <Cards cardOptions={cardOptions} cards={visibleCards} props={props} />
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-20 text-center text-white/80">
+                                    <p className="text-lg mb-6">
+                                        You don’t have any saved opportunities yet.
+                                    </p>
+                                    <a data-tina-field={tinaField(props,'noOppsText')}
+                                        href={props?.noOppsLink || "/opportunities"}
+                                        className="px-6 py-3 bg-[#1A1A1E] text-white rounded-xl border border-white/10 transition-all duration-300"
+                                    >
+                                       {props?.noOppsText}
+                                    </a>
+                                    </div>
+                                )
+                                ) : tickets.length > 0 ? (
+                                <Tickets cards={tickets} />
+                                ) : (
+                                <div className="flex flex-col items-center justify-center py-20 text-center text-white/80">
+                                    <p className="text-lg mb-6">You don’t have any submitted opportunities yet.</p>
+                                    <a  data-tina-field={tinaField(props,'noOppsText')}
+                                    href={props?.noOppsLink || "/opportunities"}
+                                    className="px-6 py-3 bg-[#1A1A1E]   text-white rounded-xl border border-white/10 transition-all duration-300"
+                                    >
+                                    {props?.noOppsText}
+                                    </a>
+                                </div>
+                                )}
                             </motion.div>
                         </AnimatePresence>
                 </div>

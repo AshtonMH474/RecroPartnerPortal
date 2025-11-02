@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { act, useEffect, useState } from "react"
 import Heading from "./Heading"
 import Types from "./Types"
 import { useAuth } from "@/context/auth"
@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Filters from "./Filters"
 import { getCategories } from "@/lib/auth_functions"
 import { clear } from "./functions"
+import { set } from "react-hook-form"
+import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
     const {user} = useAuth()
@@ -18,6 +20,7 @@ function Activity({props}){
     const [categories,setCategories] = useState([])
     const [startIndex, setStartIndex] = useState(0);
     const [direction, setDirection] = useState(0);
+    const [activeLink,setLink] = useState('')
     const [formData,setFormData] = useState({
         name:'',
         interests:[],
@@ -35,6 +38,11 @@ function Activity({props}){
         
     };
 
+    useEffect(() =>{
+        if(active == 'sheets'){
+            setLink('/sheets')
+        }else setLink('/papers')
+    },[active])
 
     useEffect(() => {
             async function getDownloads() {
@@ -145,6 +153,17 @@ function Activity({props}){
                     className="min-h-[1000px]"
                     >
                     <Cards cards={visibleCards} />
+                    {visibleCards.length == 0 && (
+                       <div className="flex flex-col items-center justify-center py-20 text-center text-white/80">
+                                    <p className="text-lg mb-6">You don’t have any recent activity yet.</p>
+                                    <a
+                                    data-tina-field={tinaField(props,'noActivityText')}
+                                    href={activeLink}
+                                    className="px-6 py-3 bg-[#1A1A1E]   text-white rounded-xl border border-white/10 transition-all duration-300"
+                                    >
+                                    {props.noActivityText} <span className="capitalize">{active}</span>
+                                    </a>
+                                </div>)}
                     </motion.div>
                 </AnimatePresence>
                 

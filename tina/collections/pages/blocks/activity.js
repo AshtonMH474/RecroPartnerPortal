@@ -58,6 +58,13 @@ export const activityBlock = {
                 },
             ]
         },
+        {
+            name:'noActivityText',
+            label:'No Activity Text',
+            type:'string',
+        },
+       
+        
         
     ]
 }
