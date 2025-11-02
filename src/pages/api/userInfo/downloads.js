@@ -1,7 +1,8 @@
 import clientPromise from "@/lib/mongodb";
 import { tinaClient } from "@/lib/tinaClient";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -9,63 +10,64 @@ export default async function handler(req, res) {
 
   try {
     const { email } = req.query;
-
-    if (!email) {
-      return res.status(400).json({ error: "Missing email" });
-    }
+    if (!email) return res.status(400).json({ error: "Missing email" });
 
     const dbclient = await clientPromise;
     const db = dbclient.db("mydb");
 
-    // Check user exists
-    const mongoUser = await db.collection("users").findOne({ email });
+    // Fetch user and downloads in parallel
+    const [mongoUser, downloads] = await Promise.all([
+      db.collection("users").findOne({ email }),
+      db
+        .collection("downloads")
+        .find({})
+        .sort({ downloadedAt: -1 })
+        .toArray(),
+    ]);
+
     if (!mongoUser) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Fetch downloads for that user
-    const downloads = await db
-      .collection("downloads")
-      .find({ userId: mongoUser._id })
-      .sort({ downloadedAt: -1 })
-      .toArray();
+    // Filter user’s downloads
+    const userDownloads = downloads.filter(
+      (d) => d.userId?.toString() === mongoUser._id.toString()
+    );
 
-      
-      const contentDir = path.join(process.cwd(), "content");
+    const contentDir = path.join(process.cwd(), "content");
 
-    const content = await Promise.all(
-  downloads
-    .filter(dl => dl?.relativePath && ["Paper", "Sheet"].includes(dl?.type))
-    .map(async (dl) => {
-      let type;
-      if(dl?.type == 'Paper') type='\papers'
-      else type = '\sheets'
-      const filePath = path.join(contentDir,type, dl.relativePath.replace(/\\/g, "/"));
-      if (!fs.existsSync(filePath)) {
-        return null;
-      }
+    const results = await Promise.allSettled(
+      userDownloads
+        .filter((dl) => dl?.relativePath && ["Paper", "Sheet"].includes(dl?.type))
+        .map(async (dl) => {
+          const subdir = dl.type === "Paper" ? "papers" : "sheets";
+          const filePath = path.join(contentDir, subdir, dl.relativePath.replace(/\\/g, "/"));
 
-      try {
-        const queryFn =
-          dl.type === "Paper"
-            ? tinaClient.queries.paper
-            : tinaClient.queries.sheet;
+          try {
+            await fs.access(filePath); // check file exists (async)
+          } catch {
+            return null; // skip missing files
+          }
 
-        const result = await queryFn({ relativePath: dl.relativePath });
-        return result?.data?.paper || result?.data?.sheet || null;
-      } catch (err) {
-        console.error(`Error loading ${dl.type} ${dl.relativePath}:`, err);
-        return null;
-      }
-    })
-);
+          const queryFn =
+            dl.type === "Paper"
+              ? tinaClient.queries.paper
+              : tinaClient.queries.sheet;
 
-    const filteredContent = content.filter(Boolean); // remove nulls
+          const result = await queryFn({ relativePath: dl.relativePath });
+          return result?.data?.paper || result?.data?.sheet || null;
+        })
+    );
+
+    const filteredContent = results
+      .filter((r) => r.status === "fulfilled" && r.value)
+      .map((r) => r.value);
+
     return res.status(200).json({
       success: true,
       email,
-      count: downloads.length,
-      downloads:filteredContent,
+      count: filteredContent.length,
+      downloads: filteredContent.slice(0, 8), // Only return top 8 if desired
     });
   } catch (error) {
     console.error("Error fetching downloads:", error);
