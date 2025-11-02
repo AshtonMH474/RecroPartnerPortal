@@ -8,12 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Filters from "./Filters"
 import { getCategories } from "@/lib/auth_functions"
 import { clear } from "./functions"
-import { set } from "react-hook-form"
+
 import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
+    console.log(props)
     const {user} = useAuth()
-    const [active, setActive] = useState(props?.filters?.[0]?.filter || '');
+    const [active, setActive] = useState(props?.type?.[0]?.filter || '');
     const [recent,setRecent] = useState([])
     const [cards,setCards] = useState([])
     const [allCards, setAllCards] = useState([]);
