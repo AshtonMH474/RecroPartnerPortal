@@ -5,6 +5,7 @@ import Filters from "./Filters"
 import { useEffect, useState } from "react"
 import Cards from "./Cards/Cards"
 import Buttons from "./Buttons"
+import { useLoader } from "@/context/loader"
 
 
 function Dashboard({props,papers,sheets}){
@@ -14,9 +15,13 @@ function Dashboard({props,papers,sheets}){
     const [recent,setRecent] = useState([])
     const [buttons,setButtons] = useState(props?.filters[0].buttons || [])
     const [cards,setCards] = useState([])
+     const { setIsLoaded } = useLoader();
     
-    
-
+      useEffect(() => {
+    if (user && papers && sheets) {
+      setIsLoaded(true); // tell BG to stop spinning and follow scroll
+    }
+  }, [user, papers, sheets, setIsLoaded]);
     
     useEffect(() => {
     async function  updateValues() {

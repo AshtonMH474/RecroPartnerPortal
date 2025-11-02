@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import "@/styles/gears.css";
 import BG from "@/components/BG";
 import { AuthProvider } from "@/context/auth";
+import { LoaderProvider } from "@/context/loader";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -10,10 +11,12 @@ export default function App({ Component, pageProps }) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </Head>
-      <BG/>
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
+      <LoaderProvider>
+        <BG/>
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
+      </LoaderProvider>
     </>
   );
 }

@@ -93,6 +93,9 @@ function Slug({res,nav,footer,paper,sheets,opp}){
     return dateB - dateA; // most recent first
   })
   .slice(0, 8);
+
+
+    
     return (
     <>
     <Nav {...navContent.nav}/>
