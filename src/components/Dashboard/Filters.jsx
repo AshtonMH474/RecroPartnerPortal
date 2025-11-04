@@ -2,6 +2,7 @@ import { tinaField } from "tinacms/dist/react"
 import IconRenderer from "../utils/IconRenderer"
 
 function Filters({props,setActive,active,recent}){
+    console.log(props)
     let filters = props?.options  || props?.filters || []
     return (
         <div className="flex flex-wrap gap-x-6 gap-y-4 ">

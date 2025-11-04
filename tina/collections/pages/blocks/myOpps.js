@@ -36,7 +36,7 @@ export const myOpps = {
                     type:'string',
                     label:'Type of Cards',
                     name:'filter',
-                    options:['saved','intrested']
+                    options:['deals','tickets']
                 },
                 {
                                     type:'string',

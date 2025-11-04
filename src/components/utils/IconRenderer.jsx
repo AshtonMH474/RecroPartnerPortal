@@ -3,6 +3,7 @@ import * as TbIcons from "react-icons/tb";
 
 export default function IconRenderer({ iconName,size,color }) {
 // grabs the right icon by name
+
 const allIcons = {
     ...FaIcons,
     ...TbIcons,

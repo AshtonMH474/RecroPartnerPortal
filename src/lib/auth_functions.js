@@ -136,7 +136,7 @@ export async function saveOpp(user, opp, interested) {
 
     // 2️⃣ If user is interested, call HubSpot sync route
     if (interested) {
-      let fetchI = await fetch('/api/hubspot/post-deal', {
+      let fetchI = await fetch('/api/hubspot/post-ticket', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -183,8 +183,20 @@ export async function fetchPartnerTickets(user) {
     throw new Error("Missing hubspotID for HubSpot request");
   }
 
-  const res = await fetch(`/api/hubspot/get-deals?hubspotID=${encodeURIComponent(hubspotID)}`);
+  const res = await fetch(`/api/hubspot/get-tickets?hubspotID=${encodeURIComponent(hubspotID)}`);
   if (!res.ok) throw new Error("Failed to fetch deals");
   const data = await res.json();
+  return data;
+}
+
+export async function getMyDeals(hubspotID) {
+  console.log("getMyDeals called with hubspotID:", hubspotID);
+   if (!hubspotID) {
+    throw new Error("Missing hubspotID for HubSpot request");
+  }
+   const res = await fetch(`/api/hubspot/get-deals?hubspotID=${encodeURIComponent(hubspotID)}`);
+  if (!res.ok) throw new Error("Failed to fetch deals");
+  const data = await res.json();
+  console.log("Deals data:", data);
   return data;
 }

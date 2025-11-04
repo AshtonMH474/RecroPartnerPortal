@@ -6,11 +6,11 @@ blocks:
     labelView: View More
     labelSaved: Save?
     options:
-      - label: Saved
-        filter: saved
-        icon: FaDownload
+      - label: My Deals
+        filter: deals
+        icon: FaHandsHelping
       - label: Submitted
-        filter: intrested
+        filter: tickets
         icon: FaRegCheckCircle
     filters:
       - label: Name

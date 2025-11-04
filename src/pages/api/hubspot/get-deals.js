@@ -1,79 +1,80 @@
+// pages/api/deals/byContact.js
 import axios from "axios";
-
-const HUBSPOT_API_URL =
-  process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
-const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
-    return res.status(405).json({ error: `Method ${req.method} not allowed` });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     const { hubspotID } = req.query;
-    if (!hubspotID)
-      return res.status(400).json({ error: "Missing hubspotID in query" });
+    if (!hubspotID) {
+      return res.status(400).json({ error: "Missing hubspotID" });
+    }
 
-    // 🔹 Step 1: Get all associated ticket IDs for this contact
-    const associationsRes = await axios.get(
-      `${HUBSPOT_API_URL}/crm/v4/objects/contacts/${hubspotID}/associations/tickets`,
+    const HUBSPOT_ACCESS_TOKEN = process.env.HUBSPOT_TOKEN;
+
+    // 1️⃣ Get associated deals for this contact
+    const associationRes = await axios.get(
+      `https://api.hubapi.com/crm/v4/objects/contacts/${hubspotID}/associations/deals`,
       {
         headers: {
-          Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+          Authorization: `Bearer ${HUBSPOT_ACCESS_TOKEN}`,
           "Content-Type": "application/json",
         },
       }
     );
+    const associatedDeals = associationRes.data.results || [];
 
-    const ticketAssociations = associationsRes.data.results || [];
-    const ticketIds = ticketAssociations.map((assoc) => assoc.toObjectId);
-
-    if (ticketIds.length === 0) {
-      return res.status(200).json({ success: true, tickets: [] });
+    if (associatedDeals.length === 0) {
+      return res.status(200).json({ deals: [] });
     }
 
-    // 🔹 Step 2: Fetch full ticket details (Batch Read)
-    const ticketsRes = await axios.post(
-      `${HUBSPOT_API_URL}/crm/v3/objects/tickets/batch/read`,
+    // ✅ The correct property is `toObjectId`
+    const dealIds = associatedDeals.map((a) => a.toObjectId).filter(Boolean);
+
+    if (dealIds.length === 0) {
+      return res.status(200).json({ deals: [] });
+    }
+
+    // 2️⃣ Fetch full deal details
+    const dealsRes = await axios.post(
+      `https://api.hubapi.com/crm/v3/objects/deals/batch/read`,
       {
-         properties: [
-      "subject",
-      "content",
-      "hs_pipeline",
-      "hs_pipeline_stage",
-      "createdate",
-      "hs_ticket_priority",
-      "hs_ticket_category",
-      "hs_lastmodifieddate",
-      // 👇 your custom fields
-      "filename",
-      "partner_email",
-      "amount",
-      "location",
-      "agency",
-      "type",
-      "category",
-      "iconname",
-    ],
-        inputs: ticketIds.map((id) => ({ id })),
+        properties: [
+          "dealname",
+          "amount",
+          "dealstage",
+          "pipeline",
+          "closedate",
+          "hs_lastmodifieddate",
+        ],
+        inputs: dealIds.map((id) => ({ id })),
       },
       {
         headers: {
-          Authorization: `Bearer ${HUBSPOT_TOKEN}`,
+          Authorization: `Bearer ${HUBSPOT_ACCESS_TOKEN}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    return res.status(200).json({
-      success: true,
-      tickets: ticketsRes.data.results,
-    });
+    const deals = dealsRes.data.results.map((d) => ({
+      id: d.id,
+      name: d.properties.dealname,
+      amount: d.properties.amount,
+      stage: d.properties.dealstage,
+      pipeline: d.properties.pipeline,
+      closeDate: d.properties.closedate,
+      lastUpdated: d.properties.hs_lastmodifieddate,
+    }));
+
+    res.status(200).json({ deals });
   } catch (error) {
-    console.error("HubSpot fetch tickets error:", error.response?.data || error);
-    return res
-      .status(500)
-      .json({ error: "Failed to fetch tickets from HubSpot" });
+    console.error("Error fetching deals:", error.response?.data || error.message);
+    res.status(500).json({
+      error: "Failed to fetch deals",
+      details: error.response?.data || error.message,
+    });
   }
 }

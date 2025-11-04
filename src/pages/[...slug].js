@@ -12,6 +12,7 @@ import Activity from "@/components/Activity/Activity";
 import Papers from "@/components/Papers/Papers";
 import AllOpps from "@/components/AllOpps.jsx/AllOpps";
 import MyOpps from "@/components/MyOpps/MyOpps";
+import MyOpportunites from "@/components/MyOpps/MyOpportunites";
 
 
 export async function getServerSideProps({ params, req, res }) {
@@ -168,7 +169,8 @@ function Slug({res,nav,footer,paper,sheets,opp}){
         case 'PageBlocksAllOpps':
           return <AllOpps key={i} props={block} opps={allOpps}/>
         case 'PageBlocksMyOpps':
-          return <MyOpps key={i} props={block}/>
+          // return <MyOpps key={i} props={block}/>
+          return <MyOpportunites key={i} props={block}/>
       }
     })}
       <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
