@@ -11,7 +11,7 @@ import DealFormModal from "../DealForm";
 
 
 function MyOpportunites({props}){
-   
+   console.log(props)
     const {user} = useAuth()
     const [showFormModal, setShowFormModal] = useState(false);
     const [deals,setDeals] = useState([])
@@ -77,9 +77,9 @@ function MyOpportunites({props}){
     },[active,deals,tickets])
 
     return(
-            <div className="pb-20" style={{minHeight:'100dvh'}}>
-                <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto pl-16">
-                    <div className="mx-auto ">
+            <div className="pb-20" style={{minHeight:props?.background == 'black' ? '' : '100dvh',background:props?.background == 'black' ? 'black' : ''}}>
+                <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto" style={{paddingTop:props?.background == 'black' ? '50px':''}}>
+                    <div className="flex justify-center flex-col items-center">
                         <Heading props={props}/>
                         <div className="pb-4">
                             <Filters active={active} setActive={setActive} props={props}/>

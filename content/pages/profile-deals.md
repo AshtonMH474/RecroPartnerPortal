@@ -2,7 +2,7 @@
 title: profile-opportunities
 blocks:
   - heading: |
-      # **My** Deals
+      # **My** Portfolio of Deals
     labelView: View More
     labelSaved: Save?
     options:
@@ -29,5 +29,4 @@ blocks:
     noOppsLink: /opportunities
     _template: myOpps
 ---
-
 

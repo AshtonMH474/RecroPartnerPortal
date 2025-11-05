@@ -35,20 +35,15 @@ blocks:
             style: button
     _template: dashboard
   - heading: |
-      # **Opportunities** for You
-    filters:
-      - label: 'By Interests '
-        filter: intrests
-        icon: FaTag
-      - label: 'New Releases '
-        filter: new
-        icon: FaStar
-    labelView: 'View More '
-    labelSaved: Save?
-    buttons:
-      - label: 'View All Opportunities '
-        style: button
-        link: '/opportunities '
-    _template: opportunites
+      # **My** Portfolio of Deals
+    background: black
+    options:
+      - label: Deals
+        filter: deals
+        icon: FaHandsHelping
+      - label: Submitted
+        filter: tickets
+        icon: FaCheckCircle
+    _template: myOpps
 ---
 
