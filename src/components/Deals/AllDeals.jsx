@@ -17,8 +17,8 @@ function AllDeals({props}){
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const visibleCount = 15
-    const totalPages = Math.ceil(deals.length / visibleCount);
-    const visibleCards = deals.slice(startIndex, startIndex + visibleCount);
+    const totalPages = Math.ceil(cards.length / visibleCount);
+    const visibleCards = cards.slice(startIndex, startIndex + visibleCount);
     const goToPage = (pageIndex) => {
         const newStartIndex = pageIndex * visibleCount;
         const goingForward = pageIndex > startIndex / visibleCount;
@@ -52,50 +52,30 @@ function AllDeals({props}){
 
 
     function onSubmit() {
-        console.log(formData)
-    //     const filteredCards = allCards.filter((card) => {
-    //     const cardDate = new Date(card.lastUpdated);
-    //     const now = new Date();
+        
+        const filteredCards = deals.filter((deal) => {
+        const matchesName = formData.name.trim().length === 0 || 
+        deal.name.toLowerCase().includes(formData.name.toLowerCase());
 
-    //     // ---- Match by interests ----
-    //     const matchesInterest =
-    //     formData.interests.length === 0 ||
-    //     formData.interests.some(
-    //         (interest) => card.category.category === interest
-    //     );
-    //     // ---- Match by name ----
-    //     const matchesName =
-    //     formData.name.trim().length === 0 ||
-    //     card.title.toLowerCase().includes(formData.name.toLowerCase());
-
-    //     // ---- Match by date ----
-    //     let matchesDate = true; // default (show all)
-    //     if (formData.date && formData.date.length > 0 && formData.date !== "all") {
-    //     if (formData.date === "month") {
-    //         const oneMonthAgo = new Date();
-    //         oneMonthAgo.setMonth(now.getMonth() - 1);
-    //         matchesDate = cardDate >= oneMonthAgo;
-    //     } else if (formData.date === "year") {
-    //         const oneYearAgo = new Date();
-    //         oneYearAgo.setFullYear(now.getFullYear() - 1);
-    //         matchesDate = cardDate >= oneYearAgo;
-    //     }
-    //     }
-
-    //     // ---- Must satisfy all filters ----
-    //     return matchesInterest && matchesName && matchesDate;
-    // });
-
-    // setCards(filteredCards);
+        
+        const matchesAgency =
+        formData.agencies.length === 0 ||
+        formData.agencies.some(
+            (a) => deal.agency?.toLowerCase().includes(a.toLowerCase())
+        );
+        
+        return matchesName && matchesAgency;
+        });
+        setCards(filteredCards);
 }
 
-    console.log(deals)
+    
     return(
         <div className="pb-20" style={{minHeight:'100dvh'}}>
             <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto">
                 <div className="flex justify-center flex-col items-center">
                     <Heading props={props}/>
-                    <DealFilters onSubmit={onSubmit} setFormData={setFormData} formData={formData} />
+                    <DealFilters setCards={setCards} deals={deals} onSubmit={onSubmit} setFormData={setFormData} formData={formData} />
                 </div>
             </div>
             <AnimatePresence  mode="wait" custom={direction}>

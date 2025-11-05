@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import AgenciesDropdown from "./AgenciesDropdown";
 
-function DealFilters({formData,setFormData,onSubmit}){
+function DealFilters({formData,setFormData,onSubmit,setCards,deals}){
     const [selectedAgencies, setSelectedAgencies] = useState([]);
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef(null); 
@@ -71,7 +71,7 @@ function DealFilters({formData,setFormData,onSubmit}){
                                 agencies: [],
                                 });
                                 setSelectedAgencies([]); 
-                                //   setCards(allCards)
+                                setCards(deals)
                             }}
                             className="bg-primary capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
                             >
