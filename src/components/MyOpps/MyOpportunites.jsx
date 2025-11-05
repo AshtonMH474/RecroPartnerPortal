@@ -75,7 +75,7 @@ function MyOpportunites({props}){
             setCards(deals)
         }else setCards(tickets)
     },[active,deals,tickets])
-
+    
     return(
             <div className="pb-20" style={{minHeight:props?.background == 'black' ? '' : '100dvh',background:props?.background == 'black' ? 'black' : ''}}>
                 <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto" style={{paddingTop:props?.background == 'black' ? '50px':''}}>
@@ -111,7 +111,7 @@ function MyOpportunites({props}){
                     {!visibleCards.length && (<p className="text-lg mb-6">You don’t have any submitted Deals yet.</p>)}
                     <button
                     onClick={() => setShowFormModal(true)}
-                    className="transition-colors hover:bg-[#B55914] cursor-pointer px-6 py-3 bg-[#1A1A1E]   text-white rounded-xl border border-white/10 transition-all duration-300"
+                    className="bg-primary text-[18px] capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
                     >
                         Reigster a Deal
                     </button>

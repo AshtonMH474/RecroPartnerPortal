@@ -81,14 +81,14 @@ function Card({ card }) {
             </p>
           )}
         
-            <p className="text-sm text-gray-400">
+            {amount > 0 && (<p className="text-sm text-gray-400">
             Amount:{" "}
             <span
                 className={`font-medium text-green-400 font-bold`}
             >
                 ${Number(amount).toLocaleString()}
             </span>
-            </p>
+            </p>)}
         </div>
 
         {/* Expand Button */}

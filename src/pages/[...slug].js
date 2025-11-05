@@ -12,6 +12,7 @@ import Activity from "@/components/Activity/Activity";
 import Papers from "@/components/Papers/Papers";
 import AllOpps from "@/components/AllOpps.jsx/AllOpps";
 import MyOpps from "@/components/MyOpps/MyOpps";
+import AllDeals from "@/components/MyOpps/AllDeals";
 import MyOpportunites from "@/components/MyOpps/MyOpportunites";
 
 
@@ -180,7 +181,8 @@ function Slug({res,nav,footer,paper,sheets,opp,statements}){
         case "PageBlocksStatements":
             return <Papers key={i} props={block} papers={allStatements}/>
         case 'PageBlocksAllOpps':
-          return <AllOpps key={i} props={block} opps={allOpps}/>
+          // return <AllOpps key={i} props={block} opps={allOpps}/>
+          return <AllDeals key={i} props={block}/>
         case 'PageBlocksMyOpps':
           // return <MyOpps key={i} props={block}/>
           return <MyOpportunites key={i} props={block}/>
