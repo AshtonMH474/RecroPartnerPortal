@@ -26,6 +26,13 @@ blocks:
           - label: View All Sheets
             link: /sheets
             style: button
+      - label: New Statements
+        filter: statements
+        icon: FaRegPaperPlane
+        buttons:
+          - label: View All Statements
+            link: /statements
+            style: button
     _template: dashboard
   - heading: |
       # **Opportunities** for You

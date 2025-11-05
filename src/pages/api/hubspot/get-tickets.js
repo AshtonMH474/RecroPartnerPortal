@@ -39,6 +39,10 @@ export default async function handler(req, res) {
       {
          properties: [
       "subject",
+      "agency",
+      "contract_vehicle",
+      "amount",
+      "program",
       "content",
       "hs_pipeline",
       "hs_pipeline_stage",
@@ -46,15 +50,6 @@ export default async function handler(req, res) {
       "hs_ticket_priority",
       "hs_ticket_category",
       "hs_lastmodifieddate",
-      // 👇 your custom fields
-      "filename",
-      "partner_email",
-      "amount",
-      "location",
-      "agency",
-      "type",
-      "category",
-      "iconname",
     ],
         inputs: ticketIds.map((id) => ({ id })),
       },

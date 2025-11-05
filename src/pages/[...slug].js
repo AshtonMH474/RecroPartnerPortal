@@ -79,13 +79,14 @@ export async function getServerSideProps({ params, req, res }) {
 
     const filename = `${params.slug?.[0]}.md`;
 
-    const [pageData, navData, footerData, paperData, sheetData, oppData] = await Promise.all([
+    const [pageData, navData, footerData, paperData, sheetData, oppData,statementsData] = await Promise.all([
       client.queries.page({ relativePath: filename }),
       client.queries.nav({ relativePath: "nav_authorized.md" }),
       client.queries.footer({ relativePath: "footer.md" }),
       client.queries.paperConnection({ first: parseInt(process.env.LIMIT) || 50 }),
       client.queries.sheetConnection({ first: parseInt(process.env.LIMIT) || 50 }),
       client.queries.opportunitesConnection({ first: parseInt(process.env.LIMIT) || 50 }),
+      client.queries.statementsConnection({ first: parseInt(process.env.LIMIT) || 50 }),
     ]);
 
     // ✅ 5. Return data to page
@@ -97,6 +98,7 @@ export async function getServerSideProps({ params, req, res }) {
         paper: paperData,
         sheets: sheetData,
         opp: oppData,
+        statements:statementsData
       },
     };
   } catch (err) {
@@ -109,7 +111,7 @@ export async function getServerSideProps({ params, req, res }) {
 
 
 
-function Slug({res,nav,footer,paper,sheets,opp}){
+function Slug({res,nav,footer,paper,sheets,opp,statements}){
   
     const {data: pageData} = useTina(res)
     const {data: navContent} = useTina(nav)
@@ -117,11 +119,12 @@ function Slug({res,nav,footer,paper,sheets,opp}){
     const {data:paperContent} = useTina(paper)
     const {data:sheetContent} = useTina(sheets)
     const {data: oppContent} = useTina(opp)
+    const {data:statementsContent} = useTina(statements)
     const [sidebarWidth, setSidebarWidth] = useState(200);
     const allPapers = paperContent.paperConnection.edges.map(e => e.node);
     const allSheets = sheetContent.sheetConnection.edges.map(e => e.node);
     const allOpps = oppContent.opportunitesConnection.edges.map(e => e.node);
-    
+    const allStatements = statementsContent.statementsConnection.edges.map(e => e.node);
     const newWhitePapers = allPapers
     .sort((a, b) => {
     const dateA = new Date(a.lastUpdated);
@@ -138,8 +141,16 @@ function Slug({res,nav,footer,paper,sheets,opp}){
   })
   .slice(0, 8);
 
+  const newStatements = allStatements
+    .sort((a, b) => {
+    const dateA = new Date(a.lastUpdated);
+    const dateB = new Date(b.lastUpdated);
+    return dateB - dateA; // most recent first
+  })
+  .slice(0, 8);
 
-    
+
+      console.log(pageData)
     return (
     <>
     <Nav {...navContent.nav}/>
@@ -150,14 +161,14 @@ function Slug({res,nav,footer,paper,sheets,opp}){
           marginLeft: `${sidebarWidth}px`,
         }}
       >
-        
+      
     {pageData.page.blocks?.map((block,i) => {
       
       switch(block?.__typename){
         case "PageBlocksLanding":
                   return <Landing key={i}  {...block}/>;
         case "PageBlocksDashboard":
-                  return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets}/>
+                  return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets} statements={newStatements}/>
         case 'PageBlocksOpportunites':
           return <Opportunites key={i} props={block} opportunites={allOpps}/>
         case 'PageBlocksActivity':
@@ -166,6 +177,8 @@ function Slug({res,nav,footer,paper,sheets,opp}){
           return <Papers key={i} props={block} papers={allPapers}/>
         case 'PageBlocksSheets':
           return <Papers key={i} props={block} papers={allSheets}/>
+        case "PageBlocksStatements":
+            return <Papers key={i} props={block} papers={allStatements}/>
         case 'PageBlocksAllOpps':
           return <AllOpps key={i} props={block} opps={allOpps}/>
         case 'PageBlocksMyOpps':

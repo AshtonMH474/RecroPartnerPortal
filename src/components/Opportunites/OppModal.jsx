@@ -10,7 +10,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/auth";
 import { deleteOpp, saveOpp } from "@/lib/auth_functions";
 import { Check, X } from "lucide-react";
-import IntrestedFormModal from "../IntrestedForm";
+
+import DealFormModal from "../DealForm";
 
 function OppModal({ opp, onClose, onSaveChange }) {
   const { user } = useAuth();
@@ -201,7 +202,7 @@ function OppModal({ opp, onClose, onSaveChange }) {
 
       {/* Interest Form Modal */}
       {showFormModal && (
-        <IntrestedFormModal
+        <DealFormModal
         opportunity={opp}
         onClose={() => setShowFormModal(false)}
         onSaveChange={onSaveChange}

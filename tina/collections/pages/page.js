@@ -6,6 +6,7 @@ import { myOpps } from "./blocks/myOpps";
 import { opportunitesBlock } from "./blocks/opportunites";
 import { papersBlock } from "./blocks/papers";
 import { sheetsBlock } from "./blocks/sheets";
+import { statementsBlock } from "./blocks/statements";
 
 const pages = {
   name: "page",
@@ -34,7 +35,7 @@ const pages = {
       label: "Blocks",
       type: "object",
       list: true,
-      templates: [landingBlock,dashboardBlock,opportunitesBlock,activityBlock,papersBlock,sheetsBlock,allOppsBlock,myOpps],
+      templates: [landingBlock,dashboardBlock,opportunitesBlock,activityBlock,papersBlock,sheetsBlock,allOppsBlock,myOpps,statementsBlock],
     },
     
   ],

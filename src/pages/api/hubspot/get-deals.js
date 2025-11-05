@@ -1,4 +1,3 @@
-// pages/api/deals/byContact.js
 import axios from "axios";
 
 export default async function handler(req, res) {
@@ -24,30 +23,34 @@ export default async function handler(req, res) {
         },
       }
     );
-    const associatedDeals = associationRes.data.results || [];
 
+    const associatedDeals = associationRes.data.results || [];
     if (associatedDeals.length === 0) {
       return res.status(200).json({ deals: [] });
     }
+    console.log(associatedDeals)
 
-    // ✅ The correct property is `toObjectId`
+    // ✅ Use `toObjectId` for deal IDs
     const dealIds = associatedDeals.map((a) => a.toObjectId).filter(Boolean);
-
     if (dealIds.length === 0) {
       return res.status(200).json({ deals: [] });
     }
 
-    // 2️⃣ Fetch full deal details
+    // 2️⃣ Fetch deal details with your defined custom properties
     const dealsRes = await axios.post(
       `https://api.hubapi.com/crm/v3/objects/deals/batch/read`,
       {
         properties: [
           "dealname",
           "amount",
-          "dealstage",
+          "description",
+          "agency",         // custom field
+          "type_of_work",   // custom field
           "pipeline",
+          "dealstage",
           "closedate",
           "hs_lastmodifieddate",
+          "contract_vehicle"
         ],
         inputs: dealIds.map((id) => ({ id })),
       },
@@ -61,12 +64,16 @@ export default async function handler(req, res) {
 
     const deals = dealsRes.data.results.map((d) => ({
       id: d.id,
-      name: d.properties.dealname,
-      amount: d.properties.amount,
-      stage: d.properties.dealstage,
-      pipeline: d.properties.pipeline,
-      closeDate: d.properties.closedate,
-      lastUpdated: d.properties.hs_lastmodifieddate,
+      name: d.properties.dealname || "Untitled Deal",
+      amount: d.properties.amount || "0",
+      description: d.properties.description || "",
+      agency: d.properties.agency || "",
+      typeOfWork: d.properties.type_of_work || "",
+      pipeline: d.properties.pipeline || "",
+      stage: d.properties.dealstage || "",
+      closeDate: d.properties.closedate || "",
+      lastUpdated: d.properties.hs_lastmodifieddate || "",
+      vehicle:d.properties.contract_vehicle
     }));
 
     res.status(200).json({ deals });

@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     const client = await clientPromise;
     const db = client.db("mydb");
-
+    
     const user = await db.collection("users").findOne({ email });
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
     if (!user.verified) return res.status(403).json({ error: "Email not verified" });

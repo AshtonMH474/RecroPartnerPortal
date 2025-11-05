@@ -5,7 +5,7 @@ import PlusMinusButton from "../Dashboard/Cards/PlusMinus";
 function Card({ card }) {
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
-  
+  console.log(card)
 
   useEffect(() => {
     if (contentRef.current) {
@@ -24,9 +24,9 @@ function Card({ card }) {
     subject,
     content,
     agency,
+    contract_vehicle,
     amount,
-    category,
-    type,
+    program,
     hs_pipeline_stage,
     createdate,
   } = card?.properties || {};
@@ -48,7 +48,7 @@ function Card({ card }) {
       <div className="flex justify-between items-start p-4 gap-4">
         {/* Icon */}
         <div className="w-[70px] h-[70px] bg-primary rounded-lg flex justify-center items-center">
-          <IconRenderer size="48px" color="#FAF3E0" iconName={card?.properties?.iconname} />
+          <IconRenderer size="48px" color="#FAF3E0" iconName={"FaRegCheckCircle"} />
         </div>
 
         {/* Title + Status */}
@@ -70,8 +70,27 @@ function Card({ card }) {
             </div>
           </div>
 
-          <p className="text-sm text-gray-400 mt-1">{category} | {type}</p>
-          <p className="text-sm text-gray-400">{agency} | ${amount}</p>
+        {/* Optional fields */}
+          {[contract_vehicle, program].some(Boolean) && (
+  <p className="text-sm text-gray-400 mt-1 flex flex-wrap items-center gap-1">
+    {contract_vehicle && <span>{contract_vehicle}</span>}
+    {contract_vehicle && program && <span className="text-gray-400">|</span>}
+    {program && <span>{program}</span>}
+  </p>
+)}
+
+{/* Agency | Amount */}
+{[agency, amount].some(Boolean) && (
+  <p className="text-sm flex flex-wrap items-center gap-1">
+    {agency && <span className="text-gray-400">{agency}</span>}
+    {agency && amount && <span className="text-gray-400">|</span>}
+    {amount && (
+      <span className="text-gray-400">
+        Amount: <span className="text-green-400 font-medium">${Number(amount).toLocaleString()}</span>
+      </span>
+    )}
+  </p>
+)}
         </div>
 
         {/* Expand Button */}
@@ -86,7 +105,7 @@ function Card({ card }) {
         className="collapse__content transition-[max-height,opacity] duration-500 ease-in-out px-4"
         style={{ maxHeight: expanded ? "var(--collapse-height)" : "0", overflow: "hidden" }}
       >
-        <p className="text-gray-300 text-sm mt-2">{content}</p>
+        <p className="text-gray-300 text-sm mt-2 break-words">{content}</p>
 
         {/* Extra Ticket Details */}
         <div className="mt-4 m text-gray-400 text-sm space-y-1">

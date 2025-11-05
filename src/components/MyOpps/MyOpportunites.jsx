@@ -7,10 +7,13 @@ import { AnimatePresence,motion } from "framer-motion";
 import Tickets from "../Tickets/Tickets";
 import Pagination from "../Pagination";
 import Deals from "../Deals/Deals";
+import DealFormModal from "../DealForm";
 
 
 function MyOpportunites({props}){
+   
     const {user} = useAuth()
+    const [showFormModal, setShowFormModal] = useState(false);
     const [deals,setDeals] = useState([])
     const [tickets,setTickets] = useState([])
     const [cards,setCards] = useState([])
@@ -67,12 +70,11 @@ function MyOpportunites({props}){
   fetchTickets();
 }, [user]); // ✅ include `user` as a dependency
 
-useEffect(() => {
-    if(active == 'deals'){
-        setCards(deals)
-    }else setCards(tickets)
-},[active,deals,tickets])
-    
+    useEffect(() => {
+        if(active == 'deals'){
+            setCards(deals)
+        }else setCards(tickets)
+    },[active,deals,tickets])
 
     return(
             <div className="pb-20" style={{minHeight:'100dvh'}}>
@@ -84,7 +86,7 @@ useEffect(() => {
                         </div>
                     </div>
                     <div>
-
+                       
                     </div>
                 </div>
                 <AnimatePresence  mode="wait" custom={direction}>
@@ -100,9 +102,28 @@ useEffect(() => {
                     >
                         {active == 'tickets' && (<Tickets cards={visibleCards} />)}
                         {active == 'deals' && (<Deals cards={visibleCards} />)}
+                        
                     </motion.div>
                 </AnimatePresence>
                  <Pagination totalPages={totalPages} currentPage={startIndex / visibleCount} goToPage={goToPage}/>
+                 
+                <div className="flex pt-8 flex-col items-center ">
+                    {!visibleCards.length && (<p className="text-lg mb-6">You don’t have any submitted Deals yet.</p>)}
+                    <button
+                    onClick={() => setShowFormModal(true)}
+                    className="transition-colors hover:bg-[#B55914] cursor-pointer px-6 py-3 bg-[#1A1A1E]   text-white rounded-xl border border-white/10 transition-all duration-300"
+                    >
+                        Reigster a Deal
+                    </button>
+                </div>
+                        
+                 {showFormModal && (
+                    <DealFormModal
+                    onClose={() => setShowFormModal(false)}
+                    setTickets={setTickets}
+                    grabTickets={true}
+                />
+                )}
             </div>
     )
 

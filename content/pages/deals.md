@@ -1,17 +1,10 @@
 ---
-title: profile-opportunities
+title: opportunities
 blocks:
   - heading: |
-      # **My** Opportunities
+      # **Partner** Opportunities
     labelView: View More
     labelSaved: Save?
-    options:
-      - label: My Deals
-        filter: deals
-        icon: FaHandsHelping
-      - label: Submitted
-        filter: tickets
-        icon: FaRegCheckCircle
     filters:
       - label: Name
         filter: name
@@ -25,8 +18,7 @@ blocks:
         filter: date
       - label: Status
         filter: state
-    noOppsText: Browse Opportunities
-    noOppsLink: /opportunities
-    _template: myOpps
+    _template: allOpps
 ---
+
 

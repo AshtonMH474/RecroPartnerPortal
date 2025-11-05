@@ -7,7 +7,7 @@ import Cards from "./Cards/Cards"
 import Buttons from "./Buttons"
 
 
-function Dashboard({props,papers,sheets}){
+function Dashboard({props,papers,sheets,statements}){
     const {user} = useAuth()
     const [active, setActive] = useState(props?.filters?.[0]?.filter || '');
     const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
@@ -27,6 +27,9 @@ function Dashboard({props,papers,sheets}){
         }
         else if (active === 'sheets') {
             await setCards(sheets)
+        }
+        else if (active == 'statements'){
+            await setCards(statements)
         }
         let filter = props?.filters?.find((filter) => filter.filter == active)
         await setButtons(filter?.buttons || [])

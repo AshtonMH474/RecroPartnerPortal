@@ -17,6 +17,12 @@ export const myOpps = {
             label:'Label for Viewing Opportunites'
         },
         {
+            name:'background',
+            label:'Do you want black or classic for background',
+            type:'string',
+            options:['classic','black']
+        },
+        {
             name:'labelSaved',
             type:'string',
             label:'Label for Saved Opportunites'

@@ -34,35 +34,60 @@ export default async function handler(req, res) {
       (d) => d.userId?.toString() === mongoUser._id.toString()
     );
 
+    
+
     const contentDir = path.join(process.cwd(), "content");
 
-    const results = await Promise.allSettled(
-      userDownloads
-        .filter((dl) => dl?.relativePath && ["Paper", "Sheet"].includes(dl?.type))
-        .map(async (dl) => {
-          const subdir = dl.type === "Paper" ? "papers" : "sheets";
-          const filePath = path.join(contentDir, subdir, dl.relativePath.replace(/\\/g, "/"));
+  const results = await Promise.allSettled(
+  userDownloads
+    .filter(
+      (dl) =>
+        dl?.relativePath &&
+        ["Paper", "Sheet", "Statements"].includes(dl?.type)
+    )
+    .map(async (dl) => {
+      // Map type to subdirectory
+      const subdir =
+        dl.type === "Paper"
+          ? "papers"
+          : dl.type === "Sheet"
+          ? "sheets"
+          : "statements";
 
-          try {
-            await fs.access(filePath); // check file exists (async)
-          } catch {
-            return null; // skip missing files
-          }
+      const filePath = path.join(
+        contentDir,
+        subdir,
+        dl.relativePath.replace(/\\/g, "/")
+      );
 
-          const queryFn =
-            dl.type === "Paper"
-              ? tinaClient.queries.paper
-              : tinaClient.queries.sheet;
+      try {
+        await fs.access(filePath); // ensure file exists
+      } catch {
+        return null; // skip missing files
+      }
+      
+      // Choose the right Tina query function
+      const queryFn =
+        dl.type === "Paper"
+          ? tinaClient.queries.paper
+          : dl.type === "Sheet"
+          ? tinaClient.queries.sheet
+          : tinaClient.queries.statements;
 
-          const result = await queryFn({ relativePath: dl.relativePath });
-          return result?.data?.paper || result?.data?.sheet || null;
-        })
-    );
+      const result = await queryFn({ relativePath: dl.relativePath });
+      return (
+        result?.data?.paper ||
+        result?.data?.sheet ||
+        result?.data?.statements ||
+        null
+      );
+    })
+);
 
     const filteredContent = results
       .filter((r) => r.status === "fulfilled" && r.value)
       .map((r) => r.value);
-
+  
     return res.status(200).json({
       success: true,
       email,

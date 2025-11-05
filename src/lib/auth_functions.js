@@ -113,34 +113,17 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
             }
 }
 
-export async function saveOpp(user, opp, interested) {
+export async function postDeal(user, deal) {
   try {
     // 1️⃣ Save to your DB/API
-    const res = await fetch('/api/userInfo/intrested-opp', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: user.email,
-        type: 'opp',
-        filename: opp?._sys?.relativePath,
-        interested: interested
-      }),
-    });
-
-    if (!res.ok) {
-      console.error("Failed to save opportunity to DB");
-      return;
-    }
-
-    const data = await res.json();
-
+    
     // 2️⃣ If user is interested, call HubSpot sync route
-    if (interested) {
+   
       let fetchI = await fetch('/api/hubspot/post-ticket', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          opportunity: opp,
+          deal: deal,
           user: user// optional: any info your API route needs
         }),
       });
@@ -149,7 +132,7 @@ export async function saveOpp(user, opp, interested) {
         const data = await fetchI.json();
         return data.message;
       }
-    }
+    
 
     return data;
   } catch (err) {
