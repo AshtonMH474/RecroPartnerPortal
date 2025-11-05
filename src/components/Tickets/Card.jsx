@@ -70,27 +70,20 @@ function Card({ card }) {
             </div>
           </div>
 
-        {/* Optional fields */}
-          {[contract_vehicle, program].some(Boolean) && (
-  <p className="text-sm text-gray-400 mt-1 flex flex-wrap items-center gap-1">
-    {contract_vehicle && <span>{contract_vehicle}</span>}
-    {contract_vehicle && program && <span className="text-gray-400">|</span>}
-    {program && <span>{program}</span>}
-  </p>
-)}
+  
 
-{/* Agency | Amount */}
-{[agency, amount].some(Boolean) && (
-  <p className="text-sm flex flex-wrap items-center gap-1">
-    {agency && <span className="text-gray-400">{agency}</span>}
-    {agency && amount && <span className="text-gray-400">|</span>}
-    {amount && (
-      <span className="text-gray-400">
-        Amount: <span className="text-green-400 font-medium">${Number(amount).toLocaleString()}</span>
-      </span>
-    )}
-  </p>
-)}
+        {/* Agency | Amount */}
+        {[agency, amount].some(Boolean) && (
+          <p className="text-sm flex flex-wrap items-center gap-1">
+            {agency && <span className="text-gray-400">{agency}</span>}
+            {agency && amount && <span className="text-gray-400">|</span>}
+            {amount && (
+              <span className="text-gray-400">
+                Amount: <span className="text-green-400 font-medium">${Number(amount).toLocaleString()}</span>
+              </span>
+            )}
+          </p>
+        )}
         </div>
 
         {/* Expand Button */}
@@ -105,12 +98,9 @@ function Card({ card }) {
         className="collapse__content transition-[max-height,opacity] duration-500 ease-in-out px-4"
         style={{ maxHeight: expanded ? "var(--collapse-height)" : "0", overflow: "hidden" }}
       >
-        <p className="text-gray-300 text-sm mt-2 break-words">{content}</p>
+        <p className="text-gray-300 text-sm mt-2 break-words pb-2">{content}</p>
 
-        {/* Extra Ticket Details */}
-        <div className="mt-4 m text-gray-400 text-sm space-y-1">
-          <div className=""><strong>Created:</strong> {new Date(createdate).toLocaleString()}</div>
-        </div>
+       
       </section>
     </div>
   );

@@ -12,7 +12,7 @@ import Activity from "@/components/Activity/Activity";
 import Papers from "@/components/Papers/Papers";
 import AllOpps from "@/components/AllOpps.jsx/AllOpps";
 import MyOpps from "@/components/MyOpps/MyOpps";
-import AllDeals from "@/components/MyOpps/AllDeals";
+import AllDeals from "@/components/Deals/AllDeals";
 import MyOpportunites from "@/components/MyOpps/MyOpportunites";
 
 
