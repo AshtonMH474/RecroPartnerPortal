@@ -104,7 +104,7 @@ function Dashboard({ props, papers, sheets, statements }) {
 
         {/* ✅ Show loading state for recent tab */}
         {active === "recent" && loadingRecent ? (
-          <div className="flex justify-center items-center py-20">
+          <div className="flex justify-center items-center py-20 pr-16">
             <div className="text-[#C2C2BC]">Loading recent downloads...</div>
           </div>
         ) : (

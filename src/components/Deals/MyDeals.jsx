@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Filters from "../Dashboard/Filters";
 import Heading from "../Activity/Heading";
 import { useAuth } from "@/context/auth";
-
 import { fetchPartnerTickets,getMyDeals } from "@/lib/service_functions";
 import { AnimatePresence,motion } from "framer-motion";
 import Tickets from "../Tickets/Tickets";
@@ -108,8 +107,8 @@ function MyDeals({props}){
                 </AnimatePresence>
                  <Pagination totalPages={totalPages} currentPage={startIndex / visibleCount} goToPage={goToPage}/>
                  
-                <div className="flex pt-8 flex-col items-center ">
-                    {!visibleCards.length && (<p data-tina-field={tinaField(props,'noDealsText')} className="text-lg mb-6">{props.noDealsText}</p>)}
+                <div className="flex  flex-col items-center ">
+                    {!visibleCards.length && (<p data-tina-field={tinaField(props,'noDealsText')} className="text-lg text-[#C2C2BC] mb-6">{props.noDealsText}</p>)}
                     <button
                     onClick={() => setShowFormModal(true)}
                     data-tina-field={tinaField(props,'registerLabel')}

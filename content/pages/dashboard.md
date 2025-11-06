@@ -5,13 +5,6 @@ blocks:
   - heading: |
       # **Welcome**
     filters:
-      - label: Recent
-        filter: recent
-        icon: FaClock
-        buttons:
-          - label: View Full Activity
-            link: /activity
-            style: button
       - label: New White Papers
         filter: papers
         icon: FaPaperclip
@@ -32,6 +25,13 @@ blocks:
         buttons:
           - label: View All Statements
             link: /statements
+            style: button
+      - label: Recent
+        filter: recent
+        icon: FaClock
+        buttons:
+          - label: View Full Activity
+            link: /activity
             style: button
     _template: dashboard
   - heading: |
