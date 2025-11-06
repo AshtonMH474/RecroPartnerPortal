@@ -42,7 +42,11 @@ function Activity({props}){
     useEffect(() =>{
         if(active == 'sheets'){
             setLink('/sheets')
-        }else setLink('/papers')
+        }
+        else if(active == 'statements'){
+            setLink('/statements')
+        }
+        else setLink('/papers')
     },[active])
 
     useEffect(() => {

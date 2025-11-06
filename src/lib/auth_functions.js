@@ -184,13 +184,6 @@ export async function getMyDeals(hubspotID) {
   return data;
 }
 
-// export async function getAllDeals(email) {
-//   const res = await fetch(`/api/hubspot/all-deals?email=${encodeURIComponent(email)}`);
-//   if (!res.ok) throw new Error("Failed to fetch deals");
-//   const data = await res.json();
-//   console.log("All deals data:", data);
-//   return data;
-// }
 
 // lib/auth_functions.js
 export async function getAllDeals(email, { limit = 20, after = null } = {}) {

@@ -27,7 +27,7 @@ export const activityBlock = {
                                 type:'string',
                                 label:'Type of Filter',
                                 name:'filter',
-                                options:['papers','sheets']
+                                options:['papers','sheets','statements']
                             },
                             {
                                 type:'string',

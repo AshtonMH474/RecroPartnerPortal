@@ -3,7 +3,7 @@ function AgenciesDropdown({selectedAgencies,toggleAgency}){
     return(
          <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl min-w-[250px] z-10 max-h-60 overflow-y-auto">
             {agencies?.map((a, i) => (
-                <div key={i} className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/10">
+                <div onClick={() => toggleAgency(a)} key={i} className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/10">
                 <span className="capitalize text-white">{a}</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input
