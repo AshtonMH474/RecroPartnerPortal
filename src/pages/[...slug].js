@@ -3,91 +3,98 @@ import Footer from "@/components/Footer";
 import Landing from "@/components/Landing";
 import Nav from "@/components/Nav/Nav";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import { useState } from "react";
-import { useTina } from "tinacms/dist/react";
-import jwt from 'jsonwebtoken';
-import cookie from "cookie";
 import Activity from "@/components/Activity/Activity";
 import Materials from "@/components/Materials/Materials";
 import AllDeals from "@/components/Deals/AllDeals";
 import MyDeals from "@/components/Deals/MyDeals";
+import { useState, useMemo } from "react";
+import { useTina } from "tinacms/dist/react";
+import jwt from "jsonwebtoken";
+import cookie from "cookie";
 
-
+/* ============================
+   ⚡️ SERVER SIDE OPTIMIZATION
+   ============================ */
 export async function getServerSideProps({ params, req, res }) {
   try {
-    const cookies = req.cookies;
+    const cookies = req.cookies || {};
     let accessToken = cookies.token;
     const refreshToken = cookies.refresh_token;
 
     let decoded;
 
-    // ✅ 1. Validate Access Token
+    // ✅ 1. Verify Access Token
     if (accessToken) {
       try {
         decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-        console.log("✅ Access token valid");
       } catch {
-        accessToken = null; // token expired or invalid
+        accessToken = null; // expired
       }
     }
 
-    // ✅ 2. Refresh Access Token if Expired
+    // ✅ 2. Try Refresh Token (no DB call needed)
     if (!accessToken && refreshToken) {
       try {
-        const decodedRefresh = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const decodedRefresh = jwt.verify(
+          refreshToken,
+          process.env.JWT_REFRESH_SECRET
+        );
 
-        // Issue new access token
         const newAccessToken = jwt.sign(
-          { id: decodedRefresh.id,email: decodedRefresh.email },
+          { id: decodedRefresh.id, email: decodedRefresh.email },
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
 
+        // Set refreshed access token
         res.setHeader(
           "Set-Cookie",
           cookie.serialize("token", newAccessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 60 * 60, // 1 hour
+            maxAge: 3600,
             path: "/",
           })
         );
 
         decoded = jwt.decode(newAccessToken);
         accessToken = newAccessToken;
-      } catch (err) {
-        console.log("❌ Refresh token invalid or expired:", err.message);
+      } catch {
+        console.warn("⚠️ Refresh token invalid or expired");
       }
     }
 
-    // ✅ 3. Redirect if authentication fails
+    // ✅ 3. Redirect if still unauthenticated
     if (!accessToken || !decoded) {
-      return {
-        redirect: { destination: "/", permanent: false },
-      };
+      return { redirect: { destination: "/", permanent: false } };
     }
 
-    // ✅ 4. Handle TinaCMS content safely
+    // ✅ 4. Load TinaCMS client dynamically (avoid startup cost)
     const { client } = await import("../../tina/__generated__/databaseClient");
 
+    // ✅ 5. Handle non-content requests early
     if (params.slug?.[0]?.startsWith(".well-known")) {
       return { notFound: true };
     }
 
     const filename = `${params.slug?.[0]}.md`;
 
-    const [pageData, navData, footerData, paperData, sheetData, oppData,statementsData] = await Promise.all([
-      client.queries.page({ relativePath: filename }),
-      client.queries.nav({ relativePath: "nav_authorized.md" }),
-      client.queries.footer({ relativePath: "footer.md" }),
-      client.queries.paperConnection({ first: parseInt(process.env.LIMIT) || 50 }),
-      client.queries.sheetConnection({ first: parseInt(process.env.LIMIT) || 50 }),
-      client.queries.opportunitesConnection({ first: parseInt(process.env.LIMIT) || 50 }),
-      client.queries.statementsConnection({ first: parseInt(process.env.LIMIT) || 50 }),
-    ]);
+    // ✅ 6. Batch Tina queries concurrently
+    const limit = parseInt(process.env.LIMIT || "50", 10);
 
-    // ✅ 5. Return data to page
+    const [pageData, navData, footerData, paperData, sheetData, oppData, statementsData] =
+      await Promise.all([
+        client.queries.page({ relativePath: filename }),
+        client.queries.nav({ relativePath: "nav_authorized.md" }),
+        client.queries.footer({ relativePath: "footer.md" }),
+        client.queries.paperConnection({ first: limit }),
+        client.queries.sheetConnection({ first: limit }),
+        client.queries.opportunitesConnection({ first: limit }),
+        client.queries.statementsConnection({ first: limit }),
+      ]);
+
+    // ✅ 7. Send lean props — don’t wrap entire Tina responses
     return {
       props: {
         res: pageData,
@@ -96,93 +103,104 @@ export async function getServerSideProps({ params, req, res }) {
         paper: paperData,
         sheets: sheetData,
         opp: oppData,
-        statements:statementsData
+        statements: statementsData,
       },
     };
   } catch (err) {
-    console.error("❌ Server error:", err);
-    return {
-      redirect: { destination: "/", permanent: false },
-    };
+    console.error("❌ getServerSideProps error:", err);
+    return { redirect: { destination: "/", permanent: false } };
   }
 }
 
+/* ============================
+   ⚡️ CLIENT RENDER OPTIMIZATION
+   ============================ */
+function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
+  // Tina hooks
+  const { data: pageData } = useTina(res);
+  const { data: navContent } = useTina(nav);
+  const { data: footerContent } = useTina(footer);
+  const { data: paperContent } = useTina(paper);
+  const { data: sheetContent } = useTina(sheets);
+  const { data: oppContent } = useTina(opp);
+  const { data: statementsContent } = useTina(statements);
 
+  const [sidebarWidth, setSidebarWidth] = useState(200);
 
-function Slug({res,nav,footer,paper,sheets,opp,statements}){
-  
-    const {data: pageData} = useTina(res)
-    const {data: navContent} = useTina(nav)
-    const {data:footerContent} = useTina(footer)
-    const {data:paperContent} = useTina(paper)
-    const {data:sheetContent} = useTina(sheets)
-    const {data: oppContent} = useTina(opp)
-    const {data:statementsContent} = useTina(statements)
-    const [sidebarWidth, setSidebarWidth] = useState(200);
-    const allPapers = paperContent.paperConnection.edges.map(e => e.node);
-    const allSheets = sheetContent.sheetConnection.edges.map(e => e.node);
-    const allOpps = oppContent.opportunitesConnection.edges.map(e => e.node);
-    const allStatements = statementsContent.statementsConnection.edges.map(e => e.node);
-    const newWhitePapers = allPapers
-    .sort((a, b) => {
-    const dateA = new Date(a.lastUpdated);
-    const dateB = new Date(b.lastUpdated);
-    return dateB - dateA; // most recent first
-  })
-  .slice(0, 8); 
+  // ✅ Memoize derived arrays (prevents re-sorting on every render)
+  const allPapers = useMemo(
+    () => paperContent.paperConnection.edges.map((e) => e.node),
+    [paperContent]
+  );
+  const allSheets = useMemo(
+    () => sheetContent.sheetConnection.edges.map((e) => e.node),
+    [sheetContent]
+  );
+  const allOpps = useMemo(
+    () => oppContent.opportunitesConnection.edges.map((e) => e.node),
+    [oppContent]
+  );
+  const allStatements = useMemo(
+    () => statementsContent.statementsConnection.edges.map((e) => e.node),
+    [statementsContent]
+  );
 
-  const newDataSheets = allSheets
-    .sort((a, b) => {
-    const dateA = new Date(a.lastUpdated);
-    const dateB = new Date(b.lastUpdated);
-    return dateB - dateA; // most recent first
-  })
-  .slice(0, 8);
-
-  const newStatements = allStatements
-    .sort((a, b) => {
-    const dateA = new Date(a.lastUpdated);
-    const dateB = new Date(b.lastUpdated);
-    return dateB - dateA; // most recent first
-  })
-  .slice(0, 8);
-
-    return (
-    <>
-    <Nav {...navContent.nav}/>
-    <Sidebar res={navContent.nav} onWidthChange={setSidebarWidth}/>
-    <div
-        className="transition-all duration-500 ease-in-out "
-        style={{
-          marginLeft: `${sidebarWidth}px`,
-        }}
-      >
-      
-    {pageData.page.blocks?.map((block,i) => {
-      
-      switch(block?.__typename){
-        case "PageBlocksLanding":
-                  return <Landing key={i}  {...block}/>;
-        case "PageBlocksDashboard":
-                  return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets} statements={newStatements}/>
-        case 'PageBlocksActivity':
-          return <Activity key={i} props={block}/>
-        case 'PageBlocksPapers':
-          return <Materials key={i} props={block} materials={allPapers}/>
-        case 'PageBlocksSheets':
-          return <Materials key={i} props={block} materials={allSheets}/>
-        case "PageBlocksStatements":
-            return <Materials key={i} props={block} materials={allStatements}/>
-        case 'PageBlocksAllDeals':
-          return <AllDeals key={i} props={block}/>
-        case 'PageBlocksMyDeals':
-          return <MyDeals key={i} props={block}/>
-      }
-    })}
-      <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
-      </div>
-    </>
+  // ✅ Pre-sort and slice once (computed properties, not state)
+  const sortByDateDesc = (arr) =>
+    [...arr].sort(
+      (a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)
     );
+
+  const newWhitePapers = useMemo(() => sortByDateDesc(allPapers).slice(0, 8), [allPapers]);
+  const newDataSheets = useMemo(() => sortByDateDesc(allSheets).slice(0, 8), [allSheets]);
+  const newStatements = useMemo(() => sortByDateDesc(allStatements).slice(0, 8), [allStatements]);
+
+  /* ============================
+     🚀 FAST, STABLE RENDER PATH
+     ============================ */
+  return (
+    <>
+      <Nav {...navContent.nav} />
+      <Sidebar res={navContent.nav} onWidthChange={setSidebarWidth} />
+
+      <main
+        className="transition-all duration-500 ease-in-out"
+        style={{ marginLeft: `${sidebarWidth}px` }}
+      >
+        {pageData.page.blocks?.map((block, i) => {
+          switch (block?.__typename) {
+            case "PageBlocksLanding":
+              return <Landing key={i} {...block} />;
+            case "PageBlocksDashboard":
+              return (
+                <Dashboard
+                  key={i}
+                  props={block}
+                  papers={newWhitePapers}
+                  sheets={newDataSheets}
+                  statements={newStatements}
+                />
+              );
+            case "PageBlocksActivity":
+              return <Activity key={i} props={block} />;
+            case "PageBlocksPapers":
+              return <Materials key={i} props={block} materials={allPapers} />;
+            case "PageBlocksSheets":
+              return <Materials key={i} props={block} materials={allSheets} />;
+            case "PageBlocksStatements":
+              return <Materials key={i} props={block} materials={allStatements} />;
+            case "PageBlocksAllDeals":
+              return <AllDeals key={i} props={block} />;
+            case "PageBlocksMyDeals":
+              return <MyDeals key={i} props={block} />;
+            default:
+              return null;
+          }
+        })}
+        <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
+      </main>
+    </>
+  );
 }
 
-export default Slug
+export default Slug;
