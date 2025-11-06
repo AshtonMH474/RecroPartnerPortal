@@ -47,7 +47,7 @@ function Card({ card }) {
       {/* Header */}
       <div className="flex justify-between items-start p-4 gap-4">
         {/* Icon */}
-        <div className="w-[70px] h-[70px] bg-primary rounded-lg flex justify-center items-center">
+        <div className="w-[70px] h-[70px] bg-primary rounded-lg flex justify-center items-center flex-shrink-0">
           <IconRenderer size="48px" color="#FAF3E0" iconName={"FaRegCheckCircle"} />
         </div>
 
@@ -87,7 +87,7 @@ function Card({ card }) {
         </div>
 
         {/* Expand Button */}
-        <div className="flex items-start">
+        <div className="flex items-start flex-shrink-0">
           <PlusMinusButton expanded={expanded} setExpanded={setExpanded} />
         </div>
       </div>
