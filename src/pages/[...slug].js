@@ -1,3 +1,209 @@
+// import Dashboard from "@/components/Dashboard/Dashboard";
+// import Footer from "@/components/Footer";
+// import Landing from "@/components/Landing";
+// import Nav from "@/components/Nav/Nav";
+// import Sidebar from "@/components/Sidebar/Sidebar";
+// import Activity from "@/components/Activity/Activity";
+// import Materials from "@/components/Materials/Materials";
+// import AllDeals from "@/components/Deals/AllDeals";
+// import MyDeals from "@/components/Deals/MyDeals";
+// import { useState, useMemo } from "react";
+// import { useTina } from "tinacms/dist/react";
+// import jwt from "jsonwebtoken";
+// import cookie from "cookie";
+
+// /* ============================
+//    ⚡️ SERVER SIDE OPTIMIZATION
+//    ============================ */
+// export async function getServerSideProps({ params, req, res }) {
+//   try {
+//     const cookies = req.cookies || {};
+//     let accessToken = cookies.token;
+//     const refreshToken = cookies.refresh_token;
+
+//     let decoded;
+
+//     // ✅ 1. Verify Access Token
+//     if (accessToken) {
+//       try {
+//         decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+//       } catch {
+//         accessToken = null; // expired
+//       }
+//     }
+
+//     // ✅ 2. Try Refresh Token (no DB call needed)
+//     if (!accessToken && refreshToken) {
+//       try {
+//         const decodedRefresh = jwt.verify(
+//           refreshToken,
+//           process.env.JWT_REFRESH_SECRET
+//         );
+
+//         const newAccessToken = jwt.sign(
+//           { id: decodedRefresh.id, email: decodedRefresh.email },
+//           process.env.JWT_SECRET,
+//           { expiresIn: "1h" }
+//         );
+
+//         // Set refreshed access token
+//         res.setHeader(
+//           "Set-Cookie",
+//           cookie.serialize("token", newAccessToken, {
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "production",
+//             sameSite: "lax",
+//             maxAge: 3600,
+//             path: "/",
+//           })
+//         );
+
+//         decoded = jwt.decode(newAccessToken);
+//         accessToken = newAccessToken;
+//       } catch {
+//         console.warn("⚠️ Refresh token invalid or expired");
+//       }
+//     }
+
+//     // ✅ 3. Redirect if still unauthenticated
+//     if (!accessToken || !decoded) {
+//       return { redirect: { destination: "/", permanent: false } };
+//     }
+
+//     // ✅ 4. Load TinaCMS client dynamically (avoid startup cost)
+//     const { client } = await import("../../tina/__generated__/databaseClient");
+
+//     // ✅ 5. Handle non-content requests early
+//     if (params.slug?.[0]?.startsWith(".well-known")) {
+//       return { notFound: true };
+//     }
+
+//     const filename = `${params.slug?.[0]}.md`;
+
+//     // ✅ 6. Batch Tina queries concurrently
+//     const limit = parseInt(process.env.LIMIT || "50", 10);
+
+//     const [pageData, navData, footerData, paperData, sheetData, oppData, statementsData] =
+//       await Promise.all([
+//         client.queries.page({ relativePath: filename }),
+//         client.queries.nav({ relativePath: "nav_authorized.md" }),
+//         client.queries.footer({ relativePath: "footer.md" }),
+//         client.queries.paperConnection({ first: limit }),
+//         client.queries.sheetConnection({ first: limit }),
+//         client.queries.opportunitesConnection({ first: limit }),
+//         client.queries.statementsConnection({ first: limit }),
+//       ]);
+
+//     // ✅ 7. Send lean props — don’t wrap entire Tina responses
+//     return {
+//       props: {
+//         res: pageData,
+//         nav: navData,
+//         footer: footerData,
+//         paper: paperData,
+//         sheets: sheetData,
+//         opp: oppData,
+//         statements: statementsData,
+//       },
+//     };
+//   } catch (err) {
+//     console.error("❌ getServerSideProps error:", err);
+//     return { redirect: { destination: "/", permanent: false } };
+//   }
+// }
+
+// /* ============================
+//    ⚡️ CLIENT RENDER OPTIMIZATION
+//    ============================ */
+// function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
+//   // Tina hooks
+//   const { data: pageData } = useTina(res);
+//   const { data: navContent } = useTina(nav);
+//   const { data: footerContent } = useTina(footer);
+//   const { data: paperContent } = useTina(paper);
+//   const { data: sheetContent } = useTina(sheets);
+//   const { data: oppContent } = useTina(opp);
+//   const { data: statementsContent } = useTina(statements);
+
+//   const [sidebarWidth, setSidebarWidth] = useState(200);
+
+//   // ✅ Memoize derived arrays (prevents re-sorting on every render)
+//   const allPapers = useMemo(
+//     () => paperContent.paperConnection.edges.map((e) => e.node),
+//     [paperContent]
+//   );
+//   const allSheets = useMemo(
+//     () => sheetContent.sheetConnection.edges.map((e) => e.node),
+//     [sheetContent]
+//   );
+//   const allOpps = useMemo(
+//     () => oppContent.opportunitesConnection.edges.map((e) => e.node),
+//     [oppContent]
+//   );
+//   const allStatements = useMemo(
+//     () => statementsContent.statementsConnection.edges.map((e) => e.node),
+//     [statementsContent]
+//   );
+
+//   // ✅ Pre-sort and slice once (computed properties, not state)
+//   const sortByDateDesc = (arr) =>
+//     [...arr].sort(
+//       (a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)
+//     );
+
+//   const newWhitePapers = useMemo(() => sortByDateDesc(allPapers).slice(0, 8), [allPapers]);
+//   const newDataSheets = useMemo(() => sortByDateDesc(allSheets).slice(0, 8), [allSheets]);
+//   const newStatements = useMemo(() => sortByDateDesc(allStatements).slice(0, 8), [allStatements]);
+
+//   /* ============================
+//      🚀 FAST, STABLE RENDER PATH
+//      ============================ */
+//   return (
+//     <>
+//       <Nav {...navContent.nav} />
+//       <Sidebar res={navContent.nav} onWidthChange={setSidebarWidth} />
+
+//       <main
+//         className="transition-all duration-500 ease-in-out"
+//         style={{ marginLeft: `${sidebarWidth}px` }}
+//       >
+//         {pageData.page.blocks?.map((block, i) => {
+//           switch (block?.__typename) {
+//             case "PageBlocksLanding":
+//               return <Landing key={i} {...block} />;
+//             case "PageBlocksDashboard":
+//               return (
+//                 <Dashboard
+//                   key={i}
+//                   props={block}
+//                   papers={newWhitePapers}
+//                   sheets={newDataSheets}
+//                   statements={newStatements}
+//                 />
+//               );
+//             case "PageBlocksActivity":
+//               return <Activity key={i} props={block} />;
+//             case "PageBlocksPapers":
+//               return <Materials key={i} props={block} materials={allPapers} />;
+//             case "PageBlocksSheets":
+//               return <Materials key={i} props={block} materials={allSheets} />;
+//             case "PageBlocksStatements":
+//               return <Materials key={i} props={block} materials={allStatements} />;
+//             case "PageBlocksAllDeals":
+//               return <AllDeals key={i} props={block} />;
+//             case "PageBlocksMyDeals":
+//               return <MyDeals key={i} props={block} />;
+//             default:
+//               return null;
+//           }
+//         })}
+//         <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
+//       </main>
+//     </>
+//   );
+// }
+
+// export default Slug;
 import Dashboard from "@/components/Dashboard/Dashboard";
 import Footer from "@/components/Footer";
 import Landing from "@/components/Landing";
@@ -11,6 +217,16 @@ import { useState, useMemo } from "react";
 import { useTina } from "tinacms/dist/react";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
+
+// ✅ Cache Tina client globally (persists across requests)
+let cachedTinaClient = null;
+
+async function getTinaClient() {
+  if (cachedTinaClient) return cachedTinaClient;
+  const { client } = await import("../../tina/__generated__/databaseClient");
+  cachedTinaClient = client;
+  return client;
+}
 
 /* ============================
    ⚡️ SERVER SIDE OPTIMIZATION
@@ -70,8 +286,8 @@ export async function getServerSideProps({ params, req, res }) {
       return { redirect: { destination: "/", permanent: false } };
     }
 
-    // ✅ 4. Load TinaCMS client dynamically (avoid startup cost)
-    const { client } = await import("../../tina/__generated__/databaseClient");
+    // ✅ 4. Use cached Tina client (faster)
+    const client = await getTinaClient();
 
     // ✅ 5. Handle non-content requests early
     if (params.slug?.[0]?.startsWith(".well-known")) {
@@ -94,7 +310,14 @@ export async function getServerSideProps({ params, req, res }) {
         client.queries.statementsConnection({ first: limit }),
       ]);
 
-    // ✅ 7. Send lean props — don’t wrap entire Tina responses
+    // ✅ 7. Set cache headers for better performance
+    // Cache for 60 seconds, revalidate in background
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=60, stale-while-revalidate=300"
+    );
+
+    // ✅ 8. Send lean props
     return {
       props: {
         res: pageData,

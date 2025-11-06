@@ -1,104 +1,4 @@
-// import clientPromise from "@/lib/mongodb";
-// import { tinaClient } from "@/lib/tinaClient";
-// import fs from "fs/promises";
-// import path from "path";
 
-// export default async function handler(req, res) {
-//   if (req.method !== "GET") {
-//     return res.status(405).json({ error: "Method not allowed" });
-//   }
-
-//   try {
-//     const { email } = req.query;
-//     if (!email) return res.status(400).json({ error: "Missing email" });
-
-//     const dbclient = await clientPromise;
-//     const db = dbclient.db("mydb");
-
-//     // Fetch user and downloads in parallel
-//     const [mongoUser, downloads] = await Promise.all([
-//       db.collection("users").findOne({ email }),
-//       db
-//         .collection("downloads")
-//         .find({})
-//         .sort({ downloadedAt: -1 })
-//         .toArray(),
-//     ]);
-
-//     if (!mongoUser) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-
-//     // Filter user’s downloads
-//     const userDownloads = downloads.filter(
-//       (d) => d.userId?.toString() === mongoUser._id.toString()
-//     );
-
-    
-
-//     const contentDir = path.join(process.cwd(), "content");
-
-//   const results = await Promise.allSettled(
-//   userDownloads
-//     .filter(
-//       (dl) =>
-//         dl?.relativePath &&
-//         ["Paper", "Sheet", "Statements"].includes(dl?.type)
-//     )
-//     .map(async (dl) => {
-//       // Map type to subdirectory
-//       const subdir =
-//         dl.type === "Paper"
-//           ? "papers"
-//           : dl.type === "Sheet"
-//           ? "sheets"
-//           : "statements";
-
-//       const filePath = path.join(
-//         contentDir,
-//         subdir,
-//         dl.relativePath.replace(/\\/g, "/")
-//       );
-
-//       try {
-//         await fs.access(filePath); // ensure file exists
-//       } catch {
-//         return null; // skip missing files
-//       }
-      
-//       // Choose the right Tina query function
-//       const queryFn =
-//         dl.type === "Paper"
-//           ? tinaClient.queries.paper
-//           : dl.type === "Sheet"
-//           ? tinaClient.queries.sheet
-//           : tinaClient.queries.statements;
-
-//       const result = await queryFn({ relativePath: dl.relativePath });
-//       return (
-//         result?.data?.paper ||
-//         result?.data?.sheet ||
-//         result?.data?.statements ||
-//         null
-//       );
-//     })
-// );
-
-//     const filteredContent = results
-//       .filter((r) => r.status === "fulfilled" && r.value)
-//       .map((r) => r.value);
-  
-//     return res.status(200).json({
-//       success: true,
-//       email,
-//       count: filteredContent.length,
-//       downloads: filteredContent.slice(0, 8), // Only return top 8 if desired
-//     });
-//   } catch (error) {
-//     console.error("Error fetching downloads:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// }
 import clientPromise from "@/lib/mongodb";
 import { tinaClient } from "@/lib/tinaClient";
 import path from "path";
@@ -185,7 +85,7 @@ export default async function handler(req, res) {
       success: true,
       email,
       count: filtered.length,
-      downloads: filtered.slice(0, 8),
+      downloads: filtered,
     });
   } catch (error) {
     console.error("Error fetching downloads:", error);

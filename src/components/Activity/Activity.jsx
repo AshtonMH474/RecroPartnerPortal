@@ -132,7 +132,7 @@ function Activity({props}){
 }
 
   
-    
+    console.log(recent)
     
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>
