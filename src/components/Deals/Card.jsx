@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import IconRenderer from "../utils/IconRenderer";
-import PlusMinusButton from "../Dashboard/Cards/PlusMinus";
+import PlusMinusButton from "../Cards/PlusMinus";
 
 function Card({ card }) {
   const [expanded, setExpanded] = useState(false);

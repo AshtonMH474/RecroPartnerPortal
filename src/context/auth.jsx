@@ -5,7 +5,6 @@ import Register from "@/components/Register";
 import NewPasswordModal from "@/components/New-Password";
 import ChangePassword from "@/components/ChangePassword";
 import { checkUser } from "@/lib/auth_functions";
-import OppModal from "@/components/Opportunites/OppModal";
 import EditProfile from "@/components/EditProfile/EditProfile";
 
 const AuthContext = createContext();
@@ -66,9 +65,6 @@ export function AuthProvider({ children }) {
       )}
       {activeModal === "changePassword" && (
         <ChangePassword token={modalData?.data?.token} onClose={closeModal} />
-      )}
-      {activeModal == 'Opp' && (
-        <OppModal opp={modalData.data} onClose={closeModal} onSaveChange={modalData?.onChange}/>
       )}
       {activeModal == 'Edit' && (
         <EditProfile onClose={closeModal}/>

@@ -44,6 +44,8 @@ blocks:
       - label: Submitted
         filter: tickets
         icon: FaCheckCircle
-    _template: myOpps
+    noDealsText: You don’t have any submitted Deals yet.
+    registerLabel: Register a Deal
+    _template: myDeals
 ---
 

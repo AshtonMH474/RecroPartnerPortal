@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
-import { fetchPartnerTickets, postDeal } from "@/lib/auth_functions";
+
+import { postDeal,fetchPartnerTickets } from "@/lib/service_functions";
 import { useAuth } from "@/context/auth";
 
 function DealFormModal({  onClose,grabTickets,setTickets }) {

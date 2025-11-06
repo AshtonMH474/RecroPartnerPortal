@@ -11,7 +11,6 @@ export default async function handler(req, res) {
   try {
     const { deal, user } = req.body;
     if (!user) return res.status(401).json({ error: "Unauthorized" });
-    console.log(user)
     const contactId = user.hubspotID;
     if (!contactId)
       return res.status(400).json({ error: "User does not have a HubSpot contact ID" });

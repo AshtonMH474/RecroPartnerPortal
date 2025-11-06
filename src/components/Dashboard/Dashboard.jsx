@@ -1,9 +1,8 @@
 import { useAuth } from "@/context/auth"
-import { useRouter } from "next/router"
-import Heading from "./Heading"
+import IntroHeading from "./IntroHeading"
 import Filters from "./Filters"
 import { useEffect, useState } from "react"
-import Cards from "./Cards/Cards"
+import Cards from "../Cards/Cards"
 import Buttons from "./Buttons"
 
 
@@ -66,9 +65,7 @@ function Dashboard({props,papers,sheets,statements}){
     }, [user?.email]); 
 
 
-    // useEffect(() => {
-    //     if (!user) router.push("/");
-    // }, [user, router]);
+
 
     if (!user) {
         // placeholder while redirect happens
@@ -82,7 +79,7 @@ function Dashboard({props,papers,sheets,statements}){
         <div className="pb-20" style={{minHeight:'100vh'}}>
             <div className="mt-20  flex flex-col pl-16">
                 <div>
-                   <Heading props={props} user={user} />
+                   <IntroHeading props={props} user={user} />
                    <Filters recent={recent} active={active} setActive={setActive} props={props} user={user}/>
                 </div>
                 <Cards cards={cards}/>

@@ -5,7 +5,8 @@ import { useAuth } from "@/context/auth";
 import { MdSaveAlt } from "react-icons/md";
 import EditProfileForm from "./EditProfileForm";
 import EditCategories from "./EditCategories";
-import { checkUser, getCategories } from "@/lib/auth_functions";
+import { checkUser } from "@/lib/auth_functions";
+import { getCategories } from "@/lib/service_functions";
 function EditProfile({onClose}){
     const {user,setUser} = useAuth()
 

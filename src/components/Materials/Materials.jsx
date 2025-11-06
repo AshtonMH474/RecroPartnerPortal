@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react"
 import Heading from "../Activity/Heading"
 import { AnimatePresence,motion } from "framer-motion"
-import Pagination from "../Pagination";
-import Cards from "../Dashboard/Cards/Cards";
-import { getCategories } from "@/lib/auth_functions";
+import Pagination from "../utils/Pagination";
+import Cards from "../Cards/Cards";
+import { getCategories } from "@/lib/service_functions";
 import Filters from "./Filters";
 
-function Papers({props,papers}){
+function Materials({props,materials}){
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
-    const [cards,setCards] = useState(papers)
-    const allCards = papers
+    const [cards,setCards] = useState(materials)
+    const allCards = materials
     const [categories,setCategories] = useState([])
     const [formData,setFormData] = useState({
             name:'',
@@ -117,4 +117,4 @@ function Papers({props,papers}){
 }
 
 
-export default Papers
+export default Materials

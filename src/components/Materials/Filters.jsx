@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import DateDropdown from "../Activity/DateDropdown";
-import InterestDropdown from "../Activity/InterestDropdown";
+import DateDropdown from "../utils/DateDropdown";
+import InterestDropdown from "../utils/InterestDropdown";
 import { tinaField } from "tinacms/dist/react";
-import StateDropdown from "../AllOpps.jsx/StateDropdown";
+
 
 function Filters({allCards,setCards,setFormData,categories,formData, filters,onSubmit}){
     const [selectedInterests, setSelectedInterests] = useState([]);
@@ -111,9 +111,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                               className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
                               />
                         )
-                        if(filter.filter == 'state') {
-                          return <StateDropdown key={i} handleChange={handleChange} filter={filter} formData={formData}/>
-                        }
+                        
                         
                   })}
 

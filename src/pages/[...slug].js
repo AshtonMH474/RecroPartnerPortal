@@ -7,13 +7,10 @@ import { useState } from "react";
 import { useTina } from "tinacms/dist/react";
 import jwt from 'jsonwebtoken';
 import cookie from "cookie";
-import Opportunites from "@/components/Opportunites/Opportunites";
 import Activity from "@/components/Activity/Activity";
-import Papers from "@/components/Papers/Papers";
-import AllOpps from "@/components/AllOpps.jsx/AllOpps";
-import MyOpps from "@/components/MyOpps/MyOpps";
+import Materials from "@/components/Materials/Materials";
 import AllDeals from "@/components/Deals/AllDeals";
-import MyOpportunites from "@/components/MyOpps/MyOpportunites";
+import MyDeals from "@/components/Deals/MyDeals";
 
 
 export async function getServerSideProps({ params, req, res }) {
@@ -150,8 +147,6 @@ function Slug({res,nav,footer,paper,sheets,opp,statements}){
   })
   .slice(0, 8);
 
-
-      console.log(pageData)
     return (
     <>
     <Nav {...navContent.nav}/>
@@ -170,22 +165,18 @@ function Slug({res,nav,footer,paper,sheets,opp,statements}){
                   return <Landing key={i}  {...block}/>;
         case "PageBlocksDashboard":
                   return <Dashboard key={i} props={block} papers={newWhitePapers} sheets={newDataSheets} statements={newStatements}/>
-        case 'PageBlocksOpportunites':
-          return <Opportunites key={i} props={block} opportunites={allOpps}/>
         case 'PageBlocksActivity':
           return <Activity key={i} props={block}/>
         case 'PageBlocksPapers':
-          return <Papers key={i} props={block} papers={allPapers}/>
+          return <Materials key={i} props={block} materials={allPapers}/>
         case 'PageBlocksSheets':
-          return <Papers key={i} props={block} papers={allSheets}/>
+          return <Materials key={i} props={block} materials={allSheets}/>
         case "PageBlocksStatements":
-            return <Papers key={i} props={block} papers={allStatements}/>
-        case 'PageBlocksAllOpps':
-          // return <AllOpps key={i} props={block} opps={allOpps}/>
+            return <Materials key={i} props={block} materials={allStatements}/>
+        case 'PageBlocksAllDeals':
           return <AllDeals key={i} props={block}/>
-        case 'PageBlocksMyOpps':
-          // return <MyOpps key={i} props={block}/>
-          return <MyOpportunites key={i} props={block}/>
+        case 'PageBlocksMyDeals':
+          return <MyDeals key={i} props={block}/>
       }
     })}
       <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />

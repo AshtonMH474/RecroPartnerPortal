@@ -1,9 +1,9 @@
-import Heading from "../Opportunites/Heading";
+import Heading from "../Activity/Heading";
 import { useEffect, useState } from "react";
-import { getAllDeals } from "@/lib/auth_functions";
+import { getAllDeals } from "@/lib/service_functions";
 import { useAuth } from "@/context/auth";
 import { AnimatePresence,motion } from "framer-motion";
-import Pagination from "../Pagination";
+import Pagination from "../utils/Pagination";
 import Deals from "./Deals";
 import DealFilters from "./Filters";
 function AllDeals({props}){
@@ -72,7 +72,7 @@ function AllDeals({props}){
     
     return(
         <div className="pb-20" style={{minHeight:'100dvh'}}>
-            <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto">
+            <div className="mt-20  max-w-[1400px] mx-auto">
                 <div className="flex flex-col pl-16">
                     <Heading props={props}/>
                     <DealFilters setCards={setCards} deals={deals} onSubmit={onSubmit} setFormData={setFormData} formData={formData} />

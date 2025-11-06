@@ -1,32 +1,18 @@
 ---
-title: profile-opportunities
+title: profile-deals
 blocks:
   - heading: |
       # **My** Portfolio of Deals
-    labelView: View More
-    labelSaved: Save?
+    background: classic
     options:
-      - label: My Deals
+      - label: Deals
         filter: deals
         icon: FaHandsHelping
       - label: Submitted
         filter: tickets
-        icon: FaRegCheckCircle
-    filters:
-      - label: Name
-        filter: name
-      - label: Agency
-        filter: agency
-      - label: Type
-        filter: type
-      - label: 'Interests '
-        filter: interests
-      - label: Date
-        filter: date
-      - label: Status
-        filter: state
-    noOppsText: Browse Opportunities
-    noOppsLink: /opportunities
-    _template: myOpps
+        icon: FaCheckCircle
+    noDealsText: You don’t have any submitted Deals yet.
+    registerLabel: Register a Deal
+    _template: myDeals
 ---
 

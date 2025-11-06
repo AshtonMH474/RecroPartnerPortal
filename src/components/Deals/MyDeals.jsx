@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import Filters from "../Dashboard/Filters";
-import Heading from "../Opportunites/Heading";
+import Heading from "../Activity/Heading";
 import { useAuth } from "@/context/auth";
-import { fetchPartnerTickets, getMyDeals } from "@/lib/auth_functions";
+
+import { fetchPartnerTickets,getMyDeals } from "@/lib/service_functions";
 import { AnimatePresence,motion } from "framer-motion";
 import Tickets from "../Tickets/Tickets";
-import Pagination from "../Pagination";
-import Deals from "../Deals/Deals";
+import Pagination from "../utils/Pagination";
+import Deals from "./Deals";
 import DealFormModal from "../DealForm";
+import { tinaField } from "tinacms/dist/react";
 
 
-function MyOpportunites({props}){
-   console.log(props)
+function MyDeals({props}){
     const {user} = useAuth()
     const [showFormModal, setShowFormModal] = useState(false);
     const [deals,setDeals] = useState([])
@@ -108,12 +109,13 @@ function MyOpportunites({props}){
                  <Pagination totalPages={totalPages} currentPage={startIndex / visibleCount} goToPage={goToPage}/>
                  
                 <div className="flex pt-8 flex-col items-center ">
-                    {!visibleCards.length && (<p className="text-lg mb-6">You don’t have any submitted Deals yet.</p>)}
+                    {!visibleCards.length && (<p data-tina-field={tinaField(props,'noDealsText')} className="text-lg mb-6">{props.noDealsText}</p>)}
                     <button
                     onClick={() => setShowFormModal(true)}
+                    data-tina-field={tinaField(props,'registerLabel')}
                     className="bg-primary text-[18px] capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
                     >
-                        Reigster a Deal
+                        {props.registerLabel}
                     </button>
                 </div>
                         
@@ -132,4 +134,4 @@ function MyOpportunites({props}){
 }
 
 
-export default MyOpportunites;
+export default MyDeals;

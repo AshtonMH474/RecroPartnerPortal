@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { clear } from "./functions";
-import InterestDropdown from "./InterestDropdown";
-import DateDropdown from "./DateDropdown";
+import InterestDropdown from "../utils/InterestDropdown";
+import DateDropdown from "../utils/DateDropdown";
 import { tinaField } from "tinacms/dist/react";
 
 function Filters({active,setCards,setAllCards,recent, filters, setFormData, categories,onSubmit,formData }) {

@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     if (associatedDeals.length === 0) {
       return res.status(200).json({ deals: [] });
     }
-    console.log(associatedDeals)
+    
 
     // ✅ Use `toObjectId` for deal IDs
     const dealIds = associatedDeals.map((a) => a.toObjectId).filter(Boolean);

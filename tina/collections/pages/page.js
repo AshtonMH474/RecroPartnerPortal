@@ -1,8 +1,8 @@
 import { activityBlock } from "./blocks/activity";
-import { allOppsBlock } from "./blocks/allOpps";
+import { allDealsBlock } from "./blocks/allDeals";
 import { dashboardBlock } from "./blocks/dashboard";
 import { landingBlock } from "./blocks/landing";
-import { myOpps } from "./blocks/myOpps";
+import { myDeals } from "./blocks/myDeals";
 import { opportunitesBlock } from "./blocks/opportunites";
 import { papersBlock } from "./blocks/papers";
 import { sheetsBlock } from "./blocks/sheets";
@@ -35,7 +35,7 @@ const pages = {
       label: "Blocks",
       type: "object",
       list: true,
-      templates: [landingBlock,dashboardBlock,opportunitesBlock,activityBlock,papersBlock,sheetsBlock,allOppsBlock,myOpps,statementsBlock],
+      templates: [landingBlock,dashboardBlock,opportunitesBlock,activityBlock,papersBlock,sheetsBlock,allDealsBlock,myDeals,statementsBlock],
     },
     
   ],
