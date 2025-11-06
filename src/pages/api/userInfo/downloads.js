@@ -1,7 +1,6 @@
 
 import clientPromise from "@/lib/mongodb";
 import { tinaClient } from "@/lib/tinaClient";
-import path from "path";
 
 export default async function handler(req, res) {
   if (req.method !== "GET")
@@ -14,72 +13,73 @@ export default async function handler(req, res) {
     const dbclient = await clientPromise;
     const db = dbclient.db("mydb");
 
-    // Fetch user + downloads in parallel
-    const [mongoUser, downloads] = await Promise.all([
-      db.collection("users").findOne({ email }, { projection: { _id: 1 } }),
-      db
-        .collection("downloads")
-        .find({}, { sort: { downloadedAt: -1 } })
-        .limit(50) // <-- limit if you can, to avoid processing everything
-        .toArray(),
-    ]);
+    // ✅ Fetch user first
+    const mongoUser = await db
+      .collection("users")
+      .findOne({ email }, { projection: { _id: 1 } });
 
     if (!mongoUser) return res.status(404).json({ error: "User not found" });
 
-    // Filter downloads by user
-    const userDownloads = downloads.filter(
-      (d) => d.userId?.toString() === mongoUser._id.toString()
-    );
+    // ✅ Query downloads directly with userId filter (MUCH faster!)
+    const userDownloads = await db
+      .collection("downloads")
+      .find(
+        {
+          userId: mongoUser._id,
+          type: { $in: ["Paper", "Sheet", "Statements"] },
+          relativePath: { $exists: true, $ne: null },
+        },
+        {
+          sort: { downloadedAt: -1 },
+          limit: 8, // ✅ Only fetch what we need!
+          projection: { relativePath: 1, type: 1 }, // ✅ Only fetch needed fields
+        }
+      )
+      .toArray();
 
     // Fast exit if none
-    if (!userDownloads.length)
-      return res.status(200).json({ success: true, downloads: [] });
-
-    const contentDir = path.join(process.cwd(), "content");
-
-    // Small helper: map type to Tina query + subdir
-    const typeMap = {
-      Paper: { subdir: "papers", query: tinaClient.queries.paper },
-      Sheet: { subdir: "sheets", query: tinaClient.queries.sheet },
-      Statements: { subdir: "statements", query: tinaClient.queries.statements },
-    };
-
-    // Use concurrency control (e.g., 10 at a time)
-    const limit = 10;
-    const chunks = [];
-    for (let i = 0; i < userDownloads.length; i += limit)
-      chunks.push(userDownloads.slice(i, i + limit));
-
-    const results = [];
-    for (const chunk of chunks) {
-      const chunkResults = await Promise.all(
-        chunk
-          .filter((dl) => dl?.relativePath && typeMap[dl.type])
-          .map(async (dl) => {
-            const { subdir, query } = typeMap[dl.type];
-            const filePath = path.join(
-              contentDir,
-              subdir,
-              dl.relativePath.replace(/\\/g, "/")
-            );
-
-            try {
-              const result = await query({ relativePath: dl.relativePath });
-              return (
-                result?.data?.paper ||
-                result?.data?.sheet ||
-                result?.data?.statements ||
-                null
-              );
-            } catch {
-              return null;
-            }
-          })
-      );
-      results.push(...chunkResults);
+    if (!userDownloads.length) {
+      return res.status(200).json({
+        success: true,
+        email,
+        count: 0,
+        downloads: [],
+      });
     }
 
-    const filtered = results.filter(Boolean);
+    // ✅ Pre-compute type mapping
+    const queryMap = {
+      Paper: tinaClient.queries.paper,
+      Sheet: tinaClient.queries.sheet,
+      Statements: tinaClient.queries.statements,
+    };
+
+    // ✅ Fetch ALL Tina content in PARALLEL (not sequential!)
+    const results = await Promise.allSettled(
+      userDownloads.map(async (dl) => {
+        const queryFn = queryMap[dl.type];
+        if (!queryFn) return null;
+
+        try {
+          const result = await queryFn({ relativePath: dl.relativePath });
+          return (
+            result?.data?.paper ||
+            result?.data?.sheet ||
+            result?.data?.statements ||
+            null
+          );
+        } catch {
+          return null;
+        }
+      })
+    );
+
+    const filtered = results
+      .filter((r) => r.status === "fulfilled" && r.value)
+      .map((r) => r.value);
+
+    // ✅ Set cache headers
+    res.setHeader("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
 
     return res.status(200).json({
       success: true,

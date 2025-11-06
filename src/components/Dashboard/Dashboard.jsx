@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/auth";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import IntroHeading from "./IntroHeading";
 import Filters from "./Filters";
 import Cards from "../Cards/Cards";
@@ -10,54 +10,78 @@ function Dashboard({ props, papers, sheets, statements }) {
   const [active, setActive] = useState(props?.filters?.[0]?.filter || "");
   const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
   const [recent, setRecent] = useState([]);
+  const [loadingRecent, setLoadingRecent] = useState(false);
 
-  // Fetch downloads once user is available
+  // ✅ Fetch downloads immediately (no setTimeout delay)
   useEffect(() => {
     if (!user?.email) return;
 
+    let cancelled = false;
+
     const getDownloads = async () => {
+      setLoadingRecent(true);
       try {
         const res = await fetch(
           `/api/userInfo/downloads?email=${encodeURIComponent(user.email)}`
         );
         if (!res.ok) throw new Error(`Error: ${res.status}`);
         const data = await res.json();
-        setRecent(data.downloads.slice(0, 8));
-
-        // Set default tab only if no downloads
-        if (data.downloads.length === 0) {
-          setActive("papers");
+        
+        // ✅ Only update if component is still mounted
+        if (!cancelled) {
+          setRecent(data.downloads?.slice(0, 8) || []);
+          
+          // Set default tab only if no downloads
+          if (data.downloads?.length === 0) {
+            setActive("papers");
+          }
         }
       } catch (err) {
-        console.error("Failed to fetch downloads:", err);
+        if (!cancelled) {
+          console.error("Failed to fetch downloads:", err);
+          setRecent([]); // Set empty array on error
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingRecent(false);
+        }
       }
     };
 
-    // Run after paint for smoother UX
-    setTimeout(getDownloads, 0);
+    getDownloads();
+
+    // ✅ Cleanup to prevent state updates after unmount
+    return () => {
+      cancelled = true;
+    };
   }, [user?.email]);
 
-  // Compute cards to show based on active filter
+  // ✅ Memoize cards computation (only recalculate when dependencies change)
   const cards = useMemo(() => {
     switch (active) {
       case "papers":
-        return papers;
+        return papers || [];
       case "recent":
-        return recent;
+        return recent || [];
       case "sheets":
-        return sheets;
+        return sheets || [];
       case "statements":
-        return statements;
+        return statements || [];
       default:
         return [];
     }
   }, [active, papers, sheets, statements, recent]);
 
-  // Compute buttons for active filter
-  useEffect(() => {
+  // ✅ Memoize buttons computation
+  const buttonsMemo = useMemo(() => {
     const filter = props?.filters?.find((f) => f.filter === active);
-    setButtons(filter?.buttons || []);
+    return filter?.buttons || [];
   }, [active, props?.filters]);
+
+  // ✅ Update buttons state only when memoized value changes
+  useEffect(() => {
+    setButtons(buttonsMemo);
+  }, [buttonsMemo]);
 
   // Placeholder for auth loading
   if (!user) {
@@ -78,7 +102,14 @@ function Dashboard({ props, papers, sheets, statements }) {
           />
         </div>
 
-        <Cards cards={cards} />
+        {/* ✅ Show loading state for recent tab */}
+        {active === "recent" && loadingRecent ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-[#C2C2BC]">Loading recent downloads...</div>
+          </div>
+        ) : (
+          <Cards cards={cards} />
+        )}
         <Buttons buttons={buttons} />
       </div>
     </div>
