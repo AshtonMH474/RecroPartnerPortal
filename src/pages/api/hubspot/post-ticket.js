@@ -156,6 +156,21 @@ export default async function handler(req, res) {
   }
 );
 
+    // 3️⃣ Save to MongoDB
+    await db.collection("users_tickets").insertOne({
+      userId: mongoUser._id,
+      hubspotID: mongoUser.hubspotID,
+      ticketId: ticketId, // HubSpot ticket ID for reference
+      subject: subject,
+      description: description,
+      amount: amount,
+      agency: agency,
+      program: program,
+      samlink: samlink,
+      vehicle: vehicle,
+      createdAt: new Date(),
+    });
+
     return res.status(200).json({
       success: true,
       message: "Opportunity created and associated with contact",

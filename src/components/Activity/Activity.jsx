@@ -1,4 +1,4 @@
-import { act, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Heading from "./Heading"
 import Types from "./Types"
 import { useAuth } from "@/context/auth"
@@ -131,8 +131,6 @@ function Activity({props}){
     setCards(filteredCards);
 }
 
-  
-    console.log(recent)
     
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>

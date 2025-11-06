@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         },
         {
           sort: { downloadedAt: -1 },
-          limit: 8, // ✅ Only fetch what we need!
+
           projection: { relativePath: 1, type: 1 }, // ✅ Only fetch needed fields
         }
       )
