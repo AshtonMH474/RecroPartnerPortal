@@ -73,7 +73,7 @@ function AllDeals({props}){
     return(
         <div className="pb-20" style={{minHeight:'100dvh'}}>
             <div className="mt-20 xl:mt-40 max-w-[1400px] mx-auto">
-                <div className="flex justify-center flex-col items-center">
+                <div className="flex flex-col pl-16">
                     <Heading props={props}/>
                     <DealFilters setCards={setCards} deals={deals} onSubmit={onSubmit} setFormData={setFormData} formData={formData} />
                 </div>
