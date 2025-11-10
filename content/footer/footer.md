@@ -10,8 +10,8 @@ links:
     label: White Papers
   - link: /sheets
     label: Data Sheets
-  - link: /opportunities
-    label: Opportunities
+  - link: /deals
+    label: Deals
 copyright: Copyright © 2025 Recro Corporation. All rights reserved.
 ---
 
