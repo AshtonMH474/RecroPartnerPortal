@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import Heading from "./Heading"
 import Types from "./Types"
 import { useAuth } from "@/context/auth"
@@ -71,42 +71,46 @@ function Activity({props}){
         getCategories(setCategories)
     },[])
 
-    function onSubmit() {
-        const filteredCards = allCards.filter((card) => {
-        const cardDate = new Date(card.lastUpdated);
-        const now = new Date();
+    // ✅ Memoize the filtering logic to prevent re-computation on every render
+    const filteredCards = useMemo(() => {
+        return allCards.filter((card) => {
+            const cardDate = new Date(card.lastUpdated);
+            const now = new Date();
 
-        // ---- Match by interests ----
-        const matchesInterest =
-        formData.interests.length === 0 ||
-        formData.interests.some(
-            (interest) => card.category.category === interest
-        );
-        // ---- Match by name ----
-        const matchesName =
-        formData.name.trim().length === 0 ||
-        card.title.toLowerCase().includes(formData.name.toLowerCase());
+            // ---- Match by interests ----
+            const matchesInterest =
+                formData.interests.length === 0 ||
+                formData.interests.some(
+                    (interest) => card.category.category === interest
+                );
+            // ---- Match by name ----
+            const matchesName =
+                formData.name.trim().length === 0 ||
+                card.title.toLowerCase().includes(formData.name.toLowerCase());
 
-        // ---- Match by date ----
-        let matchesDate = true; // default (show all)
-        if (formData.date && formData.date.length > 0 && formData.date !== "all") {
-        if (formData.date === "month") {
-            const oneMonthAgo = new Date();
-            oneMonthAgo.setMonth(now.getMonth() - 1);
-            matchesDate = cardDate >= oneMonthAgo;
-        } else if (formData.date === "year") {
-            const oneYearAgo = new Date();
-            oneYearAgo.setFullYear(now.getFullYear() - 1);
-            matchesDate = cardDate >= oneYearAgo;
-        }
-        }
+            // ---- Match by date ----
+            let matchesDate = true; // default (show all)
+            if (formData.date && formData.date.length > 0 && formData.date !== "all") {
+                if (formData.date === "month") {
+                    const oneMonthAgo = new Date();
+                    oneMonthAgo.setMonth(now.getMonth() - 1);
+                    matchesDate = cardDate >= oneMonthAgo;
+                } else if (formData.date === "year") {
+                    const oneYearAgo = new Date();
+                    oneYearAgo.setFullYear(now.getFullYear() - 1);
+                    matchesDate = cardDate >= oneYearAgo;
+                }
+            }
 
-        // ---- Must satisfy all filters ----
-        return matchesInterest && matchesName && matchesDate;
-    });
+            // ---- Must satisfy all filters ----
+            return matchesInterest && matchesName && matchesDate;
+        });
+    }, [allCards, formData.interests, formData.name, formData.date]);
 
-    setCards(filteredCards);
-}
+    // ✅ Wrap onSubmit in useCallback to prevent recreation on every render
+    const onSubmit = useCallback(() => {
+        setCards(filteredCards);
+    }, [filteredCards]);
 
     
     return(

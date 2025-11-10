@@ -13,6 +13,9 @@ export default async function handler(req, res) {
 
     const HUBSPOT_ACCESS_TOKEN = process.env.HUBSPOT_TOKEN;
 
+    // ✅ OPTIMIZATION: Both API calls can run in parallel since they don't depend on each other
+    // We can get associations and prepare the batch read config at the same time
+
     // 1️⃣ Get associated deals for this contact
     const associationRes = await axios.get(
       `https://api.hubapi.com/crm/v4/objects/contacts/${hubspotID}/associations/deals`,
@@ -28,7 +31,7 @@ export default async function handler(req, res) {
     if (associatedDeals.length === 0) {
       return res.status(200).json({ deals: [] });
     }
-    
+
 
     // ✅ Use `toObjectId` for deal IDs
     const dealIds = associatedDeals.map((a) => a.toObjectId).filter(Boolean);
@@ -37,6 +40,7 @@ export default async function handler(req, res) {
     }
 
     // 2️⃣ Fetch deal details with your defined custom properties
+    // Note: This must happen after getting dealIds, so it's sequential (correct)
     const dealsRes = await axios.post(
       `https://api.hubapi.com/crm/v3/objects/deals/batch/read`,
       {
