@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/auth";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useDownloads } from "@/context/downloads";
+import { useEffect, useMemo, useState } from "react";
 import IntroHeading from "./IntroHeading";
 import Filters from "./Filters";
 import Cards from "../Cards/Cards";
@@ -7,54 +8,19 @@ import Buttons from "./Buttons";
 
 function Dashboard({ props, papers, sheets, statements }) {
   const { user } = useAuth();
+  const { downloads, loading: loadingRecent } = useDownloads();
   const [active, setActive] = useState(props?.filters?.[0]?.filter || "");
   const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
-  const [recent, setRecent] = useState([]);
-  const [loadingRecent, setLoadingRecent] = useState(false);
 
-  // ✅ Fetch downloads immediately (no setTimeout delay)
+  // ✅ Get recent downloads from context (first 8)
+  const recent = useMemo(() => downloads.slice(0, 8), [downloads]);
+
+  // Set default tab only if no downloads
   useEffect(() => {
-    if (!user?.email) return;
-
-    let cancelled = false;
-
-    const getDownloads = async () => {
-      setLoadingRecent(true);
-      try {
-        const res = await fetch(
-          `/api/userInfo/downloads?email=${encodeURIComponent(user.email)}`
-        );
-        if (!res.ok) throw new Error(`Error: ${res.status}`);
-        const data = await res.json();
-        
-        // ✅ Only update if component is still mounted
-        if (!cancelled) {
-          setRecent(data.downloads?.slice(0, 8) || []);
-          
-          // Set default tab only if no downloads
-          if (data.downloads?.length === 0) {
-            setActive("papers");
-          }
-        }
-      } catch (err) {
-        if (!cancelled) {
-          console.error("Failed to fetch downloads:", err);
-          setRecent([]); // Set empty array on error
-        }
-      } finally {
-        if (!cancelled) {
-          setLoadingRecent(false);
-        }
-      }
-    };
-
-    getDownloads();
-
-    // ✅ Cleanup to prevent state updates after unmount
-    return () => {
-      cancelled = true;
-    };
-  }, [user?.email]);
+    if (downloads.length === 0 && user?.email) {
+      setActive("papers");
+    }
+  }, [downloads.length, user?.email]);
 
   // ✅ Memoize cards computation (only recalculate when dependencies change)
   const cards = useMemo(() => {

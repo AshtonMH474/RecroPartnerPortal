@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import Heading from "./Heading"
 import Types from "./Types"
 import { useAuth } from "@/context/auth"
+import { useDownloads } from "@/context/downloads"
 import Cards from "../Cards/Cards"
 import Pagination from "../utils/Pagination"
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,10 +13,10 @@ import { clear } from "./functions"
 import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
-    
+
     const {user} = useAuth()
+    const { downloads } = useDownloads()
     const [active, setActive] = useState(props?.type?.[0]?.filter || '');
-    const [recent,setRecent] = useState([])
     const [cards,setCards] = useState([])
     const [allCards, setAllCards] = useState([]);
     const [categories,setCategories] = useState([])
@@ -33,10 +34,10 @@ function Activity({props}){
     const goToPage = (pageIndex) => {
         const newStartIndex = pageIndex * visibleCount;
         const goingForward = pageIndex > startIndex / visibleCount;
-        
+
         setDirection(goingForward ? 1 : -1);
         setStartIndex(newStartIndex);
-        
+
     };
 
     useEffect(() =>{
@@ -50,32 +51,8 @@ function Activity({props}){
     },[active])
 
     useEffect(() => {
-            async function getDownloads() {
-                try {
-                if (!user?.email) return; // don't run until user is ready
-    
-                const res = await fetch(`/api/userInfo/downloads?email=${encodeURIComponent(user.email)}`);
-                if (!res.ok) throw new Error(`Error: ${res.status}`);
-    
-                const data = await res.json();
-                 const downloads = data.downloads
-                
-        
-                setRecent(downloads)
-               
-                
-                } catch (err) {
-                console.error("Failed to fetch downloads:", err);
-                }
-            }
-    
-            getDownloads();
-            
-    }, [user?.email]); 
-    
-    useEffect(() => {
-        clear(active,recent,setCards,setAllCards)
-    },[user,active,recent])
+        clear(active,downloads,setCards,setAllCards)
+    },[user,active,downloads])
 
     const visibleCards = cards.slice(startIndex, startIndex + visibleCount);
      const variants = {
@@ -140,8 +117,8 @@ function Activity({props}){
                     <Types types={props.type} active={active} setActive={setActive} formData={formData}/>
                 </div>
                 <div>
-                    <Filters setFormData={setFormData} categories={categories} formData={formData} filters={props.filters} onSubmit={onSubmit} active={active} setCards={setCards} recent={recent} setAllCards={setAllCards}/>
-                    
+                    <Filters setFormData={setFormData} categories={categories} formData={formData} filters={props.filters} onSubmit={onSubmit} active={active} setCards={setCards} recent={downloads} setAllCards={setAllCards}/>
+
                 </div>
                  <div className="">
                 <AnimatePresence mode="wait" custom={direction}>

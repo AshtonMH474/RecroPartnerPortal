@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import IconRenderer from "../utils/IconRenderer";
 import PlusMinusButton from "../Cards/PlusMinus";
 
-function Card({ card }) {
+const Card = React.memo(function Card({ card }) {
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
 
@@ -24,7 +24,10 @@ function Card({ card }) {
     description = "No description provided.",
   } = card || {};
 
-  const agencies = agency.split(";").map(a => a.trim()).filter(Boolean);
+  const agencies = useMemo(() =>
+    agency.split(";").map(a => a.trim()).filter(Boolean),
+    [agency]
+  );
 
 
   return (
@@ -76,6 +79,6 @@ function Card({ card }) {
           </section>
       </div>
   );
-}
+});
 
 export default Card;

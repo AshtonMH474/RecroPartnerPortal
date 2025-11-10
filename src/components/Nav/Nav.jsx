@@ -1,3 +1,4 @@
+import React from "react";
 import { useAuth } from "@/context/auth"
 import Logo from "./Logo"
 import ProfileUser from "./ProfileUser"
@@ -7,7 +8,7 @@ import MobileMenu from "./MobileMenu";
 
 import { useRouter } from "next/router";
 
-export default function Nav(props){
+const Nav = React.memo(function Nav(props){
   
     
     const buttonRef = useRef(null);
@@ -88,4 +89,6 @@ export default function Nav(props){
         <div className="h-10" />
       </>
     )
-}
+})
+
+export default Nav
