@@ -4,12 +4,12 @@ import ProfileUser from "./ProfileUser"
 import {useEffect, useRef, useState } from "react";
 import MenuToggle from "./MenuToogle";
 import MobileMenu from "./MobileMenu";
-import { CiBellOn } from "react-icons/ci";
+
 import { useRouter } from "next/router";
 
 export default function Nav(props){
   
-    const {user} = useAuth()
+    
     const buttonRef = useRef(null);
     const menuRef = useRef(null)
     const [menuOpen, setMenuOpen] = useState(false);

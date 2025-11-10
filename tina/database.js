@@ -64,4 +64,5 @@ export default isLocal
       }),
       // other TinaCMS config here...
     });
-
+      
+      

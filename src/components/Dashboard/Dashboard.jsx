@@ -90,7 +90,7 @@ function Dashboard({ props, papers, sheets, statements }) {
 
   return (
     <div className="pb-20 min-h-screen">
-      <div className="mt-20 flex flex-col pl-16">
+      <div className="mt-20 flex flex-col pl-5 md:pl-8 lg:pl-16">
         <div>
           <IntroHeading props={props} user={user} />
           <Filters
