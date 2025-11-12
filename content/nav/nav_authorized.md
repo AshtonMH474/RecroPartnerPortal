@@ -8,8 +8,8 @@ links:
   - link: /activity
     label: My Activity
     type: link
-  - link: /profile-opportunities
-    label: My Opportunities
+  - link: /profile-deals
+    label: My Deals
     type: link
   - link: /logout
     label: Logout
@@ -30,8 +30,12 @@ sidebar_top_links:
     label: Data Sheets
     type: link
     icon: FaDatabase
-  - link: /opportunities
-    label: Opportunities
+  - link: /statements
+    label: Statements
+    type: link
+    icon: FaRegPaperPlane
+  - link: /deals
+    label: Deals
     type: link
     icon: FaGlobeEurope
 sidebar_bottom_links:

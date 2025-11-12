@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProfileUser from "./ProfileUser";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import Logo from "../Nav/Logo";
 
-export default function Sidebar({ res, onWidthChange }) {
+const Sidebar = React.memo(function Sidebar({ res, onWidthChange }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -63,5 +63,6 @@ export default function Sidebar({ res, onWidthChange }) {
       )}
     </div>
   );
-}
+})
 
+export default Sidebar

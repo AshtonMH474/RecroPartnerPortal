@@ -1,21 +1,22 @@
-import { act, useEffect, useState } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import Heading from "./Heading"
 import Types from "./Types"
 import { useAuth } from "@/context/auth"
-import Cards from "../Dashboard/Cards/Cards"
-import Pagination from "../Pagination"
+import { useDownloads } from "@/context/downloads"
+import Cards from "../Cards/Cards"
+import Pagination from "../utils/Pagination"
 import { motion, AnimatePresence } from "framer-motion";
 import Filters from "./Filters"
-import { getCategories } from "@/lib/auth_functions"
+import { getCategories } from "@/lib/service_functions"
 import { clear } from "./functions"
 
 import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
-    
+
     const {user} = useAuth()
+    const { downloads } = useDownloads()
     const [active, setActive] = useState(props?.type?.[0]?.filter || '');
-    const [recent,setRecent] = useState([])
     const [cards,setCards] = useState([])
     const [allCards, setAllCards] = useState([]);
     const [categories,setCategories] = useState([])
@@ -33,45 +34,25 @@ function Activity({props}){
     const goToPage = (pageIndex) => {
         const newStartIndex = pageIndex * visibleCount;
         const goingForward = pageIndex > startIndex / visibleCount;
-        
+
         setDirection(goingForward ? 1 : -1);
         setStartIndex(newStartIndex);
-        
+
     };
 
     useEffect(() =>{
         if(active == 'sheets'){
             setLink('/sheets')
-        }else setLink('/papers')
+        }
+        else if(active == 'statements'){
+            setLink('/statements')
+        }
+        else setLink('/papers')
     },[active])
 
     useEffect(() => {
-            async function getDownloads() {
-                try {
-                if (!user?.email) return; // don't run until user is ready
-    
-                const res = await fetch(`/api/userInfo/downloads?email=${encodeURIComponent(user.email)}`);
-                if (!res.ok) throw new Error(`Error: ${res.status}`);
-    
-                const data = await res.json();
-                 const downloads = data.downloads
-                
-        
-                setRecent(downloads)
-               
-                
-                } catch (err) {
-                console.error("Failed to fetch downloads:", err);
-                }
-            }
-    
-            getDownloads();
-            
-    }, [user?.email]); 
-    
-    useEffect(() => {
-        clear(active,recent,setCards,setAllCards)
-    },[user,active,recent])
+        clear(active,downloads,setCards,setAllCards)
+    },[user,active,downloads])
 
     const visibleCards = cards.slice(startIndex, startIndex + visibleCount);
      const variants = {
@@ -90,56 +71,58 @@ function Activity({props}){
         getCategories(setCategories)
     },[])
 
-    function onSubmit() {
-        const filteredCards = allCards.filter((card) => {
-        const cardDate = new Date(card.lastUpdated);
-        const now = new Date();
+    // ✅ Memoize the filtering logic to prevent re-computation on every render
+    const filteredCards = useMemo(() => {
+        return allCards.filter((card) => {
+            const cardDate = new Date(card.lastUpdated);
+            const now = new Date();
 
-        // ---- Match by interests ----
-        const matchesInterest =
-        formData.interests.length === 0 ||
-        formData.interests.some(
-            (interest) => card.category.category === interest
-        );
-        // ---- Match by name ----
-        const matchesName =
-        formData.name.trim().length === 0 ||
-        card.title.toLowerCase().includes(formData.name.toLowerCase());
+            // ---- Match by interests ----
+            const matchesInterest =
+                formData.interests.length === 0 ||
+                formData.interests.some(
+                    (interest) => card.category.category === interest
+                );
+            // ---- Match by name ----
+            const matchesName =
+                formData.name.trim().length === 0 ||
+                card.title.toLowerCase().includes(formData.name.toLowerCase());
 
-        // ---- Match by date ----
-        let matchesDate = true; // default (show all)
-        if (formData.date && formData.date.length > 0 && formData.date !== "all") {
-        if (formData.date === "month") {
-            const oneMonthAgo = new Date();
-            oneMonthAgo.setMonth(now.getMonth() - 1);
-            matchesDate = cardDate >= oneMonthAgo;
-        } else if (formData.date === "year") {
-            const oneYearAgo = new Date();
-            oneYearAgo.setFullYear(now.getFullYear() - 1);
-            matchesDate = cardDate >= oneYearAgo;
-        }
-        }
+            // ---- Match by date ----
+            let matchesDate = true; // default (show all)
+            if (formData.date && formData.date.length > 0 && formData.date !== "all") {
+                if (formData.date === "month") {
+                    const oneMonthAgo = new Date();
+                    oneMonthAgo.setMonth(now.getMonth() - 1);
+                    matchesDate = cardDate >= oneMonthAgo;
+                } else if (formData.date === "year") {
+                    const oneYearAgo = new Date();
+                    oneYearAgo.setFullYear(now.getFullYear() - 1);
+                    matchesDate = cardDate >= oneYearAgo;
+                }
+            }
 
-        // ---- Must satisfy all filters ----
-        return matchesInterest && matchesName && matchesDate;
-    });
+            // ---- Must satisfy all filters ----
+            return matchesInterest && matchesName && matchesDate;
+        });
+    }, [allCards, formData.interests, formData.name, formData.date]);
 
-    setCards(filteredCards);
-}
+    // ✅ Wrap onSubmit in useCallback to prevent recreation on every render
+    const onSubmit = useCallback(() => {
+        setCards(filteredCards);
+    }, [filteredCards]);
 
-  
-    
     
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>
-            <div className="mt-20  pl-16 ">
+            <div className="mt-20 pl-5 md:pl-8 lg:pl-16 ">
                 <div className="flex items-center gap-x-4">
                     <Heading props={props}/>
                     <Types types={props.type} active={active} setActive={setActive} formData={formData}/>
                 </div>
                 <div>
-                    <Filters setFormData={setFormData} categories={categories} formData={formData} filters={props.filters} onSubmit={onSubmit} active={active} setCards={setCards} recent={recent} setAllCards={setAllCards}/>
-                    
+                    <Filters setFormData={setFormData} categories={categories} formData={formData} filters={props.filters} onSubmit={onSubmit} active={active} setCards={setCards} recent={downloads} setAllCards={setAllCards}/>
+
                 </div>
                  <div className="">
                 <AnimatePresence mode="wait" custom={direction}>

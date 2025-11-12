@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import "@/styles/gears.css";
 import BG from "@/components/BG";
 import { AuthProvider } from "@/context/auth";
+import { DownloadsProvider } from "@/context/downloads";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -12,7 +13,9 @@ export default function App({ Component, pageProps }) {
       </Head>
       <BG/>
       <AuthProvider>
-        <Component {...pageProps} />
+        <DownloadsProvider>
+          <Component {...pageProps} />
+        </DownloadsProvider>
       </AuthProvider>
     </>
   );

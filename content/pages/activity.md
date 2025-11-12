@@ -10,6 +10,9 @@ blocks:
       - label: Data Sheets
         filter: sheets
         icon: FaDatabase
+      - label: 'Statements '
+        filter: statements
+        icon: FaRegPaperPlane
     filters:
       - label: Name
         filter: name

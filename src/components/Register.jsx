@@ -178,7 +178,7 @@ function Register({onClose}){
               name="organization"
               value={formData.organization}
               onChange={handleChange}
-              placeholder="Organization"
+              placeholder="Company"
               className="w-full sm:w-1/2 p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
             />
           </div>

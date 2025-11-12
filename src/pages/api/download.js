@@ -17,6 +17,20 @@ export default async function handler(req, res) {
     const client = await clientPromise;
     const db = client.db("mydb");
 
+    // Ensure index exists for efficient queries (idempotent - won't error if already exists)
+    try {
+      await db.collection("downloads").createIndex(
+        { userId: 1, relativePath: 1 },
+        { unique: true, name: "userId_relativePath_idx" }
+      );
+    } catch (error) {
+      // Index might already exist, ignore error
+      if (error.code !== 85 && error.code !== 86) {
+        // 85 = IndexOptionsConflict, 86 = IndexKeySpecsConflict (index already exists with different options)
+        console.warn("Index creation warning:", error.message);
+      }
+    }
+
     // Verify user exists
     const mongoUser = await db.collection("users").findOne({ email });
     if (!mongoUser) {

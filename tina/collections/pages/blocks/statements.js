@@ -1,21 +1,11 @@
-export const allOppsBlock = {
-    name:'allOpps',
-    label:'All Opportunites',
+export const statementsBlock = {
+    name:'statements',
+    label:'Capabilty Statemnts',
     fields:[
         {
             name:'heading',
             label:'Heading',
             type:'rich-text'
-        },
-        {
-            name:'labelView',
-            type:'string',
-            label:'Label for Viewing Opportunites'
-        },
-        {
-            name:'labelSaved',
-            type:'string',
-            label:'Label for Saved Opportunites'
         },
         {
             name:'filters',
@@ -32,7 +22,7 @@ export const allOppsBlock = {
                     type:'string',
                     label:'Type of Filter',
                     name:'filter',
-                    options:['name','interests','date','state','agency','type']
+                    options:['name','interests','date']
                 },
             ]
         },

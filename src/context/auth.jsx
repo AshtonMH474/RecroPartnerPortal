@@ -1,12 +1,13 @@
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import Login from "@/components/Login";
-import Register from "@/components/Register";
-import NewPasswordModal from "@/components/New-Password";
-import ChangePassword from "@/components/ChangePassword";
+import { createContext, useCallback, useContext, useEffect, useState, lazy, Suspense } from "react";
 import { checkUser } from "@/lib/auth_functions";
-import OppModal from "@/components/Opportunites/OppModal";
-import EditProfile from "@/components/EditProfile/EditProfile";
+
+// ✅ Dynamic imports for code splitting - modals loaded only when needed
+const Login = lazy(() => import("@/components/Login"));
+const Register = lazy(() => import("@/components/Register"));
+const NewPasswordModal = lazy(() => import("@/components/New-Password"));
+const ChangePassword = lazy(() => import("@/components/ChangePassword"));
+const EditProfile = lazy(() => import("@/components/EditProfile/EditProfile"));
 
 const AuthContext = createContext();
 
@@ -14,27 +15,15 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState("loading");
   const [activeModal, setActiveModal] = useState(null);
   const [modalData, setModalData] = useState(null);
-  const intervalRef = useRef(null);
-
 
   const refreshUser = useCallback(() => {
     checkUser(setUser);
   }, []);
 
-  // Run once on mount and set up polling
+  // ✅ Run once on mount - removed unnecessary polling
   useEffect(() => {
     refreshUser();
-
-    // Poll every 5 minutes to check token status
-    intervalRef.current = setInterval(() => {
-      refreshUser();
-    }, 5 * 60 * 1000); // 5 minutes
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
+    // Polling removed - user status checked on mount and when explicitly refreshed
   }, [refreshUser]);
 
  const openModal = (type, data = null, onChange = null) => {
@@ -54,26 +43,25 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{ user, setUser, openModal, closeModal,refreshUser }}>
       {children}
 
-      {/* Centralized modal rendering */}
-      {activeModal === "login" && (
-        <Login onClose={closeModal} setUser={setUser} modalData={modalData?.data} />
-      )}
-      {activeModal === "register" && (
-        <Register onClose={closeModal} />
-      )}
-      {activeModal === "newPassword" && (
-        <NewPasswordModal onClose={closeModal} />
-      )}
-      {activeModal === "changePassword" && (
-        <ChangePassword token={modalData?.data?.token} onClose={closeModal} />
-      )}
-      {activeModal == 'Opp' && (
-        <OppModal opp={modalData.data} onClose={closeModal} onSaveChange={modalData?.onChange}/>
-      )}
-      {activeModal == 'Edit' && (
-        <EditProfile onClose={closeModal}/>
-      )}
-      
+      {/* ✅ Centralized modal rendering with Suspense for code splitting */}
+      <Suspense fallback={null}>
+        {activeModal === "login" && (
+          <Login onClose={closeModal} setUser={setUser} modalData={modalData?.data} />
+        )}
+        {activeModal === "register" && (
+          <Register onClose={closeModal} />
+        )}
+        {activeModal === "newPassword" && (
+          <NewPasswordModal onClose={closeModal} />
+        )}
+        {activeModal === "changePassword" && (
+          <ChangePassword token={modalData?.data?.token} onClose={closeModal} />
+        )}
+        {activeModal == 'Edit' && (
+          <EditProfile onClose={closeModal}/>
+        )}
+      </Suspense>
+
     </AuthContext.Provider>
   );
 }

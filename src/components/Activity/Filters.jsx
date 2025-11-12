@@ -1,19 +1,58 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { clear } from "./functions";
-import InterestDropdown from "./InterestDropdown";
-import DateDropdown from "./DateDropdown";
+import InterestDropdown from "../utils/InterestDropdown";
+import DateDropdown from "../utils/DateDropdown";
 import { tinaField } from "tinacms/dist/react";
 
 function Filters({active,setCards,setAllCards,recent, filters, setFormData, categories,onSubmit,formData }) {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [open, setOpen] = useState(false);
-  const dropdownRef = useRef(null); 
+  const [localName, setLocalName] = useState(formData.name || '');
+  const dropdownRef = useRef(null);
+  const debounceTimerRef = useRef(null);
+
+  // ✅ Sync local state when formData.name changes externally (e.g., clear button)
+  useEffect(() => {
+    setLocalName(formData.name || '');
+  }, [formData.name]);
+
+  // ✅ Debounced update to formData when user types
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      if (localName !== formData.name) {
+        setFormData(prev => ({
+          ...prev,
+          name: localName,
+        }));
+      }
+    }, 300); // 300ms debounce delay
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [localName, formData.name, setFormData]);
+
   const handleChange = useCallback((e) => {
-  setFormData(prev => ({
-    ...prev,
-    [e.target.name]: e.target.value,
-  }));
-}, [setFormData]);
+    const { name, value } = e.target;
+
+    // For name field, update local state immediately (visual feedback)
+    if (name === 'name') {
+      setLocalName(value);
+      return;
+    }
+
+    // For other fields, update formData immediately
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, [setFormData]);
 
 const toggleInterest = useCallback((category) => {
   setSelectedInterests(prev => {
@@ -47,7 +86,7 @@ const toggleInterest = useCallback((category) => {
               name={filter.filter}
               onChange={handleChange}
               key={i}
-              value={formData.name || ''}
+              value={localName}
               placeholder={filter.label}
               className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
             />

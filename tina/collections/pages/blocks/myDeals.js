@@ -2,9 +2,9 @@ import { IconPickerField } from "../../../components/IconPicker";
 import * as FaIcons from "react-icons/fa";
 const iconNames = Object.keys(FaIcons);
 
-export const myOpps = {
-    name:'myOpps',
-    label:'My Opportunites',
+export const myDeals = {
+    name:'myDeals',
+    label:'My Deals',
     fields:[
         {
             name:'heading',
@@ -12,15 +12,12 @@ export const myOpps = {
             type:'rich-text'
         },
         {
-            name:'labelView',
+            name:'background',
+            label:'Do you want black or classic for background',
             type:'string',
-            label:'Label for Viewing Opportunites'
+            options:['classic','black']
         },
-        {
-            name:'labelSaved',
-            type:'string',
-            label:'Label for Saved Opportunites'
-        },
+       
         {
             name:'options',
             label:'Options for Cards',
@@ -36,7 +33,7 @@ export const myOpps = {
                     type:'string',
                     label:'Type of Cards',
                     name:'filter',
-                    options:['saved','intrested']
+                    options:['deals','tickets']
                 },
                 {
                                     type:'string',
@@ -48,34 +45,16 @@ export const myOpps = {
                                 },
             ]
         },
+        
         {
-            name:'filters',
-            label:'Filters',
-            list:true,
-            type:'object',
-            fields:[
-                {
-                    name:'label',
-                    type:'string',
-                    label:'Label'
-                },
-                {
-                    type:'string',
-                    label:'Type of Filter',
-                    name:'filter',
-                    options:['name','interests','date','state','agency','type']
-                },
-            ]
-        },
-        {
-            name:'noOppsText',
-            label:'No Opportunites Text',
+            name:'noDealsText',
+            label:'No Deals Text',
             type:'string',
         },
         {
-            name:'noOppsLink',
-            label:'No Opportuinties Link',
+            label:'Label to Register a Deal',
             type:'string',
+            name:'registerLabel'
         }
         
     ]

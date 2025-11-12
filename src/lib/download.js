@@ -1,4 +1,4 @@
-import { handleDownload } from "./auth_functions";
+import { handleDownload } from "./service_functions";
 
 export async function downloadPdf(content,user){
     

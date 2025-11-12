@@ -1,92 +1,85 @@
-import { useAuth } from "@/context/auth"
-import { useRouter } from "next/router"
-import Heading from "./Heading"
-import Filters from "./Filters"
-import { useEffect, useState } from "react"
-import Cards from "./Cards/Cards"
-import Buttons from "./Buttons"
+import { useAuth } from "@/context/auth";
+import { useDownloads } from "@/context/downloads";
+import { useEffect, useMemo, useState } from "react";
+import IntroHeading from "./IntroHeading";
+import Filters from "./Filters";
+import Cards from "../Cards/Cards";
+import Buttons from "./Buttons";
 
+function Dashboard({ props, papers, sheets, statements }) {
+  const { user } = useAuth();
+  const { downloads, loading: loadingRecent } = useDownloads();
+  const [active, setActive] = useState(props?.filters?.[0]?.filter || "");
+  const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
 
-function Dashboard({props,papers,sheets}){
-    const {user} = useAuth()
-    const [active, setActive] = useState(props?.filters?.[0]?.filter || '');
-    const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
-    const [recent,setRecent] = useState([])
-    const [cards,setCards] = useState([])
-    
-    
-    
-    
-    useEffect(() => {
-    async function  updateValues() {
-        if (active === 'papers'){
-          await setCards(papers)
-        }
-        else if (active === 'recent'){
-            await setCards(recent)
-        }
-        else if (active === 'sheets') {
-            await setCards(sheets)
-        }
-        let filter = props?.filters?.find((filter) => filter.filter == active)
-        await setButtons(filter?.buttons || [])
-        
+  // ✅ Get recent downloads from context (first 8)
+  const recent = useMemo(() => downloads.slice(0, 8), [downloads]);
+
+  // Set default tab only if no downloads
+  useEffect(() => {
+    if (downloads.length === 0 && user?.email) {
+      setActive("papers");
     }
+  }, [downloads.length, user?.email]);
 
-    updateValues()
-    
-    
-    }, [active, recent, papers, sheets])
-
-    useEffect(() => {
-        async function getDownloads() {
-            try {
-            if (!user?.email) return; // don't run until user is ready
-
-            const res = await fetch(`/api/userInfo/downloads?email=${encodeURIComponent(user.email)}`);
-            if (!res.ok) throw new Error(`Error: ${res.status}`);
-
-            const data = await res.json();
-            setRecent(data.downloads.slice(0,8))
-            if(data.downloads.length == 0){
-                await setActive('papers' || 'sheets')
-            }
-            
-            
-            } catch (err) {
-            console.error("Failed to fetch downloads:", err);
-            }
-        }
-
-        getDownloads();
-        
-    }, [user?.email]); 
-
-
-    // useEffect(() => {
-    //     if (!user) router.push("/");
-    // }, [user, router]);
-
-    if (!user) {
-        // placeholder while redirect happens
-        return <div style={{ minHeight: "100vh" }}></div>;
+  // ✅ Memoize cards computation (only recalculate when dependencies change)
+  const cards = useMemo(() => {
+    switch (active) {
+      case "papers":
+        return papers || [];
+      case "recent":
+        return recent || [];
+      case "sheets":
+        return sheets || [];
+      case "statements":
+        return statements || [];
+      default:
+        return [];
     }
-    
+  }, [active, papers, sheets, statements, recent]);
 
-    
+  // ✅ Memoize buttons computation
+  const buttonsMemo = useMemo(() => {
+    const filter = props?.filters?.find((f) => f.filter === active);
+    return filter?.buttons || [];
+  }, [active, props?.filters]);
 
-    return(
-        <div className="pb-20" style={{minHeight:'100vh'}}>
-            <div className="mt-20  flex flex-col pl-16">
-                <div>
-                   <Heading props={props} user={user} />
-                   <Filters recent={recent} active={active} setActive={setActive} props={props} user={user}/>
-                </div>
-                <Cards cards={cards}/>
-                <Buttons buttons={buttons} /> 
-            </div>
+  // ✅ Update buttons state only when memoized value changes
+  useEffect(() => {
+    setButtons(buttonsMemo);
+  }, [buttonsMemo]);
+
+  // Placeholder for auth loading
+  if (!user) {
+    return <div style={{ minHeight: "100vh" }}></div>;
+  }
+
+  return (
+    <div className="pb-20 min-h-screen">
+      <div className="mt-20 flex flex-col pl-5 md:pl-8 lg:pl-16">
+        <div>
+          <IntroHeading props={props} user={user} />
+          <Filters
+            recent={recent}
+            active={active}
+            setActive={setActive}
+            props={props}
+            user={user}
+          />
         </div>
-    )
+
+        {/* ✅ Show loading state for recent tab */}
+        {active === "recent" && loadingRecent ? (
+          <div className="flex justify-center items-center py-20 pr-16">
+            <div className="text-[#C2C2BC]">Loading recent downloads...</div>
+          </div>
+        ) : (
+          <Cards cards={cards} />
+        )}
+        <Buttons buttons={buttons} />
+      </div>
+    </div>
+  );
 }
 
-export default Dashboard
+export default Dashboard;

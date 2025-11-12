@@ -25,7 +25,7 @@ export const dashboardBlock = {
                     type:'string',
                     label:'Type of Filter',
                     name:'filter',
-                    options:['recent','papers','sheets']
+                    options:['recent','papers','sheets','statements']
                 },
                 {
                     type:'string',
