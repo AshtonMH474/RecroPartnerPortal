@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     if (!email) return res.status(400).json({ error: "Missing email" });
 
     const dbclient = await clientPromise;
-    const db = dbclient.db("mydb");
+    const db = dbclient.db(process.env.MONGODB_DB_NAME);
 
     // ✅ Fetch user first
     const mongoUser = await db

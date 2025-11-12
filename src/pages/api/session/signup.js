@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
   
   const client = await clientPromise;
-  const db = client.db("mydb");
+  const db = client.db(process.env.MONGODB_DB_NAME);
 
   const existing = await db.collection("users").findOne({ email });
   if (existing) return res.status(400).json({ error: "User already exists" ,verified:existing.verified});

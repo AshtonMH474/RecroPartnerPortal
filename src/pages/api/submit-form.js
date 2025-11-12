@@ -46,7 +46,7 @@ export default async function handler(req, res) {
 
     // 4️⃣ Save to MongoDB (via clientPromise)
     const client = await clientPromise;
-    const db = client.db("mydb"); // 👈 replace with your actual DB name
+    const db = client.db(process.env.MONGODB_DB_NAME); // 👈 replace with your actual DB name
     const collectionName = organization ? "messages" : "careers";
 
     const doc = {

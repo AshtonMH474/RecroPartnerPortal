@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const { token, newPassword } = req.body;
 
   const client = await clientPromise;
-  const db = client.db("mydb");
+  const db = client.db(process.env.MONGODB_DB_NAME);
 
   const user = await db.collection("users").findOne({ resetToken: token });
   if (!user) return res.status(400).json({ error: "Invalid or expired token" });

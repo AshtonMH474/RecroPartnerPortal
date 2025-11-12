@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       return res.status(400).json({error:'Not all required fields were filled out'})
     }
     const client = await clientPromise;
-    const db = client.db("mydb");
+    const db = client.db(process.env.MONGODB_DB_NAME);
     
     const mongoUser = await db.collection("users").findOne({ email:user?.email });
     if (!mongoUser) {

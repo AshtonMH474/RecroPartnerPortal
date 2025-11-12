@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     }
     
     const client = await clientPromise;
-    const db = client.db("mydb");
+    const db = client.db(process.env.MONGODB_DB_NAME);
 
     // Ensure index exists for efficient queries (idempotent - won't error if already exists)
     try {

@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const { email } = req.body;
 
   const client = await clientPromise;
-  const db = client.db("mydb");
+  const db = client.db(process.env.MONGODB_DB_NAME);
 
   const user = await db.collection("users").findOne({ email });
   if (!user) {

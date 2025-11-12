@@ -14,7 +14,7 @@ export default async function handler(req,res) {
         }
 
         const dbclient = await clientPromise;
-        const db = dbclient.db("mydb");
+        const db = dbclient.db(process.env.MONGODB_DB_NAME);
 
         const mongoUser = await db.collection("users").findOne({ email });
         if (!mongoUser) {
