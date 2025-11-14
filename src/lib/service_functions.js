@@ -60,25 +60,7 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
     }
   }
   
-  export async function deleteOpp(user,filename) {
-    try{
-      const res = await fetch('/api/userInfo/delete-opp',{
-         method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-               email:user.email,
-                filename:filename,
-          }),
-      })
-      if(res.ok){
-        const data = await res.json()
-        return data
-      }
-      return
-    }catch (err) {
-        console.error(err);
-    }
-  }
+
   
   export async function fetchPartnerTickets(user) {
     const hubspotID = user?.hubspotID;

@@ -147,7 +147,6 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const {user,openModal} = useAuth()
   const hasCheckedInterests = useRef(false);
-
   // ✅ Open Edit modal if user has no interests
   useEffect(() => {
     if (user !== 'loading' && user && !hasCheckedInterests.current) {
@@ -185,9 +184,29 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
       (a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)
     );
 
-  const newWhitePapers = useMemo(() => sortByDateDesc(allPapers).slice(0, 8), [allPapers]);
-  const newDataSheets = useMemo(() => sortByDateDesc(allSheets).slice(0, 8), [allSheets]);
-  const newStatements = useMemo(() => sortByDateDesc(allStatements).slice(0, 8), [allStatements]);
+  const filteredPapers = useMemo(() => {
+      if (!user?.interests || !allPapers) return [];
+      return allPapers.filter((paper) =>
+        user.interests.includes(paper.category?._sys?.filename)
+      );
+  }, [allPapers, user]);
+  const filteredSheets = useMemo(() => {
+    if (!user?.interests || !allSheets) return [];
+    return allSheets.filter((sheet) =>
+      user.interests.includes(sheet.category?._sys?.filename)
+    );
+  }, [allSheets, user]);
+  const filteredStatements = useMemo(() => {
+    if (!user?.interests || !allStatements) return [];
+    return allStatements.filter((statement) =>
+      user.interests.includes(statement.category?._sys?.filename)
+    );
+  }, [allStatements, user]);
+    
+  
+  const newWhitePapers = useMemo(() => sortByDateDesc(filteredPapers).slice(0, 8), [filteredPapers]);
+  const newDataSheets = useMemo(() => sortByDateDesc(filteredSheets).slice(0, 8), [filteredSheets]);
+  const newStatements = useMemo(() => sortByDateDesc(filteredStatements).slice(0, 8), [filteredStatements]);
 
   /* ============================
      🚀 FAST, STABLE RENDER PATH
@@ -211,9 +230,9 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
                 <Dashboard
                   key={i}
                   props={block}
-                  papers={newWhitePapers}
-                  sheets={newDataSheets}
-                  statements={newStatements}
+                  papers={newWhitePapers || []}
+                  sheets={newDataSheets || []}
+                  statements={newStatements || []}
                 />
               );
             case "PageBlocksActivity":

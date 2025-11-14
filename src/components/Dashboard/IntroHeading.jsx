@@ -1,6 +1,6 @@
 import { tinaField } from "tinacms/dist/react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
-function Heading({props,user}){
+function IntroHeading({props,user}){
     return(
         <>
             {props.heading && user?.firstName && (
@@ -22,4 +22,4 @@ function Heading({props,user}){
         </>
     )
 }
-export default Heading
+export default IntroHeading
