@@ -137,7 +137,8 @@ function Activity({props}){
                     className="min-h-[1000px]"
                     >
                     <Cards cards={visibleCards} />
-                    {visibleCards.length == 0 && (
+    
+                    {visibleCards.length == 0  && (
                        <div className="flex flex-col items-center justify-center py-20 text-center text-white/80">
                                     <p className="text-lg mb-6">You don’t have any recent activity yet.</p>
                                     <a
