@@ -1,11 +1,11 @@
 import React from "react";
 
 const InterestDropdown = React.memo(({ categories, selectedInterests, toggleInterest }) => (
-  <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl min-w-[250px] z-10">
+  <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[175px] z-10">
     {categories?.map((cat, j) => (
       <div key={j}
       onClick={() => toggleInterest(cat.category)}
-       className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/10">
+       className=" flex cursor-pointer items-center justify-between px-2 md:px-4 py-2 hover:bg-white/10">
         <span className="capitalize text-white">{cat.category}</span>
         <label className="relative inline-flex items-center cursor-pointer">
           <input

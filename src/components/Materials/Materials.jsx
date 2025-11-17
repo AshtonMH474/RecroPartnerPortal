@@ -92,7 +92,7 @@ function Materials({props,materials}){
     }, [filteredCards]);
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>
-             <div className="mt-20  px-12">
+             <div className="mt-20 px-4  md:px-12">
                     <div className="flex items-center gap-x-4">
                         <Heading props={props}/>
                     </div>
@@ -109,7 +109,7 @@ function Materials({props,materials}){
                         animate="center"
                         exit="exit"
                         transition={{ duration: 0.4, ease: "easeInOut" }}
-                        className="min-h-[1075px]"
+                        className="md:min-h-[1075px]"
                         >
                         <Cards cards={visibleCards} />
                         </motion.div>

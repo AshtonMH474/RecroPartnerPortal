@@ -92,7 +92,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
 
                               value={localName}
                               placeholder={filter.label}
-                              className="px-4  focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                              className="text-[14px] md:text-[16px] px-2 w-[150px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
                               />
                           </div>
                           );
@@ -105,11 +105,11 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                       )
                       if (filter.filter === "interests")
                           return (
-                              <div data-tina-field={tinaField(filter,'label')} key={i} className="relative" ref={dropdownRef}>
+                              <div data-tina-field={tinaField(filter,'label')} key={i} className="relative text-[14px] md:text-[16px]" ref={dropdownRef}>
                               <div
                                   
                                   onClick={() => setOpen(!open)}
-                                  className="self-start flex px-8  py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
+                                  className="self-start flex px-4 md:px-8  py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
                               >
                                   {filter.label} {selectedInterests.length > 0 && `(${selectedInterests.length})`}
                               </div>
@@ -164,11 +164,11 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                       setSelectedInterests([]); 
                       setCards(allCards)
                   }}
-                  className="bg-primary capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
+                  className="bg-primary text-[14px] md:text-[16px] capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white"
                   >
                       Clear
                   </button>
-                  <button onClick={onSubmit}  className="bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white">
+                  <button onClick={onSubmit}  className="text-[14px] md:text-[16px] bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white">
                       Search
                   </button>
               </div>

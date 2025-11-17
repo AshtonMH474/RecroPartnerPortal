@@ -3,12 +3,36 @@ import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { downloadPdf } from "@/lib/download";
 import { useAuth } from "@/context/auth";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 function CardModal({ card,onClose }) {
     const { user } = useAuth();
     const handleDownload = useCallback(() => {
         downloadPdf(card, user);
     }, [card, user]);
+
+    useEffect(() => {
+        const scrollY = window.scrollY;
+    
+        // Lock scroll and preserve current position
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.overflow = 'hidden';
+        document.body.style.width = '100%';
+    
+        return () => {
+          // Restore scroll position
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.left = '';
+          document.body.style.right = '';
+          document.body.style.overflow = '';
+          document.body.style.width = '';
+          window.scrollTo(0, scrollY); // restore to the same spot
+        };
+    }, []);
+
     return (
         <div
         className="fixed inset-0 flex justify-center items-center z-[1000]"
