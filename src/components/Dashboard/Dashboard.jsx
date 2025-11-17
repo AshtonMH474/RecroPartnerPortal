@@ -56,7 +56,7 @@ function Dashboard({ props, papers, sheets, statements }) {
 
   return (
     <div className="pb-20 min-h-screen">
-      <div className="mt-20 flex flex-col px-12">
+      <div className="mt-20 flex flex-col px-4 md:px-12">
         <div>
           <IntroHeading props={props} user={user} />
           <Filters

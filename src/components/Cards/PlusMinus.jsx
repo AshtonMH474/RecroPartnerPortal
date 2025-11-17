@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 function PlusMinusButton({ expanded, setExpanded }) {
   return (
     <div
-      className="relative w-7 h-7 pb-[3px]  cursor-pointer flex items-center justify-center"
+      className="relative w-5 h-5 md:w-7 md:h-7 pb-[3px]  cursor-pointer flex items-center justify-center"
       onClick={() => setExpanded(!expanded)}
     >
       {/* Horizontal bar */}
