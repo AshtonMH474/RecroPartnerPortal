@@ -6,10 +6,12 @@ import PlusMinusButton from "./PlusMinus";
 import { downloadPdf } from "@/lib/download";
 import { useAuth } from "@/context/auth";
 import { tinaField } from "tinacms/dist/react";
+import { useMaterials } from "@/context/materials";
 
 function Card({ card }) {
   const { user } = useAuth();
   const [expanded, setExpanded] = useState(false);
+  const { openModal } = useMaterials();
   const contentRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   useEffect(() => {
@@ -87,7 +89,7 @@ function Card({ card }) {
                   ),
                 }}
               />
-              <button  className="md:hidden bg-primary text-[14px] capitalize cursor-pointer px-4 py-1 w-auto rounded hover:opacity-80 text-white ">View</button>
+              <button onClick={() => openModal('cardModal', card)} className="md:hidden bg-primary text-[14px] capitalize cursor-pointer px-4 py-1 w-auto rounded hover:opacity-80 text-white ">View</button>
             </section>
           </div>
         </div>
