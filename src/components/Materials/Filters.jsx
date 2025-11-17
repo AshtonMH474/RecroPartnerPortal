@@ -80,7 +80,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
       
     return(
       <div>
-              <div className="flex flex-wrap gap-x-4 gap-y-4">
+              <div className="flex flex-wrap gap-x-4 gap-y-4 items-start">
                 {filters?.map((filter, i) => {
                       if (filter.filter === "name")
                           return (
@@ -92,7 +92,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
 
                               value={localName}
                               placeholder={filter.label}
-                              className="text-[14px] md:text-[16px] px-2 w-[150px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                              className="text-[14px] md:text-[16px] px-2 w-[150px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-1 md:py-2 border primary-border rounded-xl text-white transition-colors duration-300"
                               />
                           </div>
                           );
@@ -109,7 +109,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                               <div
                                   
                                   onClick={() => setOpen(!open)}
-                                  className="self-start flex px-4 md:px-8  py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
+                                  className="self-start flex px-4 md:px-8  py-1 md:py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
                               >
                                   {filter.label} {selectedInterests.length > 0 && `(${selectedInterests.length})`}
                               </div>
