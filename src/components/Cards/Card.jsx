@@ -38,7 +38,7 @@ function Card({ card }) {
 
   return (
     <div
-      className="bg-[#1A1A1E] rounded-xl w-[97%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out"
+      className="bg-[#1A1A1E] rounded-xl w-[100%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out"
     >
       <div className="flex justify-between">
         <div className="flex pl-4 pt-4">

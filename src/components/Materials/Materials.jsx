@@ -92,7 +92,7 @@ function Materials({props,materials}){
     }, [filteredCards]);
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>
-             <div className="mt-20  pl-5 md:pl-8 lg:pl-16">
+             <div className="mt-20  px-12">
                     <div className="flex items-center gap-x-4">
                         <Heading props={props}/>
                     </div>
