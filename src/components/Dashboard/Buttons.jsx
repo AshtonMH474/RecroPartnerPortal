@@ -3,7 +3,7 @@ import { tinaField } from "tinacms/dist/react"
 
 function Buttons({buttons}){
     return(
-        <div className="  flex justify-center mr-16 gap-x-4">
+        <div className="  flex justify-center gap-x-4">
            {buttons?.map((button,i) => (
                 <div key={i}>
                     {button.style == 'border' && (<Link href={button.link}><button data-tina-field={tinaField(button,'label')} className="px-8 text-[18px] capitalize py-2 border primary-border rounded hover:text-white/80 transition-colors duration-300">{button.label}</button></Link>)}

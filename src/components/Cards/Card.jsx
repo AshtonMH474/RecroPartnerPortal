@@ -96,10 +96,10 @@ function Card({ card }) {
           <h3 className="pr-4 pt-1 flex text-[12px] md:text-[14px] text-[#C2C2BC]">
             Updated Last: {formattedDate}
           </h3>
-          <div className="pb-11 flex items-center justify-center pl-14 gap-x-2">
+          <div className="pb-11 flex items-center justify-center pl-20 md:pl-14 gap-x-2">
             <BsDownload
               onClick={handleDownload}
-              className="text-[20px] md:text-[32px] cursor-pointer"
+              className="text-[24px] md:text-[32px] cursor-pointer"
             />
             <div className="hidden md:block">
               <PlusMinusButton expanded={expanded} setExpanded={setExpanded} />
