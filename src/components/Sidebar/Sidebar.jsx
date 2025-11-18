@@ -25,6 +25,7 @@ const Sidebar = React.memo(function Sidebar({ res, onWidthChange }) {
     onWidthChange?.(isOpen && isLargeScreen ? 240 : 0);
   }, [isOpen, isLargeScreen, onWidthChange]);
 
+  
   return (
     <div className="fixed hidden lg:flex top-0 left-0 h-full z-[101] flex items-center">
       {/* Sidebar container */}

@@ -6,6 +6,8 @@ import { AnimatePresence,motion } from "framer-motion";
 import Pagination from "../utils/Pagination";
 import Deals from "./Deals";
 import DealFilters from "./Filters";
+import DealFormModal from "../DealForm";
+import { tinaField } from "tinacms/dist/react";
 
 // ✅ Move variants outside component to prevent recreation on every render
 const variants = {
@@ -24,6 +26,7 @@ function AllDeals({props}){
     const {user} = useAuth()
     const [deals,setDeals] = useState([])
     const [cards,setCards] = useState([])
+    const [showFormModal, setShowFormModal] = useState(false);
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [formData,setFormData] = useState({
@@ -111,7 +114,9 @@ function AllDeals({props}){
             {/* ✅ Error state */}
             {error && !loading && (
                 <div className="flex justify-center items-center py-20">
-                    <div className="text-red-500 text-lg">Error: {error}</div>
+                    {/* <div className="text-red-500 text-lg">Error: {error}</div>
+                     */}
+                    
                 </div>
             )}
 
@@ -132,6 +137,22 @@ function AllDeals({props}){
                             <Deals cards={visibleCards} />
                         </motion.div>
                     </AnimatePresence>
+                    <div className="flex  flex-col items-center ">
+                    {!visibleCards.length && (<p data-tina-field={tinaField(props,'noDealsText')} className="text-lg text-[#C2C2BC] mb-6">{props.noDealsText}</p>)}
+                        <button
+                        onClick={() => setShowFormModal(true)}
+                        data-tina-field={tinaField(props,'registerLabel')}
+                        className="bg-primary text-[18px] capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
+                        >
+                            {props.registerLabel}
+                        </button>
+                        {showFormModal && (
+                            <DealFormModal
+                            onClose={() => setShowFormModal(false)}
+                            grabTickets={false}
+                        />
+                        )}
+                    </div>
                     <Pagination totalPages={totalPages} currentPage={startIndex / visibleCount} goToPage={goToPage}/>
                 </>
             )}

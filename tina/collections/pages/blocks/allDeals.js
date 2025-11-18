@@ -7,6 +7,16 @@ export const allDealsBlock = {
             label:'Heading',
             type:'rich-text'
         },
+        {
+            name:'noDealsText',
+            label:'No Deals Text',
+            type:'string',
+        },
+        {
+            label:'Label to Register a Deal',
+            type:'string',
+            name:'registerLabel'
+        }
         
     ]
 }

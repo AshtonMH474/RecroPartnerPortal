@@ -140,7 +140,7 @@ function EditProfile({onClose}){
             <EditCategories categories={categories} activeCategories={activeCategories} toggleCategory={toggleCategory} user={user}/>
            
             <div className="flex justify-center pt-8 ">
-                <button onClick={handleSubmit} className="flex justify-center items-center bg-primary capitalize cursor-pointer text-[22px] px-4 py-2 w-[160px] rounded-xl hover:opacity-80 text-white flex items-center gap-x-1">Save <MdSaveAlt className="text-[26px] mb-1"/></button>
+                <button onClick={handleSubmit} className="flex justify-center items-center bg-primary capitalize cursor-pointer text-[18px] md:text-[22px] px-4 py-2 w-auto md:w-[160px] rounded-xl hover:opacity-80 text-white flex items-center gap-x-1">Save <MdSaveAlt className="text-[20px] md:text-[26px] mb-1"/></button>
             </div>
             
         </motion.div>

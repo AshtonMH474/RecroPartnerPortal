@@ -95,14 +95,13 @@ export async function getServerSideProps({ params, req, res }) {
     // ✅ 6. Batch Tina queries concurrently
     const limit = parseInt(process.env.LIMIT || "50", 10);
 
-    const [pageData, navData, footerData, paperData, sheetData, oppData, statementsData] =
+    const [pageData, navData, footerData, paperData, sheetData, statementsData] =
       await Promise.all([
         client.queries.page({ relativePath: filename }),
         client.queries.nav({ relativePath: "nav_authorized.md" }),
         client.queries.footer({ relativePath: "footer.md" }),
         client.queries.paperConnection({ first: limit }),
         client.queries.sheetConnection({ first: limit }),
-        client.queries.opportunitesConnection({ first: limit }),
         client.queries.statementsConnection({ first: limit }),
       ]);
 
@@ -121,7 +120,6 @@ export async function getServerSideProps({ params, req, res }) {
         footer: footerData,
         paper: paperData,
         sheets: sheetData,
-        opp: oppData,
         statements: statementsData,
       },
     };
@@ -134,14 +132,13 @@ export async function getServerSideProps({ params, req, res }) {
 /* ============================
    ⚡️ CLIENT RENDER OPTIMIZATION
    ============================ */
-function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
+function Slug({ res, nav, footer, paper, sheets, statements }) {
   // Tina hooks
   const { data: pageData } = useTina(res);
   const { data: navContent } = useTina(nav);
   const { data: footerContent } = useTina(footer);
   const { data: paperContent } = useTina(paper);
   const { data: sheetContent } = useTina(sheets);
-  const { data: oppContent } = useTina(opp);
   const { data: statementsContent } = useTina(statements);
 
   const [sidebarWidth, setSidebarWidth] = useState(200);
@@ -159,6 +156,7 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
       }
     }
   }, [user, openModal]);
+  
 
   // ✅ Memoize derived arrays (prevents re-sorting on every render)
   const allPapers = useMemo(
@@ -168,10 +166,6 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
   const allSheets = useMemo(
     () => sheetContent.sheetConnection.edges.map((e) => e.node),
     [sheetContent]
-  );
-  const allOpps = useMemo(
-    () => oppContent.opportunitesConnection.edges.map((e) => e.node),
-    [oppContent]
   );
   const allStatements = useMemo(
     () => statementsContent.statementsConnection.edges.map((e) => e.node),
