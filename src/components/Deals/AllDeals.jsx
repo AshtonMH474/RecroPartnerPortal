@@ -137,8 +137,8 @@ function AllDeals({props}){
                             <Deals cards={visibleCards} />
                         </motion.div>
                     </AnimatePresence>
-                    <div className="flex  flex-col items-center ">
-                    {!visibleCards.length && (<p data-tina-field={tinaField(props,'noDealsText')} className="text-lg text-[#C2C2BC] mb-6">{props.noDealsText}</p>)}
+                    <div className="flex  flex-col items-center pb-4">
+                    {!visibleCards.length && (<p data-tina-field={tinaField(props,'noDealsText')} className="text-md md:text-lg text-center text-[#C2C2BC] mb-6">{props.noDealsText}</p>)}
                         <button
                         onClick={() => setShowFormModal(true)}
                         data-tina-field={tinaField(props,'registerLabel')}

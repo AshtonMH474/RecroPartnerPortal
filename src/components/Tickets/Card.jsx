@@ -6,6 +6,19 @@ function Card({ card }) {
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
 
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  useEffect(() => {
+    setIsSmallScreen(window.innerWidth < 768);
+    window.addEventListener("resize", () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    });
+    return () => {
+      window.removeEventListener("resize", () => {
+        setIsSmallScreen(window.innerWidth < 768);
+      });
+    };
+  }, []);
+
   useEffect(() => {
     if (contentRef.current) {
       const section = contentRef.current;
@@ -23,11 +36,8 @@ function Card({ card }) {
     subject,
     content,
     agency,
-    contract_vehicle,
     amount,
-    program,
     hs_pipeline_stage,
-    createdate,
   } = card?.properties || {};
   
   // Map stage to label and color
@@ -46,19 +56,19 @@ function Card({ card }) {
       {/* Header */}
       <div className="flex justify-between items-start p-4 gap-4">
         {/* Icon */}
-        <div className="w-[70px] h-[70px] bg-primary rounded-lg flex justify-center items-center flex-shrink-0">
-          <IconRenderer size="48px" color="#FAF3E0" iconName={"FaRegCheckCircle"} />
+        <div className="md:w-[70px] md:h-[70px] w-[50px] h-[50px] bg-primary rounded-lg flex justify-center items-center flex-shrink-0">
+          <IconRenderer size={isSmallScreen ? "30px" : "48px"} color="#FAF3E0" iconName={"FaRegCheckCircle"} />
         </div>
 
         {/* Title + Status */}
         <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-3">
-            <h2 className="font-bold text-[22px] text-white flex-1">{subject}</h2>
+          <div className="flex flex-col md:flex-row md:items-center pb-2 md:pb-0 gap-1 md:gap-3">
+            <h2 className="font-bold text-[12px] md:text-[22px] text-white flex-1">{subject}</h2>
 
             {/* Status Bar */}
-            <div className="relative w-[200px] h-5 rounded-full bg-gray-800 shadow-inner overflow-hidden">
+            <div className="relative md:w-[200px] w-[150px] h-3 md:h-5 rounded-full bg-gray-800 shadow-inner overflow-hidden">
               <div
-                className="h-5 rounded-full transition-all duration-500"
+                className="h-3 md:h-5 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%`, backgroundColor: stage.color }}
               ></div>
               <div className="absolute inset-0 flex justify-center items-center pointer-events-none">

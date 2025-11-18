@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 
@@ -9,6 +9,30 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
   const [errors, setErrors] = useState({})
   const [message, setMessage] = useState("");;
   const { user } = useAuth();
+
+
+  useEffect(() => {
+    const scrollY = window.scrollY;
+
+    // Lock scroll and preserve current position
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
+    document.body.style.width = '100%';
+
+    return () => {
+      // Restore scroll position
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY); // restore to the same spot
+    };
+}, []);
 
       const [value, setValue] = useState("");
 
@@ -101,7 +125,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.3 }}
-            className="relative z-[1001] w-[90%] max-w-[1200px] bg-[#1A1A1E] border border-white/10 rounded-xl p-6 shadow-lg"
+            className="relative max-h-[90%] overflow-y-auto z-[1001] w-[90%] max-w-[1200px] bg-[#1A1A1E] border border-white/10 rounded-xl p-6 shadow-lg"
           >
             {/* Close button */}
             <IoMdClose
@@ -110,19 +134,19 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
             />
 
             {/* Form content */}
-            <h3 className=" flex justify-center text-[26px] font-semibold text-white mb-4">Submit a Deal</h3>
+            <h3 className=" flex justify-center text-center text-[16px] md:text-[26px] font-semibold text-white mb-4">Submit a Deal</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="text"
                 name="subject"
                 placeholder="Subject"
-                className="w-full p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+                className="w-full p-3 text-[14px] md:text-[16px] rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
               />
               <input
                 type="text"
                 name="agency"
                 placeholder="Agency"
-                className="w-full p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+                className="w-full p-3 text-[14px] md:text-[16px] rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
               />
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -130,7 +154,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
                   type="text"
                   name="program"
                   placeholder="Program"
-                  className="w-full sm:w-1/2 p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+                  className="w-full text-[14px] md:text-[16px] sm:w-1/2 p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
                 />
                 <input
                   type="text" // must be text so commas can display
@@ -139,7 +163,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
                   onChange={handleChange}
                   inputMode="numeric" // shows numeric keyboard on mobile
                   placeholder="Amount"
-                  className="w-full sm:w-1/2 p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+                  className="w-full text-[14px] md:text-[16px] sm:w-1/2 p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
                 />
 
               </div>
@@ -147,39 +171,39 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
                   type="text"
                   name="vehicle"
                   placeholder="Contract Vehicle"
-                  className="w-full  p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+                  className="w-full text-[14px] md:text-[16px] p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
                 />
               <input
                 type="text"
                 name="samLink"
                 placeholder="SAM.gov link"
-                className="w-full p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+                className="w-full text-[14px] md:text-[16px] p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
               />
 
               <textarea
             placeholder="Description"
             name="description"
             rows={4}
-            className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70 resize-none"
+            className="w-full text-[14px] md:text-[16px] p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70 resize-none"
           ></textarea>
 
               {errors?.error && (
-                <div className="text-red-500 font-medium">{errors.error}</div>
+                <div className="text-red-500 text-[14px] md:text-[16px] font-medium">{errors.error}</div>
               )}
               {errors?.subject && (
-                <div className="text-red-500 font-medium">{errors.subject}</div>
+                <div className="text-red-500 text-[14px] md:text-[16px] font-medium">{errors.subject}</div>
               )}
               {errors?.description && (
-                <div className="text-red-500 font-medium">{errors.description}</div>
+                <div className="text-red-500 text-[14px] md:text-[16px] font-medium">{errors.description}</div>
               )}
               {errors?.amount && (
-                <div className="text-red-500 font-medium">{errors.amount}</div>
+                <div className="text-red-500 text-[14px] md:text-[16px] font-medium">{errors.amount}</div>
               )}
-            {message && <div className="mb-4 text-green-500 font-medium">{message}</div>}
+            {message && <div className="mb-4 text-green-500 text-[14px] md:text-[16px] font-medium">{message}</div>}
               <div className="flex justify-center">
                   <button
                     type="submit"
-                    className="hover:opacity-80 cursor-pointer w-full py-2 rounded bg-primary text-white hover:bg-primary/80 transition"
+                    className="hover:opacity-80 text-[14px] md:text-[16px] cursor-pointer w-full py-2 rounded bg-primary text-white hover:bg-primary/80 transition"
                 >
                         Submit
                 </button>

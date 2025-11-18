@@ -1,7 +1,7 @@
 function Pagination({ totalPages, currentPage, goToPage }) {
 if(totalPages <= 1) return
   return (
-    <div className="flex justify-center gap-2 mt-4 flex-wrap">
+    <div className="flex justify-center gap-2 mt-4 flex-wrap px-4">
       {Array.from({ length: totalPages }, (_, i) => (
         <button
           key={i}

@@ -1,9 +1,9 @@
 function AgenciesDropdown({selectedAgencies,toggleAgency}){
     const agencies = ['CIA','NRO','NGA','NSA','DOD','DISA','NASIC','DIA','DLA','DTRA','Air Force','Army','Navy','Marine Corps','Coast Guard','Space Force','DHS','ICE','FEMA','CISA','Treasury','IRS','DOJ','FBI','DOS','Commerce','NASA','USDA','VA','COCOMs','SOCOM','SDA','ODNI','MDA','GSA','CYBERCOM','OPM',"HHS",'DOE','DOI']
     return(
-         <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl min-w-[250px] z-10 max-h-60 overflow-y-auto">
+         <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[150px] z-10 max-h-60 overflow-y-auto">
             {agencies?.map((a, i) => (
-                <div onClick={() => toggleAgency(a)} key={i} className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/10">
+                <div onClick={() => toggleAgency(a)} key={i} className="flex cursor-pointer items-center  gap-x-2 justify-between px-2 md:px-4 py-1 md:py-2 hover:bg-white/10">
                 <span className="capitalize text-white">{a}</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input
