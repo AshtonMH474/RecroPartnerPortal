@@ -116,7 +116,7 @@ function Activity({props}){
     return(
         <div className="pb-20" style={{minHeight:'100vh'}}>
             <div className="mt-20 px-4 md:px-12">
-                <div className="flex flex-wrap items-center gap-x-4">
+                <div className="flex flex-wrap items-center gap-x-2 md:gap-x-4">
                     <Heading props={props}/>
                     <Types types={props.type} active={active} setActive={setActive} formData={formData}/>
                 </div>
@@ -139,7 +139,7 @@ function Activity({props}){
                     <Cards cards={visibleCards} />
     
                     {visibleCards.length == 0  && (
-                       <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center text-white/80">
+                       <div className="flex flex-col items-center justify-center  text-center text-white/80">
                                     <p className="text-lg mb-6">You don’t have any recent activity yet.</p>
                                     <a
                                     data-tina-field={tinaField(props,'noActivityText')}

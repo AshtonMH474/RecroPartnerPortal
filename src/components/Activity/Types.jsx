@@ -19,10 +19,10 @@ function Types({types,active,setActive}){
         <div className="flex flex-wrap gap-x-4 gap-y-4 pb-4">
                     {types?.map((type,i) => {
                             if(type.filter == active){
-                                return <button data-tina-field={tinaField(type,'label')} onClick={() => setActive(type.filter)} key={i} className="bg-primary text-[14px] lg:text-[22px] px-4 md:px-6 h-10 md:h-12 lg:h-15 rounded-full border border-white/15 transition-colors duration-300 ease-in-out flex items-center justify-center gap-x-2 cursor-pointer"><IconRenderer size={isSmallScreen ? "14px" : "22px"} color={'#FFFFFF'} iconName={type.icon}/><span className="">{type.label}</span></button>
+                                return <button data-tina-field={tinaField(type,'label')} onClick={() => setActive(type.filter)} key={i} className="bg-primary text-[12px] md:text-[18px] lg:text-[22px] px-3 md:px-6 h-10 md:h-12 lg:h-15 rounded-full border border-white/15 transition-colors duration-300 ease-in-out flex items-center justify-center gap-x-2 cursor-pointer"><IconRenderer size={isSmallScreen ? "14px" : "22px"} color={'#FFFFFF'} iconName={type.icon}/><span className="">{type.label}</span></button>
                             }
                             return(
-                            <button onClick={() => setActive(type.filter)} data-tina-field={tinaField(type,'label')}  className="text-[14px] lg:text-[22px] px-4 md:px-6 h-10 md:h-12 lg:h-15 rounded-full border border-white/15 transition-colors duration-300 ease-in-out flex items-center bg-[#1A1A1E] justify-center gap-x-2 cursor-pointer" key={i}>
+                            <button onClick={() => setActive(type.filter)} data-tina-field={tinaField(type,'label')}  className="text-[12px] md:text-[18px] lg:text-[22px] px-3 md:px-6 h-10 md:h-12 lg:h-15 rounded-full border border-white/15 transition-colors duration-300 ease-in-out flex items-center bg-[#1A1A1E] justify-center gap-x-2 cursor-pointer" key={i}>
                                 <IconRenderer size={isSmallScreen ? "14px" : "22px"} color={'#FFFFFF'} iconName={type.icon}/><span className="">{type.label}</span>
                             </button>)
                     })}
