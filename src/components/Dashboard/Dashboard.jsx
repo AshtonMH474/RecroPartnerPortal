@@ -5,22 +5,34 @@ import IntroHeading from "./IntroHeading";
 import Filters from "./Filters";
 import Cards from "../Cards/Cards";
 import Buttons from "./Buttons";
+import { filterByInterests } from "@/lib/service_functions";
 
-function Dashboard({ props, papers, sheets, statements }) {
+function Dashboard({ props, allPapers, allSheets, allStatements }) {
   const { user } = useAuth();
   const { downloads, loading: loadingRecent } = useDownloads();
   const [active, setActive] = useState(props?.filters?.[0]?.filter || "");
   const [buttons, setButtons] = useState(props?.filters?.[0]?.buttons || []);
 
   // ✅ Get recent downloads from context (first 8)
-  const recent = useMemo(() => downloads.slice(0, 8), [downloads]);
+    const recent = useMemo(() => downloads.slice(0, 8), [downloads]);
+// 1. Convert interests to Set for O(1) lookups instead of O(n)
+    const interestSet = useMemo(
+      () => new Set(user?.interests || []),
+      [user?.interests]
+    );
+
+    // 2. Combine filter + sort + slice into single operation
+    const papers = useMemo(() => filterByInterests(allPapers, interestSet), [allPapers, interestSet]);
+    const sheets = useMemo(() => filterByInterests(allSheets, interestSet), [allSheets, interestSet]);
+    const statements = useMemo(() => filterByInterests(allStatements, interestSet), [allStatements, interestSet]);
+
 
   // Set default tab only if no downloads
-  useEffect(() => {
-    if (downloads.length === 0 && user?.email) {
-      setActive("papers");
-    }
-  }, [downloads.length, user?.email]);
+    useEffect(() => {
+      if (downloads.length === 0 && user?.email) {
+        setActive("papers");
+      }
+    }, [downloads.length, user?.email]);
 
   // ✅ Memoize cards computation (only recalculate when dependencies change)
   const cards = useMemo(() => {

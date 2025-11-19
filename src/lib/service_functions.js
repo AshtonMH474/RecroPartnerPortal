@@ -95,3 +95,14 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
     return data
   }
   
+ export const sortByDateDesc = (arr) =>
+    [...arr].sort(
+      (a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)
+    );
+
+  export const filterByInterests = (arr, interests) => {
+    if (!interests.size || !arr) return [];
+    return arr.filter((item) => interests.has(item.category?._sys?.filename))
+    .sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated))
+    .slice(0, 8);
+  }

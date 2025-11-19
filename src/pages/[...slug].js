@@ -1,13 +1,13 @@
-
-import Dashboard from "@/components/Dashboard/Dashboard";
+import { lazy, Suspense } from 'react';
+const Dashboard = lazy(() => import('@/components/Dashboard/Dashboard'));
+const Activity = lazy(() => import('@/components/Activity/Activity'));
+const Materials = lazy(() => import('@/components/Materials/Materials'));
+const AllDeals = lazy(() => import('@/components/Deals/AllDeals'));
+const MyDeals = lazy(() => import('@/components/Deals/MyDeals'));
+const Landing = lazy(() => import('@/components/Landing'));
 import Footer from "@/components/Footer";
-import Landing from "@/components/Landing";
 import Nav from "@/components/Nav/Nav";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import Activity from "@/components/Activity/Activity";
-import Materials from "@/components/Materials/Materials";
-import AllDeals from "@/components/Deals/AllDeals";
-import MyDeals from "@/components/Deals/MyDeals";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useTina } from "tinacms/dist/react";
 import jwt from "jsonwebtoken";
@@ -172,35 +172,8 @@ function Slug({ res, nav, footer, paper, sheets, statements }) {
     [statementsContent]
   );
 
-  // ✅ Pre-sort and slice once (computed properties, not state)
-  const sortByDateDesc = (arr) =>
-    [...arr].sort(
-      (a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)
-    );
 
-  const filteredPapers = useMemo(() => {
-      if (!user?.interests || !allPapers) return [];
-      return allPapers.filter((paper) =>
-        user.interests.includes(paper.category?._sys?.filename)
-      );
-  }, [allPapers, user]);
-  const filteredSheets = useMemo(() => {
-    if (!user?.interests || !allSheets) return [];
-    return allSheets.filter((sheet) =>
-      user.interests.includes(sheet.category?._sys?.filename)
-    );
-  }, [allSheets, user]);
-  const filteredStatements = useMemo(() => {
-    if (!user?.interests || !allStatements) return [];
-    return allStatements.filter((statement) =>
-      user.interests.includes(statement.category?._sys?.filename)
-    );
-  }, [allStatements, user]);
-    
   
-  const newWhitePapers = useMemo(() => sortByDateDesc(filteredPapers).slice(0, 8), [filteredPapers]);
-  const newDataSheets = useMemo(() => sortByDateDesc(filteredSheets).slice(0, 8), [filteredSheets]);
-  const newStatements = useMemo(() => sortByDateDesc(filteredStatements).slice(0, 8), [filteredStatements]);
 
   /* ============================
      🚀 FAST, STABLE RENDER PATH
@@ -215,36 +188,38 @@ function Slug({ res, nav, footer, paper, sheets, statements }) {
         className="transition-all duration-500 ease-in-out"
         style={{ marginLeft: `${sidebarWidth}px` }}
       >
-        {pageData.page.blocks?.map((block, i) => {
-          switch (block?.__typename) {
-            case "PageBlocksLanding":
-              return <Landing key={i} {...block} />;
-            case "PageBlocksDashboard":
-              return (
-                <Dashboard
-                  key={i}
-                  props={block}
-                  papers={newWhitePapers || []}
-                  sheets={newDataSheets || []}
-                  statements={newStatements || []}
-                />
-              );
-            case "PageBlocksActivity":
-              return <Activity key={i} props={block} />;
-            case "PageBlocksPapers":
-              return <Materials key={i} props={block} materials={allPapers} />;
-            case "PageBlocksSheets":
-              return <Materials key={i} props={block} materials={allSheets} />;
-            case "PageBlocksStatements":
-              return <Materials key={i} props={block} materials={allStatements} />;
-            case "PageBlocksAllDeals":
-              return <AllDeals key={i} props={block} />;
-            case "PageBlocksMyDeals":
-              return <MyDeals key={i} props={block} />;
-            default:
-              return null;
-          }
-        })}
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Loading...</div></div>}>
+          {pageData.page.blocks?.map((block, i) => {
+            switch (block?.__typename) {
+              case "PageBlocksLanding":
+                return <Landing key={i} {...block} />;
+              case "PageBlocksDashboard":
+                return (
+                  <Dashboard
+                    key={i}
+                    props={block}
+                    allPapers={allPapers || []}
+                    allSheets={allSheets || []}
+                    allStatements={allStatements || []}
+                  />
+                );
+              case "PageBlocksActivity":
+                return <Activity key={i} props={block} />;
+              case "PageBlocksPapers":
+                return <Materials key={i} props={block} materials={allPapers} />;
+              case "PageBlocksSheets":
+                return <Materials key={i} props={block} materials={allSheets} />;
+              case "PageBlocksStatements":
+                return <Materials key={i} props={block} materials={allStatements} />;
+              case "PageBlocksAllDeals":
+                return <AllDeals key={i} props={block} />;
+              case "PageBlocksMyDeals":
+                return <MyDeals key={i} props={block} />;
+              default:
+                return null;
+            }
+          })}
+        </Suspense>
         <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
       </main>
     </>
