@@ -52,7 +52,7 @@ function Card({ card }) {
   const progressPercent = (hs_pipeline_stage / 4) * 100;
 
   return (
-    <div className="bg-[#1A1A1E] rounded-xl w-[95%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out shadow-md">
+    <div className="bg-[#1A1A1E] rounded-xl w-[100%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out shadow-md">
       {/* Header */}
       <div className="flex justify-between items-start p-3 md:p-4 gap-4">
         {/* Icon */}
