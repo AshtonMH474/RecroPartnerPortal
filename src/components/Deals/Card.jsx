@@ -43,14 +43,14 @@ const Card = React.memo(function Card({ card }) {
 
 
   return (
-      <div className="bg-[#1A1A1E] rounded-xl w-[95%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out shadow-lg hover:shadow-primary/30">
-            <div className="flex justify-between items-start p-5 gap-5">
-                <div className="flex gap-x-4">
-                      <div className="md:w-[70px] md:h-[70px] w-[50px] h-[50px] bg-primary rounded-lg flex justify-center items-center flex-shrink-0">
-                          <IconRenderer size={isSmallScreen ? "30px" : "44px"} color="#FAF3E0" iconName={"FaHandshake"} />
+      <div className="bg-[#1A1A1E] rounded-xl w-[100%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out shadow-lg hover:shadow-primary/30">
+            <div className="flex justify-between items-start p-2 md:p-5 gap-5">
+                <div className="flex gap-x-2 md:gap-x-4">
+                      <div className="md:w-[70px] md:h-[70px] w-[40px] h-[40px] bg-primary rounded-lg flex justify-center items-center flex-shrink-0">
+                          <IconRenderer size={isSmallScreen ? "28px" : "44px"} color="#FAF3E0" iconName={"FaHandshake"} />
                       </div>
-                      <div className="flex flex-col flex-1 min-w-0">
-                            <h2 className="break-words font-bold text-[12px] md:text-[22px] text-white flex-1 min-w-[150px]   ">
+                      <div className="flex flex-col flex-1 ">
+                            <h2 className="break-words font-bold  text-[14px] md:text-[22px] text-white flex-1 min-w-[150px]   ">
                               {name}
                             </h2>
                             {agencies?.[0] && (<div className="flex flex-wrap items-center pt-2 gap-2">
