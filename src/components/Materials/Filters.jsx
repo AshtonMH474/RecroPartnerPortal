@@ -92,7 +92,7 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
 
                               value={localName}
                               placeholder={filter.label}
-                              className="text-[14px] md:text-[16px] px-2 w-[150px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-1 md:py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+                              className="text-[14px] md:text-[16px] px-3 w-[150px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-1 md:py-2 border primary-border rounded-xl text-white transition-colors duration-300"
                               />
                           </div>
                           );
@@ -106,19 +106,29 @@ function Filters({allCards,setCards,setFormData,categories,formData, filters,onS
                       if (filter.filter === "interests")
                           return (
                               <div data-tina-field={tinaField(filter,'label')} key={i} className="relative text-[14px] md:text-[16px]" ref={dropdownRef}>
-                              <div
-                                  
-                                  onClick={() => setOpen(!open)}
-                                  className="self-start flex px-4 md:px-8  py-1 md:py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
-                              >
-                                  {filter.label} {selectedInterests.length > 0 && `(${selectedInterests.length})`}
-                              </div>
-                              {open && (
-                                      <InterestDropdown 
-                                      categories={categories} 
-                                      selectedInterests={selectedInterests} 
-                                      toggleInterest={toggleInterest}/>
-                              )}
+                                    <div
+                                        type="button"
+                                        onClick={() => setOpen(!open)}
+                                        className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center gap-x-3 md:gap-x-8  w-full"
+                                        aria-expanded={open}
+                                        aria-haspopup="true"
+                                    >
+                                            <span>{filter.label} {selectedInterests.length > 0 && `(${selectedInterests.length})`}</span>
+                                            <svg 
+                                                className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    {open && (
+                                            <InterestDropdown 
+                                            categories={categories} 
+                                            selectedInterests={selectedInterests} 
+                                            toggleInterest={toggleInterest}/>
+                                    )}
                               </div>
                           );
                         if(filter.filter == 'agency')

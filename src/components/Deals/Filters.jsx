@@ -53,12 +53,22 @@ function DealFilters({formData,setFormData,onSubmit,setCards,deals}){
                 />
                 <div  className="relative" ref={dropdownRef}>
                               <div
-                                  
-                                  onClick={() => setOpen(!open)}
-                                  className="self-start flex text-[14px] md:text-[16px] px-4 md:px-8  py-1 md:py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
-                              >
-                                  Agencies {selectedAgencies.length > 0 && `(${selectedAgencies.length})`}
-                              </div>
+                                        type="button"
+                                        onClick={() => setOpen(!open)}
+                                        className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center gap-x-3 md:gap-x-8  w-full"
+                                        aria-expanded={open}
+                                        aria-haspopup="true"
+                                    >
+                                            <span>Agencies {selectedAgencies.length > 0 && `(${selectedAgencies.length})`}</span>
+                                            <svg 
+                                                className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
                               {open && (
                                 <AgenciesDropdown selectedAgencies={selectedAgencies} toggleAgency={toggleAgency}/>
                               )}

@@ -11,41 +11,55 @@ export default function DateDropdown({filter,handleChange,formData}){
     { label: "All", value: "all" },
     ];
 
+    // Find the selected option's label
+    const selectedOption = options.find(opt => opt.value === formData.date);
+    const displayText = selectedOption ? selectedOption.label : filter.label;
+
     useEffect(() => {
         const handleClickOutside = (event) => {
           if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
             setOpen(false);
           }
         };
-        document.addEventListener("mousedown", handleClickOutside);
+        if (open) {
+          document.addEventListener("mousedown", handleClickOutside);
+        }
         return () => {
           document.removeEventListener("mousedown", handleClickOutside);
         };
-      }, []);
+      }, [open]);
 
-
+    const handleOptionClick = (value) => {
+        handleChange({ target: { name: filter.filter, value: value } });
+        setOpen(false);
+    };
 
     return (
-        <div  ref={dropdownRef} data-tina-field={tinaField(filter,'label')}>
-            {formData.date.length < 1 && (<button
+        <div ref={dropdownRef} className="relative" data-tina-field={tinaField(filter,'label')}>
+            <div
                 type="button"
                 onClick={() => setOpen(!open)}
-                className="capitalize px-6 md:px-8 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none">
-                    {filter.label}
-                </button>)}
-                {formData.date.length > 1 && (<button
-                type="button"
-                onClick={() => setOpen(!open)}
-                className="text-[14px] md:text-[16px] capitalize px-8 py-1 md:py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none">
-                    {formData.date}
-                </button>)}
+                className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center md:gap-x-8 gap-x-3 w-full"
+                aria-expanded={open}
+                aria-haspopup="true"
+            >
+                <span>{displayText}</span>
+                <svg 
+                    className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
             {open && (
-                <div className="cursor-pointer absolute mt-2  bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[90px] z-10">
+                <div className="absolute top-full left-0 mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[110px]  z-10 shadow-lg">
                     {options.map((opt, i) => (
                         <div
                         key={i}
-                        className="flex items-center justify-between px-4 py-2 hover:bg-white/10"
-                        onClick={() => handleChange({ target: { name: filter.filter, value: opt.value } })}
+                        className="flex items-center justify-between px-2 md:px-4 py-2 hover:bg-white/10 cursor-pointer transition-colors first:rounded-t-xl last:rounded-b-xl"
+                        onClick={() => handleOptionClick(opt.value)}
                         >
                         <span className="capitalize text-white">{opt.label}</span>
 
@@ -54,11 +68,15 @@ export default function DateDropdown({filter,handleChange,formData}){
                             type="radio"
                             name={filter.filter}
                             checked={formData.date === opt.value}
-                            onChange={() => handleChange({ target: { name: filter.filter, value: opt.value } })}
+                            onChange={() => handleOptionClick(opt.value)}
                             className="sr-only peer"
                             />
-                            <div className="hidden md:block w-10 h-6 bg-gray-500 rounded-full peer-checked:bg-[#B55914] transition-colors"></div>
-                            <div className="hidden md:block absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transform peer-checked:translate-x-4 transition-transform"></div>
+                            <div className={`hidden md:block w-10 h-6 rounded-full transition-colors ${
+                                formData.date === opt.value ? 'bg-[#B55914]' : 'bg-gray-500'
+                            }`}></div>
+                            <div className={`hidden md:block absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                                formData.date === opt.value ? 'translate-x-4' : 'translate-x-0'
+                            }`}></div>
                         </label>
                         </div>
                     ))}

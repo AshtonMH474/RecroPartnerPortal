@@ -1,7 +1,7 @@
 import React from "react";
 
 const InterestDropdown = React.memo(({ categories, selectedInterests, toggleInterest }) => (
-  <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[175px] z-10">
+  <div className="absolute mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[165px] z-10">
     {categories?.map((cat, j) => (
       <div key={j}
       onClick={() => toggleInterest(cat.category)}
