@@ -58,20 +58,20 @@ function Card({ card }) {
           <div className="pt-[5px]">
             <div
               data-tina-field={tinaField(card, "category")}
-              className="md:w-[70px] md:h-[70px] w-[50px] h-[50px] mb-2 bg-primary rounded-lg flex justify-center items-center"
+              className="md:w-[70px] md:h-[70px] w-[45px] h-[45px] mb-2 bg-primary rounded-lg flex justify-center items-center"
             >
               <IconRenderer
-                size={isSmallScreen ? "30px" : "48px"}
+                size={isSmallScreen ? "28px" : "48px"}
                 color={"#FAF3E0"}
                 iconName={card.category?.icon}
               />
             </div>
           </div>
 
-          <div className="pl-4 w-[100%] relative bottom-1">
+          <div className="pl-4 w-[100%]  relative bottom-1">
             <h2
               data-tina-field={tinaField(card, "title")}
-              className="pb-2 md:pb-0 font-bold text-[18px] md:text-[22px]"
+              className="pb-2 md:pb-0 font-bold text-[14px] md:text-[22px]"
             >
               {card.title}
             </h2>
@@ -89,8 +89,9 @@ function Card({ card }) {
                   ),
                 }}
               />
-              <button onClick={() => openModal('cardModal', card)} className="md:hidden bg-primary text-[14px] capitalize cursor-pointer px-4 py-1 w-auto rounded hover:opacity-80 text-white ">View</button>
+              
             </section>
+            <button onClick={() => openModal('cardModal', card)} className="md:hidden bg-primary text-[14px] capitalize cursor-pointer px-4 py-1 w-auto rounded hover:opacity-80 text-white ">View</button>
           </div>
         </div>
 
@@ -98,7 +99,7 @@ function Card({ card }) {
           <h3 className="pr-4 pt-1 flex text-[12px] md:text-[14px] text-[#C2C2BC]">
             Updated Last: {formattedDate}
           </h3>
-          <div className="pb-11 flex items-center justify-center pl-20 md:pl-14 gap-x-2">
+          <div className="md:pb-11 pb-7 flex items-center justify-center pl-20 md:pl-14 gap-x-2">
             <BsDownload
               onClick={handleDownload}
               className="text-[24px] md:text-[32px] cursor-pointer"
