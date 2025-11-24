@@ -78,7 +78,7 @@ const toggleInterest = useCallback((category) => {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-x-4 gap-y-4">
+    <div className="flex flex-wrap items-start gap-x-4 gap-y-4">
       {filters?.map((filter, i) => {
         if (filter.filter === "name")
           return (
@@ -88,8 +88,8 @@ const toggleInterest = useCallback((category) => {
               key={i}
               value={localName}
               placeholder={filter.label}
-              className="px-4 focus:outline-none placeholder-white capitalize text-white py-2 border primary-border rounded-xl text-white transition-colors duration-300"
-            />
+              className="text-[14px] md:text-[16px] px-3 w-[150px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-1 md:py-2 border primary-border rounded-xl text-white transition-colors duration-300"
+              />
           );
 
          if(filter.filter == 'date') return (
@@ -102,14 +102,24 @@ const toggleInterest = useCallback((category) => {
 
         if (filter.filter === "interests")
           return (
-            <div data-tina-field={tinaField(filter,'label')} key={i} className="relative" ref={dropdownRef}>
-              <button
-                type="button"
-                onClick={() => setOpen(!open)}
-                className="px-4 py-2 border primary-border rounded-xl bg-transparent text-white focus:outline-none"
-              >
-                Interests {selectedInterests.length > 0 && `(${selectedInterests.length})`}
-              </button>
+            <div data-tina-field={tinaField(filter,'label')} key={i} className="relative text-[14px] md:text-[16px]" ref={dropdownRef}>
+              <div
+                                        type="button"
+                                        onClick={() => setOpen(!open)}
+                                        className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center gap-x-3 md:gap-x-8  w-full"
+                                        aria-expanded={open}
+                                        aria-haspopup="true"
+                                    >
+                                            <span>{filter.label} {selectedInterests.length > 0 && `(${selectedInterests.length})`}</span>
+                                            <svg 
+                                                className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+              </div>
               {open && (
                     <InterestDropdown 
                     categories={categories} 
@@ -129,11 +139,11 @@ const toggleInterest = useCallback((category) => {
             });
             setSelectedInterests([]); 
         }}
-        className="bg-primary capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white"
+        className="bg-primary text-[14px] md:text-[16px] capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white"
         >
         Clear
         </button>
-      <button onClick={onSubmit} className="bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-8 py-2 w-auto rounded hover:opacity-80 text-white">
+      <button onClick={onSubmit} className="text-[14px] md:text-[16px] bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white">
         Search
       </button>
     </div>

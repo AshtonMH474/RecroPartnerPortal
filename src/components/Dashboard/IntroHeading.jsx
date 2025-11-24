@@ -1,6 +1,6 @@
 import { tinaField } from "tinacms/dist/react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
-function Heading({props,user}){
+function IntroHeading({props,user}){
     return(
         <>
             {props.heading && user?.firstName && (
@@ -10,7 +10,7 @@ function Heading({props,user}){
                     components={{
                         bold:(p) => <span className="primary-color" {...p} />,
                         h1: (p) => (
-                            <h1 className="text-[32px]  lg:text-[40px] xl:text-[50px] font-bold mb-4">
+                            <h1 className="text-[28px]  md:text-[40px]  xl:text-[50px] font-bold mb-4">
                                 {p.children}
                                 {user ? `, ${user?.firstName}` : ""}
                             </h1>
@@ -22,4 +22,4 @@ function Heading({props,user}){
         </>
     )
 }
-export default Heading
+export default IntroHeading

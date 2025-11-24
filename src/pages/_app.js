@@ -4,6 +4,7 @@ import "@/styles/gears.css";
 import BG from "@/components/BG";
 import { AuthProvider } from "@/context/auth";
 import { DownloadsProvider } from "@/context/downloads";
+import { MaterialsProvider } from "@/context/materials";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -14,7 +15,9 @@ export default function App({ Component, pageProps }) {
       <BG/>
       <AuthProvider>
         <DownloadsProvider>
-          <Component {...pageProps} />
+          <MaterialsProvider>
+            <Component {...pageProps} />
+          </MaterialsProvider>
         </DownloadsProvider>
       </AuthProvider>
     </>

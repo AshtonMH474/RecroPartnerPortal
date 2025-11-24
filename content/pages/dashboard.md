@@ -5,21 +5,21 @@ blocks:
   - heading: |
       # **Welcome**
     filters:
-      - label: New White Papers
+      - label: Papers for You
         filter: papers
         icon: FaPaperclip
         buttons:
           - label: View All Papers
             link: /papers
             style: button
-      - label: New Data Sheets
+      - label: Sheets for You
         filter: sheets
         icon: FaDatabase
         buttons:
           - label: View All Sheets
             link: /sheets
             style: button
-      - label: New Statements
+      - label: Statements for You
         filter: statements
         icon: FaRegPaperPlane
         buttons:

@@ -1,13 +1,13 @@
-
-import Dashboard from "@/components/Dashboard/Dashboard";
+import { lazy, Suspense } from 'react';
+const Dashboard = lazy(() => import('@/components/Dashboard/Dashboard'));
+const Activity = lazy(() => import('@/components/Activity/Activity'));
+const Materials = lazy(() => import('@/components/Materials/Materials'));
+const AllDeals = lazy(() => import('@/components/Deals/AllDeals'));
+const MyDeals = lazy(() => import('@/components/Deals/MyDeals'));
+const Landing = lazy(() => import('@/components/Landing'));
 import Footer from "@/components/Footer";
-import Landing from "@/components/Landing";
 import Nav from "@/components/Nav/Nav";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import Activity from "@/components/Activity/Activity";
-import Materials from "@/components/Materials/Materials";
-import AllDeals from "@/components/Deals/AllDeals";
-import MyDeals from "@/components/Deals/MyDeals";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useTina } from "tinacms/dist/react";
 import jwt from "jsonwebtoken";
@@ -95,14 +95,13 @@ export async function getServerSideProps({ params, req, res }) {
     // ✅ 6. Batch Tina queries concurrently
     const limit = parseInt(process.env.LIMIT || "50", 10);
 
-    const [pageData, navData, footerData, paperData, sheetData, oppData, statementsData] =
+    const [pageData, navData, footerData, paperData, sheetData, statementsData] =
       await Promise.all([
         client.queries.page({ relativePath: filename }),
         client.queries.nav({ relativePath: "nav_authorized.md" }),
         client.queries.footer({ relativePath: "footer.md" }),
         client.queries.paperConnection({ first: limit }),
         client.queries.sheetConnection({ first: limit }),
-        client.queries.opportunitesConnection({ first: limit }),
         client.queries.statementsConnection({ first: limit }),
       ]);
 
@@ -121,7 +120,6 @@ export async function getServerSideProps({ params, req, res }) {
         footer: footerData,
         paper: paperData,
         sheets: sheetData,
-        opp: oppData,
         statements: statementsData,
       },
     };
@@ -134,20 +132,18 @@ export async function getServerSideProps({ params, req, res }) {
 /* ============================
    ⚡️ CLIENT RENDER OPTIMIZATION
    ============================ */
-function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
+function Slug({ res, nav, footer, paper, sheets, statements }) {
   // Tina hooks
   const { data: pageData } = useTina(res);
   const { data: navContent } = useTina(nav);
   const { data: footerContent } = useTina(footer);
   const { data: paperContent } = useTina(paper);
   const { data: sheetContent } = useTina(sheets);
-  const { data: oppContent } = useTina(opp);
   const { data: statementsContent } = useTina(statements);
 
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const {user,openModal} = useAuth()
   const hasCheckedInterests = useRef(false);
-
   // ✅ Open Edit modal if user has no interests
   useEffect(() => {
     if (user !== 'loading' && user && !hasCheckedInterests.current) {
@@ -160,6 +156,7 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
       }
     }
   }, [user, openModal]);
+  
 
   // ✅ Memoize derived arrays (prevents re-sorting on every render)
   const allPapers = useMemo(
@@ -170,24 +167,13 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
     () => sheetContent.sheetConnection.edges.map((e) => e.node),
     [sheetContent]
   );
-  const allOpps = useMemo(
-    () => oppContent.opportunitesConnection.edges.map((e) => e.node),
-    [oppContent]
-  );
   const allStatements = useMemo(
     () => statementsContent.statementsConnection.edges.map((e) => e.node),
     [statementsContent]
   );
 
-  // ✅ Pre-sort and slice once (computed properties, not state)
-  const sortByDateDesc = (arr) =>
-    [...arr].sort(
-      (a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)
-    );
 
-  const newWhitePapers = useMemo(() => sortByDateDesc(allPapers).slice(0, 8), [allPapers]);
-  const newDataSheets = useMemo(() => sortByDateDesc(allSheets).slice(0, 8), [allSheets]);
-  const newStatements = useMemo(() => sortByDateDesc(allStatements).slice(0, 8), [allStatements]);
+  
 
   /* ============================
      🚀 FAST, STABLE RENDER PATH
@@ -202,36 +188,38 @@ function Slug({ res, nav, footer, paper, sheets, opp, statements }) {
         className="transition-all duration-500 ease-in-out"
         style={{ marginLeft: `${sidebarWidth}px` }}
       >
-        {pageData.page.blocks?.map((block, i) => {
-          switch (block?.__typename) {
-            case "PageBlocksLanding":
-              return <Landing key={i} {...block} />;
-            case "PageBlocksDashboard":
-              return (
-                <Dashboard
-                  key={i}
-                  props={block}
-                  papers={newWhitePapers}
-                  sheets={newDataSheets}
-                  statements={newStatements}
-                />
-              );
-            case "PageBlocksActivity":
-              return <Activity key={i} props={block} />;
-            case "PageBlocksPapers":
-              return <Materials key={i} props={block} materials={allPapers} />;
-            case "PageBlocksSheets":
-              return <Materials key={i} props={block} materials={allSheets} />;
-            case "PageBlocksStatements":
-              return <Materials key={i} props={block} materials={allStatements} />;
-            case "PageBlocksAllDeals":
-              return <AllDeals key={i} props={block} />;
-            case "PageBlocksMyDeals":
-              return <MyDeals key={i} props={block} />;
-            default:
-              return null;
-          }
-        })}
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Loading...</div></div>}>
+          {pageData.page.blocks?.map((block, i) => {
+            switch (block?.__typename) {
+              case "PageBlocksLanding":
+                return <Landing key={i} {...block} />;
+              case "PageBlocksDashboard":
+                return (
+                  <Dashboard
+                    key={i}
+                    props={block}
+                    allPapers={allPapers || []}
+                    allSheets={allSheets || []}
+                    allStatements={allStatements || []}
+                  />
+                );
+              case "PageBlocksActivity":
+                return <Activity key={i} props={block} />;
+              case "PageBlocksPapers":
+                return <Materials key={i} props={block} materials={allPapers} />;
+              case "PageBlocksSheets":
+                return <Materials key={i} props={block} materials={allSheets} />;
+              case "PageBlocksStatements":
+                return <Materials key={i} props={block} materials={allStatements} />;
+              case "PageBlocksAllDeals":
+                return <AllDeals key={i} props={block} />;
+              case "PageBlocksMyDeals":
+                return <MyDeals key={i} props={block} />;
+              default:
+                return null;
+            }
+          })}
+        </Suspense>
         <Footer res={footerContent.footer} sidebarWidth={sidebarWidth} />
       </main>
     </>

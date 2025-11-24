@@ -7,8 +7,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { email } = req.query;
+    const { email, limit, offset } = req.query;
     if (!email) return res.status(400).json({ error: "Missing email" });
+
+    // ✅ Parse pagination params with sensible defaults
+    const limitNum = limit ? Math.min(parseInt(limit, 10), 200) : 100; // Max 200, default 100
+    const offsetNum = offset ? Math.max(0, parseInt(offset, 10)) : 0;
 
     const dbclient = await clientPromise;
     const db = dbclient.db(process.env.MONGODB_DB_NAME);
@@ -20,7 +24,7 @@ export default async function handler(req, res) {
 
     if (!mongoUser) return res.status(404).json({ error: "User not found" });
 
-    // ✅ Query downloads directly with userId filter (MUCH faster!)
+    // ✅ Query downloads with pagination (limit + skip)
     const userDownloads = await db
       .collection("downloads")
       .find(
@@ -31,11 +35,21 @@ export default async function handler(req, res) {
         },
         {
           sort: { downloadedAt: -1 },
-
           projection: { relativePath: 1, type: 1 }, // ✅ Only fetch needed fields
+          limit: limitNum,
+          skip: offsetNum,
         }
       )
       .toArray();
+
+    // ✅ Get total count for pagination metadata (optional but useful)
+    const totalCount = await db
+      .collection("downloads")
+      .countDocuments({
+        userId: mongoUser._id,
+        type: { $in: ["Paper", "Sheet", "Statements"] },
+        relativePath: { $exists: true, $ne: null },
+      });
 
     // Fast exit if none
     if (!userDownloads.length) {
@@ -80,11 +94,15 @@ export default async function handler(req, res) {
 
     // ✅ Set cache headers
     res.setHeader("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
-
+   
     return res.status(200).json({
       success: true,
       email,
       count: filtered.length,
+      totalCount, // Total downloads available
+      limit: limitNum,
+      offset: offsetNum,
+      hasMore: offsetNum + filtered.length < totalCount,
       downloads: filtered,
     });
   } catch (error) {
