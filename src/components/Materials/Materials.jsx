@@ -88,6 +88,7 @@ function Materials({props,materials}){
 
     // ✅ Wrap onSubmit in useCallback
     const onSubmit = useCallback(() => {
+        setStartIndex(0)
         setCards(filteredCards);
     }, [filteredCards]);
     return(

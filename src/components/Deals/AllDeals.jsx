@@ -91,6 +91,7 @@ function AllDeals({props}){
 
     // ✅ Wrap onSubmit in useCallback
     const onSubmit = useCallback(() => {
+        setStartIndex(0)
         setCards(filteredCards);
     }, [filteredCards]);
 
