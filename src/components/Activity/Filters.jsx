@@ -59,10 +59,11 @@ const toggleInterest = useCallback((category) => {
     const updated = prev.includes(category)
       ? prev.filter(c => c !== category)
       : [...prev, category];
-    setFormData(prevData => ({ ...prevData, interests: updated }));
+    
     return updated;
   });
-}, [setFormData]);
+  setFormData(prevData => ({ ...prevData, interests: selectedInterests }));
+}, [setFormData, selectedInterests]);
 
   // Close dropdown if click happens outside
   useEffect(() => {

@@ -36,10 +36,10 @@ function MobileMenu({ isVisible, menuOpen, menuRef, toggleMenu, res }) {
     toggleMenu();
   };
 
-  const handleLogout = () => {
-    handleSignout(setUser);
-    toggleMenu();
-    router.push('/')
+  const handleLogout = async () => {
+    await handleSignout(setUser);
+    await toggleMenu();
+    await router.push('/')
   };
   const handleEdit = () => {
       toggleMenu()
