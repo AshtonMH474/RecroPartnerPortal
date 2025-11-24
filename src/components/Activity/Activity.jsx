@@ -109,6 +109,7 @@ function Activity({props}){
 
     // ✅ Wrap onSubmit in useCallback to prevent recreation on every render
     const onSubmit = useCallback(() => {
+        setStartIndex(0)
         setCards(filteredCards);
     }, [filteredCards]);
 

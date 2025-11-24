@@ -16,10 +16,11 @@ function DealFilters({formData,setFormData,onSubmit,setCards,deals}){
         }
 
         // Update formData simultaneously
-        setFormData(fd => ({ ...fd, agencies: updated }));
+        
         return updated;
     });
-}, [setFormData]);
+    setFormData(fd => ({ ...fd, agencies: selectedAgencies }));
+}, [setFormData, selectedAgencies]);
     const handleChange = useCallback((e) => {
           
           setFormData(prev => ({
