@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const agency = deal?.agency || "";
     const rawAmount = deal?.amount || 0;
     const program = deal?.program || "";
-    const samlink = deal?.samLink || "";
+    const solicitationLink = deal?.solicitationLink || "";
     const vehicle = deal?.vehicle || "";
     const amount = typeof rawAmount === "string"
     ? parseFloat(rawAmount.replace(/,/g, ""))
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
             hubspotID:mongoUser.hubspotID,
             subject:subject,
             amount:amount,
-            samlink:samlink,
+            solicitationLink:solicitationLink,
             program:program,
             vehicle:vehicle,
     });
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
             $set: {
                  subject:subject,
                   amount:amount,
-                  samlink:samlink,
+                  solicitationLink:solicitationLink,
                   program:program,
                   vehicle:vehicle,
             },
@@ -124,7 +124,7 @@ export default async function handler(req, res) {
         amount: amount,
         agency,
         program,
-        samlink,
+        solicitation_link:solicitationLink,
         contract_vehicle:vehicle,
          source_type: "FORM",
         hs_ticket_priority: "MEDIUM"
@@ -166,7 +166,7 @@ export default async function handler(req, res) {
       amount: amount,
       agency: agency,
       program: program,
-      samlink: samlink,
+      solicitationLink: solicitationLink,
       vehicle: vehicle,
       createdAt: new Date(),
     });

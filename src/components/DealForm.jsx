@@ -54,7 +54,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
       agency: e.target.agency.value,
       program: e.target.program.value,
       vehicle: e.target.vehicle.value,
-      samLink: e.target.samLink.value,
+      solicitationLink: e.target.solicitationLink.value,
     };
 
     const obj = {}
@@ -139,7 +139,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
               <input
                 type="text"
                 name="subject"
-                placeholder="Subject"
+                placeholder="Subject (Required)"
                 className="w-full p-3 text-[14px] md:text-[16px] rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
               />
               <input
@@ -162,7 +162,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
                   value={value}
                   onChange={handleChange}
                   inputMode="numeric" // shows numeric keyboard on mobile
-                  placeholder="Amount"
+                  placeholder="Amount (Required)"
                   className="w-full text-[14px] md:text-[16px] sm:w-1/2 p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
                 />
 
@@ -175,13 +175,13 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
                 />
               <input
                 type="text"
-                name="samLink"
-                placeholder="SAM.gov link"
+                name="solicitationLink"
+                placeholder="Solicitation Link"
                 className="w-full text-[14px] md:text-[16px] p-3 rounded-lg bg-[#2C2C33] text-white placeholder-white/70 border border-white/10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
               />
 
               <textarea
-            placeholder="Description"
+            placeholder="Description (Required)"
             name="description"
             rows={4}
             className="w-full text-[14px] md:text-[16px] p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70 resize-none"
