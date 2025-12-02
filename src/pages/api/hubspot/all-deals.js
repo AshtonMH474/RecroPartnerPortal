@@ -12,7 +12,7 @@ function getHubspotClient() {
     hubspotClient = axios.create({
       baseURL: "https://api.hubapi.com",
       headers: {
-        Authorization: `Bearer ${process.env.RECRO_HUBSPOT_TOKEN}`,
+        Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}`,
         "Content-Type": "application/json",
       },
       timeout: 30000, // 30s timeout
@@ -92,8 +92,8 @@ export default async function handler(req, res) {
     // ✅ FIX: Use dynamic companyId instead of hardcoded value!
     // 4️⃣ Get all deals for that company AND company name in parallel
     const [companyDeals, companyResponse] = await Promise.all([
-      hubspotGetAll(`/crm/v4/objects/companies/9391926107/associations/deals`),
-      hubspot.get(`/crm/v3/objects/companies/9391926107`, {
+      hubspotGetAll(`/crm/v4/objects/companies/${companyId}/associations/deals`),
+      hubspot.get(`/crm/v3/objects/companies/${companyId}`, {
         params: { properties: "name" },
       }),
     ]);
@@ -164,7 +164,6 @@ export default async function handler(req, res) {
 
     // ✅ Set cache headers for better performance
     res.setHeader("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
-
     res.status(200).json({
       user: {
         name: `${contact.properties.firstname} ${contact.properties.lastname}`.trim(),
