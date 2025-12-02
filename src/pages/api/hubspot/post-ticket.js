@@ -103,7 +103,7 @@ export default async function handler(req, res) {
           duplicateFound = ticketsRes.data.results.some((t) => {
             const props = t.properties || {};
             return (
-              props.subject === subject     // ticket subject matches
+              props.subject.toLowerCase() === subject.toLowerCase()     // ticket subject matches
             );
           });
         }
@@ -124,7 +124,7 @@ export default async function handler(req, res) {
         amount: amount,
         agency,
         program,
-        solicitation_link:solicitationLink,
+        solicitation_url:solicitationLink,
         contract_vehicle:vehicle,
          source_type: "FORM",
         hs_ticket_priority: "MEDIUM"
