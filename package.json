@@ -10,7 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@tinacms/datalayer": "^1.4.1",
+    "@tinacms/datalayer": "^2.0.0",
     "axios": "^1.13.1",
     "bcryptjs": "^3.0.2",
     "cookies-next": "^6.1.0",
@@ -24,14 +24,14 @@
     "mongodb-level": "^0.0.4",
     "next": "^16.0.7",
     "next-auth": "^4.24.11",
-    "next-tinacms-s3": "^12.0.0",
+    "next-tinacms-s3": "^14.0.0",
     "nodemailer": "^7.0.11",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-hook-form": "^7.66.0",
     "react-phone-number-input": "^3.4.13",
-    "tinacms": "^2.9.0",
-    "tinacms-gitprovider-github": "^3.0.1"
+    "tinacms": "^3.0.2",
+    "tinacms-gitprovider-github": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
