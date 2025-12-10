@@ -18,7 +18,7 @@ async function handler(req, res) {
     if ( !pdfUrl || !type || !relativePath) {
       return res
         .status(400)
-        .json({ error: "Missing email, pdfUrl, type, or relativePath" });
+        .json({ error: "pdfUrl, type, or relativePath" });
     }
     
     const client = await clientPromise;
