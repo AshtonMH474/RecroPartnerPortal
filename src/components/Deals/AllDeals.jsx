@@ -1,11 +1,12 @@
-import Heading from "../Activity/Heading";
+
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { getAllDeals } from "@/lib/service_functions";
 import { useAuth } from "@/context/auth";
 import { AnimatePresence,motion } from "framer-motion";
 import Pagination from "../utils/Pagination";
 import Deals from "./Deals";
-import DealFilters from "./Filters";
+import { SearchFilter, Heading } from "@/components/shared";
+import AgenciesDropdown from "./AgenciesDropdown";
 import DealFormModal from "../DealForm";
 import { tinaField } from "tinacms/dist/react";
 
@@ -101,7 +102,20 @@ function AllDeals({props}){
             <div className="mt-20  max-w-[1400px] mx-auto">
                 <div className="flex flex-col px-6 md:px-14">
                     <Heading props={props}/>
-                    <DealFilters setCards={setCards} deals={deals} onSubmit={onSubmit} setFormData={setFormData} formData={formData} />
+                    <SearchFilter
+                        filters={[
+                            { filter: 'name', label: 'Name' },
+                            { filter: 'agencies', label: 'Agencies' }
+                        ]}
+                        formData={formData}
+                        setFormData={setFormData}
+                        onSubmit={onSubmit}
+                        onClear={() => {
+                            setFormData({ name: '', agencies: [] });
+                            setCards(deals);
+                        }}
+                        customDropdownComponent={AgenciesDropdown}
+                    />
                 </div>
             </div>
 

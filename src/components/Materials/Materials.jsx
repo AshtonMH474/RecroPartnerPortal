@@ -1,10 +1,9 @@
 import { useEffect, useState, useMemo, useCallback } from "react"
-import Heading from "../Activity/Heading"
 import { AnimatePresence,motion } from "framer-motion"
 import Pagination from "../utils/Pagination";
 import Cards from "../Cards/Cards";
 import { getCategories } from "@/lib/service_functions";
-import Filters from "./Filters";
+import { SearchFilter,Heading } from "@/components/shared";
 
 // ✅ Move variants outside component to prevent recreation
 const variants = {
@@ -98,7 +97,17 @@ function Materials({props,materials}){
                         <Heading props={props}/>
                     </div>
                     <div>
-                        <Filters allCards={allCards} setCards={setCards} setFormData={setFormData} categories={categories} formData={formData} filters={props.filters}  onSubmit={onSubmit}/>
+                        <SearchFilter
+                            filters={props.filters || []}
+                            formData={formData}
+                            setFormData={setFormData}
+                            onSubmit={onSubmit}
+                            onClear={() => {
+                                setFormData({ name: '', interests: [], date: '' });
+                                setCards(allCards);
+                            }}
+                            categories={categories}
+                        />
                     </div>
                     <div className="">
                     <AnimatePresence mode="wait" custom={direction}>

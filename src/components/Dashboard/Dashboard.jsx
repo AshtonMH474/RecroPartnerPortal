@@ -2,7 +2,7 @@ import { useAuth } from "@/context/auth";
 import { useDownloads } from "@/context/downloads";
 import { useEffect, useMemo, useState } from "react";
 import IntroHeading from "./IntroHeading";
-import Filters from "./Filters";
+import { TabFilter } from "@/components/shared";
 import Cards from "../Cards/Cards";
 import Buttons from "./Buttons";
 import { filterByInterests } from "@/lib/service_functions";
@@ -71,12 +71,11 @@ function Dashboard({ props, allPapers, allSheets, allStatements }) {
       <div className="mt-20 flex flex-col px-4 md:px-12">
         <div>
           <IntroHeading props={props} user={user} />
-          <Filters
-            recent={recent}
+          <TabFilter
+            tabs={props?.filters || []}
             active={active}
             setActive={setActive}
-            props={props}
-            user={user}
+            recent={recent}
           />
         </div>
 

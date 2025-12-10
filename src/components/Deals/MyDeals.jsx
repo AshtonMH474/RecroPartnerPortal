@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Filters from "../Dashboard/Filters";
-import Heading from "../Activity/Heading";
+import Filters from "./Filters";
+import { Heading } from "@/components/shared";
 import { useAuth } from "@/context/auth";
 import { fetchPartnerTickets,getMyDeals } from "@/lib/service_functions";
 import { AnimatePresence,motion } from "framer-motion";
