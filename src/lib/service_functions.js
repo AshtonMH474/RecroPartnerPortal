@@ -32,12 +32,12 @@ export async function handleDownload(pdfUrl, type, relativePath) {
               }
   }
   
-  export async function postDeal(user, deal) {
+  export async function postDeal(deal) {
     try {
       // 1️⃣ Save to your DB/API
       
       // 2️⃣ If user is interested, call HubSpot sync route
-     
+      console.log(deal)
         let fetchI = await fetch('/api/hubspot/post-ticket', {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -59,7 +59,7 @@ function AllDeals({props}){
             setLoading(true)
             setError(null)
             try {
-                const data = await getAllDeals(user.email)
+                const data = await getAllDeals()
                 setDeals(data.deals || [])
                 setCards(data.deals || [])
             } catch (err) {

@@ -23,6 +23,7 @@ export default async function handler(req, res) {
     const description = deal?.description;
     const agency = deal?.agency || "";
     const rawAmount = deal?.amount || 0;
+    
     const program = deal?.program || "";
     const solicitationLink = deal?.solicitationLink || "";
     const vehicle = deal?.vehicle || "";
@@ -31,6 +32,7 @@ export default async function handler(req, res) {
     : Number(rawAmount);
 
     // Validate
+   
     if (isNaN(amount) || amount <= 0) {
       return res.status(400).json({ error: "Invalid amount provided" });
     }

@@ -7,7 +7,7 @@ import { useCallback, useEffect } from "react";
 function CardModal({ card,onClose }) {
     const { user } = useAuth();
     const handleDownload = useCallback(() => {
-        downloadPdf(card, user);
+        downloadPdf(card);
     }, [card, user]);
 
     useEffect(() => {
