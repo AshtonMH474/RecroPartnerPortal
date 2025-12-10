@@ -51,6 +51,17 @@ export const CustomBackendAuth = () => {
     
 
         // Optional: restrict by domain/email here if needed
+
+
+        if (!decoded.email || !decoded.email.endsWith("@recro.com")) {
+          console.warn("[Auth] Unauthorized email domain:", decoded.email);
+          return {
+            isAuthorized: false,
+            errorMessage: "Email domain not allowed",
+            errorCode: 403,
+          };
+        }
+
         return {
           isAuthorized: true,
           user: {
