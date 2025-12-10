@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       tickets: ticketsRes.data.results,
     });
   } catch (error) {
-    console.error("HubSpot fetch tickets error:", error.response?.data || error);
+    console.error("HubSpot fetch tickets error",);
     return res
       .status(500)
       .json({ error: "Failed to fetch tickets from HubSpot" });

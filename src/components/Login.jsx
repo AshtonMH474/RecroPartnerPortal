@@ -6,6 +6,7 @@ import { IoMdClose } from "react-icons/io";
 import { handleLogin } from "@/lib/auth_functions";
 import { useAuth } from "@/context/auth";
 import { useRouter } from "next/router";
+import { fetchWithCsrf } from "@/lib/csrf";
 
 function Login({ onClose,modalData }) {
   const { setUser, openModal } = useAuth();
@@ -20,7 +21,13 @@ function Login({ onClose,modalData }) {
             if(token){
                  
                 setToken(true)
-                await fetch(`/api/session/verify?token=${token}`)
+                await fetchWithCsrf(`/api/session/verify`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token }),
+              });
                 
             }
         }

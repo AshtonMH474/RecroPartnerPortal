@@ -3,16 +3,27 @@ import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { setCookie } from "cookies-next";
+import { withCsrfProtection } from "@/lib/csrfMiddleware";
 
-export default async function handler(req, res) {
+ async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   try {
     const { email, password } = req.body;
 
+    // ✅ NoSQL Injection Protection: Validate input types
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ error: "Invalid input format" });
+    }
+
+    // Additional validation
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
-    
+
     const user = await db.collection("users").findOne({ email });
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
     if (!user.verified) return res.status(403).json({ error: "Email not verified" });
@@ -58,8 +69,9 @@ export default async function handler(req, res) {
 
     res.status(200).json({ ok: true, redirect: "/dashboard" });
   } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: err.message });
+    console.error("Login error");
+    res.status(500).json({ error: 'Login Error' });
   }
 }
 
+export default withCsrfProtection(handler);

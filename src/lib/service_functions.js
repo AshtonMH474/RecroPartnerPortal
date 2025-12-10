@@ -1,7 +1,8 @@
+import { fetchWithCsrf } from "./csrf";
 
 export async function handleDownload(pdfUrl, type, relativePath) {
     try {
-        const res = await fetch("/api/download", {
+        const res = await fetchWithCsrf("/api/download", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include', // Send cookies for authentication
@@ -37,8 +38,8 @@ export async function handleDownload(pdfUrl, type, relativePath) {
       // 1️⃣ Save to your DB/API
       
       // 2️⃣ If user is interested, call HubSpot sync route
-      console.log(deal)
-        let fetchI = await fetch('/api/hubspot/post-ticket', {
+      
+        let fetchI = await fetchWithCsrf('/api/hubspot/post-ticket', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 

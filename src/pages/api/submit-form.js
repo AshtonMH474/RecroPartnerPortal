@@ -1,15 +1,30 @@
 import nodemailer from "nodemailer";
 import clientPromise from "@/lib/mongodb";
 import { isFreeEmail } from "free-email-domains-list";
-
-export default async function handler(req, res) {
+import { withCsrfProtection } from "@/lib/csrfMiddleware";
+ async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { firstName, lastName, email, organization, subject, message, phone } = req.body;
 
-  if (!email || !subject || !message || !organization) {
+  // ✅ NoSQL Injection Protection: Validate input types
+  if (typeof email !== 'string' || typeof subject !== 'string' ||
+      typeof message !== 'string' || typeof firstName !== 'string' ||
+      typeof lastName !== 'string') {
+    return res.status(400).json({ error: "Invalid input format" });
+  }
+
+  // Organization and phone are optional but must be strings if provided
+  if (organization && typeof organization !== 'string') {
+    return res.status(400).json({ error: "Invalid organization format" });
+  }
+  if (phone && typeof phone !== 'string') {
+    return res.status(400).json({ error: "Invalid phone format" });
+  }
+
+  if (!email || !subject || !message) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -69,3 +84,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Failed to send or save message" });
   }
 }
+
+
+export default withCsrfProtection(handler);

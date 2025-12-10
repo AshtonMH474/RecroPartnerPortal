@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
+import { fetchWithCsrf } from "@/lib/csrf";
 
 
 
@@ -57,7 +58,7 @@ function ChangePassword({onClose,token}){
     
 
     try {
-      const res = await fetch("/api/session/reset-password", {
+      const res = await fetchWithCsrf("/api/session/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

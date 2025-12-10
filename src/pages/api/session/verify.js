@@ -1,7 +1,9 @@
 import clientPromise from "@/lib/mongodb";
+import { withCsrfProtection } from "@/lib/csrfMiddleware";
 
-export default async function handler(req, res) {
-  const { token } = req.query;
+async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).end();
+  const { token } = req.body;
   if (!token) return res.status(400).send("Invalid token");
 
   const client = await clientPromise;
@@ -55,7 +57,7 @@ export default async function handler(req, res) {
     if (searchData.total > 0) {
       // contact exists
       contactId = searchData.results[0].id;
-      console.log(`HubSpot contact found: ${contactId}`);
+
     } else {
       // contact does not exist, create new one
       const createResponse = await fetch(`https://api.hubapi.com/crm/v3/objects/contacts`, {
@@ -83,7 +85,7 @@ export default async function handler(req, res) {
 
       const createData = await createResponse.json();
       contactId = createData.id;
-      console.log(`HubSpot contact created: ${contactId}`);
+      
     }
 
     // Mark user as verified and store HubSpot contact ID
@@ -99,10 +101,12 @@ export default async function handler(req, res) {
 
   } catch (hubspotError) {
     // Log error - HubSpot sync failed, so verification fails
-    console.error("HubSpot sync failed:", hubspotError.message);
-    console.error("Stack:", hubspotError.stack);
+    console.error("HubSpot sync failed");
+    
 
     // Verification fails if HubSpot sync fails
     return res.status(500).send("Email verification failed due to HubSpot sync error. Please try again or contact support.");
   }
 }
+
+export default withCsrfProtection(handler);
