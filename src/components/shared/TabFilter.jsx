@@ -24,7 +24,7 @@ function TabFilter({
   const isSmallScreen = useWindowResize(768);
 
   return (
-    <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-4">
+    <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-4 pb-4">
       {tabs.map((tab, i) => {
         // Hide 'recent' tab if recent array is empty
         if (tab.filter === "recent" && recent?.length === 0) return null;

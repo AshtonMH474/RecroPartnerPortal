@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   // Transpile ESM packages
-  transpilePackages: ['tinacms-gitprovider-github'],
+  transpilePackages: ['tinacms-gitprovider-github', 'next-tinacms-s3'],
 
   async rewrites() {
     return [
