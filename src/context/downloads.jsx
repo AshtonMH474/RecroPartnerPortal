@@ -24,7 +24,10 @@ export function DownloadsProvider({ children }) {
         // ✅ Default limit of 100 (enough for Dashboard + Activity filtering)
         // Dashboard only shows 8, Activity can filter/search within this set
         const res = await fetch(
-          `/api/userInfo/downloads?email=${encodeURIComponent(user.email)}&limit=100`
+          `/api/userInfo/downloads?limit=100`,
+          {
+            credentials: 'include' // Send cookies for authentication
+          }
         );
         if (!res.ok) throw new Error(`Error: ${res.status}`);
         const data = await res.json();
@@ -52,20 +55,23 @@ export function DownloadsProvider({ children }) {
     };
   }, [user?.email]);
 
-  const refreshDownloads = async (customLimit = 100) => {
+  const refreshDownloads = async () => {
     if (!user?.email) return;
 
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(
-        `/api/userInfo/downloads?email=${encodeURIComponent(user.email)}&limit=${100}`
+        `/api/userInfo/downloads?limit=100`,
+        {
+          credentials: 'include' // Send cookies for authentication
+        }
       );
       if (!res.ok) throw new Error(`Error: ${res.status}`);
       const data = await res.json();
- 
+
       setDownloads(data.downloads || []);
-      
+
     } catch (err) {
       console.error("Failed to refresh downloads:", err);
       setError(err.message);

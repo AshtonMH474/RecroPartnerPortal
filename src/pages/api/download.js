@@ -1,3 +1,4 @@
+import { authenticateUser } from "@/lib/authMiddleware";
 import clientPromise from "@/lib/mongodb";
 
 export default async function handler(req, res) {
@@ -6,9 +7,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { email, pdfUrl, type, relativePath } = req.body;
-
-    if (!email || !pdfUrl || !type || !relativePath) {
+    const {pdfUrl, type, relativePath } = req.body;
+    const auth = await authenticateUser(req)
+    if (!auth.authenticated || !auth.user) {
+          return res.status(401).json({ error: "Unauthorized" });
+    }
+    const email = auth.user.email;
+    if (!email) return res.status(400).json({ error: "Missing email" });
+    if ( !pdfUrl || !type || !relativePath) {
       return res
         .status(400)
         .json({ error: "Missing email, pdfUrl, type, or relativePath" });

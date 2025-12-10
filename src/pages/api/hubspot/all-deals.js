@@ -2,6 +2,7 @@
 // ID im using comapny for placeholder: 9391926107
 
 
+import { authenticateUser } from "@/lib/authMiddleware";
 import axios from "axios";
 
 // ✅ Cache axios instance globally (reuse across requests)
@@ -26,10 +27,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email } = req.query;
-  if (!email) {
-    return res.status(400).json({ error: "Missing required 'email' query parameter" });
+  const auth = await authenticateUser(req)
+  if (!auth.authenticated || !auth.user) {
+        return res.status(401).json({ error: "Unauthorized" });
   }
+      const email = auth.user.email;
 
   try {
     const hubspot = getHubspotClient();
@@ -177,10 +179,9 @@ export default async function handler(req, res) {
       deals,
     });
   } catch (error) {
-    console.error("Error fetching deals by email:", error.response?.data || error.message);
+    console.error("Error fetching deals by email:");
     res.status(500).json({
       error: "Failed to fetch deals for user's company",
-      details: error.response?.data || error.message,
     });
   }
 }

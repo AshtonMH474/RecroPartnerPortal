@@ -15,9 +15,11 @@ export async function downloadPdf(content,user){
 
        
     try{
-        await handleDownload(user,pdfUrl,type,relativePath)
+        let data = await handleDownload(user,pdfUrl,type,relativePath)
+        if(data?.error) return
     }catch(e){
         console.log(e)
+        return
     }
     
 

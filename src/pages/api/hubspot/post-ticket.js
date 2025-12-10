@@ -1,5 +1,6 @@
 import axios from "axios";
 import clientPromise from "@/lib/mongodb";
+import { authenticateUser } from "@/lib/authMiddleware";
 
 const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
@@ -9,8 +10,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { deal, user } = req.body;
-    if (!user) return res.status(401).json({ error: "Unauthorized" });
+    const { deal } = req.body;
+    const auth = await authenticateUser(req)
+    const user = auth.user;
+    if (!user || !auth.authenticated) return res.status(401).json({ error: "Unauthorized" });
     const contactId = user.hubspotID;
     if (!contactId)
       return res.status(400).json({ error: "User does not have a HubSpot contact ID" });
@@ -176,10 +179,7 @@ export default async function handler(req, res) {
       message: "Opportunity created and associated with contact",
     });
   } catch (error) {
-    console.error("HubSpot ticket error:", {
-      message: error.message,
-      details: error.response?.data,
-    });
+    console.error("HubSpot ticket error:");
     return res
       .status(500)
       .json({ error: "Failed to create or associate ticket in HubSpot" });
