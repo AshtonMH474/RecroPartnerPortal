@@ -49,14 +49,14 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
     e.preventDefault();
     const formData = {
       subject:e.target.subject.value,
-      amount:value,
+      amount:Number(value.replace(/,/g, "")),
       description:e.target.description.value,
       agency: e.target.agency.value,
       program: e.target.program.value,
       vehicle: e.target.vehicle.value,
       solicitationLink: e.target.solicitationLink.value,
     };
-
+    
     const obj = {}
 
     if(!formData.subject.length || formData.subject.length < 1){
@@ -78,7 +78,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
     } 
 
      try {
-          let data = await postDeal(user, formData);
+          let data = await postDeal( formData);
           setMessage(data);
           if(grabTickets){
             fetchTickets()
@@ -92,7 +92,7 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
   async function fetchTickets() {
       try {
         if (!user?.hubspotID) return; // wait until user is loaded
-        const data = await fetchPartnerTickets(user); // ✅ await the Promise
+        const data = await fetchPartnerTickets(); // ✅ await the Promise
         setTickets(data.tickets || []);
       } catch (err) {
         console.error("Failed to fetch user's deals:", err);

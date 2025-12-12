@@ -7,6 +7,7 @@ import EditProfileForm from "./EditProfileForm";
 import EditCategories from "./EditCategories";
 import { checkUser } from "@/lib/auth_functions";
 import { getCategories } from "@/lib/service_functions";
+import { fetchWithCsrf } from "@/lib/csrf";
 function EditProfile({onClose}){
     const {user,setUser} = useAuth()
 
@@ -78,7 +79,7 @@ function EditProfile({onClose}){
      }
 
      try{
-        const res = await fetch('/api/userInfo/save', {
+        const res = await fetchWithCsrf('/api/userInfo/save', {
             method:'PUT',
             headers: {"Content-Type": 'application/json'},
             body:JSON.stringify({

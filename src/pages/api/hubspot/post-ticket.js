@@ -1,16 +1,20 @@
 import axios from "axios";
 import clientPromise from "@/lib/mongodb";
+import { authenticateUser } from "@/lib/authMiddleware";
+import { withCsrfProtection } from "@/lib/csrfMiddleware";
 
 const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { deal, user } = req.body;
-    if (!user) return res.status(401).json({ error: "Unauthorized" });
+    const { deal } = req.body;
+    const auth = await authenticateUser(req)
+    const user = auth.user;
+    if (!user || !auth.authenticated) return res.status(401).json({ error: "Unauthorized" });
     const contactId = user.hubspotID;
     if (!contactId)
       return res.status(400).json({ error: "User does not have a HubSpot contact ID" });
@@ -20,6 +24,7 @@ export default async function handler(req, res) {
     const description = deal?.description;
     const agency = deal?.agency || "";
     const rawAmount = deal?.amount || 0;
+    
     const program = deal?.program || "";
     const solicitationLink = deal?.solicitationLink || "";
     const vehicle = deal?.vehicle || "";
@@ -28,13 +33,34 @@ export default async function handler(req, res) {
     : Number(rawAmount);
 
     // Validate
+   
     if (isNaN(amount) || amount <= 0) {
       return res.status(400).json({ error: "Invalid amount provided" });
     }
 
-    if(!subject.length || !description.length || amount == 0){
+    if (
+    typeof subject !== "string" ||
+    typeof description !== "string" ||
+    subject.trim().length === 0 ||
+    description.trim().length === 0 ||
+    amount === 0){
       return res.status(400).json({error:'Not all required fields were filled out'})
     }
+
+
+    const optionalFields = {
+      agency,
+      program,
+      solicitationLink,
+      vehicle,
+    };
+
+  for (const [key, value] of Object.entries(optionalFields)) {
+    if (value !== "" && typeof value !== "string") {
+      return res.status(400).json({ error: `${key} must be a string` });
+    }
+  }
+
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
     
@@ -47,22 +73,21 @@ export default async function handler(req, res) {
             userId: mongoUser._id,
             hubspotID:mongoUser.hubspotID,
             subject:subject,
-            amount:amount,
-            solicitationLink:solicitationLink,
-            program:program,
-            vehicle:vehicle,
+    
     });
     if (existingOpp) {
         
-        await db.collection("users_opportunites").updateOne(
+        await db.collection("users_deals").updateOne(
             { _id: existingOpp._id },
             {
             $set: {
                  subject:subject,
-                  amount:amount,
-                  solicitationLink:solicitationLink,
-                  program:program,
-                  vehicle:vehicle,
+                  description: description,
+                  amount: amount,
+                  agency: agency,
+                  program: program,
+                  solicitationLink: solicitationLink,
+                  vehicle: vehicle,
             },
             }
         );
@@ -157,7 +182,7 @@ export default async function handler(req, res) {
 );
 
     // 3️⃣ Save to MongoDB
-    await db.collection("users_tickets").insertOne({
+    await db.collection("users_deals").insertOne({
       userId: mongoUser._id,
       hubspotID: mongoUser.hubspotID,
       ticketId: ticketId, // HubSpot ticket ID for reference
@@ -176,13 +201,13 @@ export default async function handler(req, res) {
       message: "Opportunity created and associated with contact",
     });
   } catch (error) {
-    console.error("HubSpot ticket error:", {
-      message: error.message,
-      details: error.response?.data,
-    });
+    console.error("HubSpot ticket error:");
     return res
       .status(500)
       .json({ error: "Failed to create or associate ticket in HubSpot" });
   }
 }
+
+// Export with CSRF protection
+export default withCsrfProtection(handler);
 

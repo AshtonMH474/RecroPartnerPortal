@@ -34,7 +34,7 @@ function Card({ card }) {
 
   // ✅ Memoize download handler
   const handleDownload = useCallback(() => {
-    downloadPdf(card, user);
+    downloadPdf(card);
   }, [card, user]);
 
   // ✅ Optimize useEffect (only run when expanded changes)

@@ -1,99 +1,56 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import AgenciesDropdown from "./AgenciesDropdown";
+import { memo ,useEffect, useState} from "react";
+import { tinaField } from "tinacms/dist/react";
+import IconRenderer from "../utils/IconRenderer";
 
-function DealFilters({formData,setFormData,onSubmit,setCards,deals}){
-    const [selectedAgencies, setSelectedAgencies] = useState([]);
-    const [open, setOpen] = useState(false);
-    const dropdownRef = useRef(null); 
 
-    const toggleAgency = useCallback((category) => {
-    setSelectedAgencies(prev => {
-        let updated;
-        if (prev.includes(category)) {
-            updated = prev.filter(c => c !== category); // remove if exists
-        } else {
-            updated = [...prev, category]; // add if not exists
-        }
-
-        // Update formData simultaneously
-        
-        return updated;
+function Filters({ props, setActive, active, recent }) {
+  const filters = props?.options || props?.filters || [];
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  useEffect(() => {
+    setIsSmallScreen(window.innerWidth < 768);
+    window.addEventListener("resize", () => {
+      setIsSmallScreen(window.innerWidth < 768);
     });
-    setFormData(fd => ({ ...fd, agencies: selectedAgencies }));
-}, [setFormData, selectedAgencies]);
-    const handleChange = useCallback((e) => {
-          
-          setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-          }));
-          
-        }, [setFormData]);
+    return () => {
+      window.removeEventListener("resize", () => {
+        setIsSmallScreen(window.innerWidth < 768);
+      });
+    };
+  }, []);
+  return (
+    <> 
+      <div className="flex flex-wrap gap-x-6 gap-y-4">
+        {filters.map((filter, i) => {
+          if (filter.filter === "recent" && recent?.length === 0) return null;
 
+          const isActive = filter.filter === active;
+          const baseClasses =
+            "text-[14px] lg:text-[22px] px-4 md:px-6 h-10 md:h-12 lg:h-15 rounded-full border border-white/15 transition-colors duration-300 ease-in-out flex items-center justify-center gap-x-2 cursor-pointer";
+          const activeClasses = "bg-primary";
+          const inactiveClasses = "bg-[#1A1A1E]";
 
-    useEffect(() => {
-            const handleClickOutside = (event) => {
-              if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setOpen(false);
-              }
-            };
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-              document.removeEventListener("mousedown", handleClickOutside);
-            };
-    }, []);
-    return(
-        <div className="">
-            <div className="flex flex-wrap items-start gap-x-4 gap-y-4">
-                <input
-                    name={'name'}
-                    onChange={handleChange}
-                    value={formData.name || ''}
-                    placeholder={"Name"}
-                    className="text-[14px] md:text-[16px] px-2 w-[120px] md:w-auto md:px-4  focus:outline-none placeholder-white capitalize text-white py-1 md:py-2 border primary-border rounded-xl text-white transition-colors duration-300"
-                />
-                <div  className="relative" ref={dropdownRef}>
-                              <div
-                                        type="button"
-                                        onClick={() => setOpen(!open)}
-                                        className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center gap-x-3 md:gap-x-8  w-full"
-                                        aria-expanded={open}
-                                        aria-haspopup="true"
-                                    >
-                                            <span>Agencies {selectedAgencies.length > 0 && `(${selectedAgencies.length})`}</span>
-                                            <svg 
-                                                className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
-                                                fill="none" 
-                                                stroke="currentColor" 
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        </div>
-                              {open && (
-                                <AgenciesDropdown selectedAgencies={selectedAgencies} toggleAgency={toggleAgency}/>
-                              )}
-                    
-                </div>
-                          <button
-                            onClick={() => {
-                                setFormData({
-                                name: '',
-                                agencies: [],
-                                });
-                                setSelectedAgencies([]); 
-                                setCards(deals)
-                            }}
-                            className="bg-primary text-[14px] md:text-[16px] capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white"
-                            >
-                                Clear
-                            </button>
-                            <button onClick={onSubmit}  className="text-[14px] md:text-[16px] bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white">
-                                Search
-                            </button>
-            </div>
-        </div>
-    )
+          return (
+            <button
+              key={i}
+              data-tina-field={tinaField(filter, "label")}
+              onClick={() => setActive(filter.filter)}
+              className={`${baseClasses} ${
+                isActive ? activeClasses : inactiveClasses
+              }`}
+            >
+              <IconRenderer
+                size={isSmallScreen ? "14px" : "22px"}
+                color={"#FFFFFF"}
+                iconName={filter.icon}
+              />
+              <span className="">{filter.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
 }
 
-export default DealFilters
+// Prevent unnecessary re-renders if props haven’t changed
+export default memo(Filters);

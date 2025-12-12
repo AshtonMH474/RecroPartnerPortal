@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
+import { fetchWithCsrf } from "@/lib/csrf";
 
 function NewPasswordModal({ onClose,setShowLoginModal }) {
   const [errors, setErrors] = useState({});
@@ -45,7 +46,7 @@ function NewPasswordModal({ onClose,setShowLoginModal }) {
     setSuccess(null);
 
     try {
-      const res = await fetch("/api/session/forgot-password", {
+      const res = await fetchWithCsrf("/api/session/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

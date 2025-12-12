@@ -1,4 +1,5 @@
 
+import { authenticateUser } from "@/lib/authMiddleware";
 import clientPromise from "@/lib/mongodb";
 import { tinaClient } from "@/lib/tinaClient";
 
@@ -7,7 +8,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { email, limit, offset } = req.query;
+    const {limit, offset } = req.query;
+    const auth = await authenticateUser(req)
+    if (!auth.authenticated || !auth.user) {
+          return res.status(401).json({ error: "Unauthorized" });
+    }
+    const email = auth.user.email;
     if (!email) return res.status(400).json({ error: "Missing email" });
 
     // ✅ Parse pagination params with sensible defaults

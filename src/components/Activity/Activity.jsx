@@ -1,15 +1,13 @@
 import { useEffect, useState, useMemo, useCallback } from "react"
-import Heading from "./Heading"
-import Types from "./Types"
+
+import { TabFilter, SearchFilter, Heading } from "@/components/shared"
 import { useAuth } from "@/context/auth"
 import { useDownloads } from "@/context/downloads"
 import Cards from "../Cards/Cards"
 import Pagination from "../utils/Pagination"
 import { motion, AnimatePresence } from "framer-motion";
-import Filters from "./Filters"
 import { getCategories } from "@/lib/service_functions"
 import { clear } from "./functions"
-
 import { tinaField } from "tinacms/dist/react"
 
 function Activity({props}){
@@ -119,11 +117,17 @@ function Activity({props}){
             <div className="mt-20 px-4 md:px-12">
                 <div className="flex flex-wrap items-center gap-x-2 md:gap-x-4">
                     <Heading props={props}/>
-                    <Types types={props.type} active={active} setActive={setActive} formData={formData}/>
+                    <TabFilter tabs={props.type || []} active={active} setActive={setActive} />
                 </div>
                 <div>
-                    <Filters setFormData={setFormData} categories={categories} formData={formData} filters={props.filters} onSubmit={onSubmit} active={active} setCards={setCards} recent={downloads} setAllCards={setAllCards}/>
-
+                    <SearchFilter
+                        filters={props.filters || []}
+                        formData={formData}
+                        setFormData={setFormData}
+                        onSubmit={onSubmit}
+                        onClear={() => clear(active, downloads, setCards, setAllCards)}
+                        categories={categories}
+                    />
                 </div>
                  <div className="">
                 <AnimatePresence mode="wait" custom={direction}>

@@ -1,17 +1,24 @@
+import { authenticateUser } from "@/lib/authMiddleware";
+import { withCsrfProtection } from "@/lib/csrfMiddleware";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { email, pdfUrl, type, relativePath } = req.body;
-
-    if (!email || !pdfUrl || !type || !relativePath) {
+    const {pdfUrl, type, relativePath } = req.body;
+    const auth = await authenticateUser(req)
+    if (!auth.authenticated || !auth.user) {
+          return res.status(401).json({ error: "Unauthorized" });
+    }
+    const email = auth.user.email;
+    if (!email) return res.status(400).json({ error: "Missing email" });
+    if ( !pdfUrl || !type || !relativePath) {
       return res
         .status(400)
-        .json({ error: "Missing email, pdfUrl, type, or relativePath" });
+        .json({ error: "pdfUrl, type, or relativePath" });
     }
     
     const client = await clientPromise;
@@ -77,3 +84,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+
+export default withCsrfProtection(handler);

@@ -1,6 +1,8 @@
+import { fetchWithCsrf } from "./csrf";
+
 export async function handleSignout(setUser){
     try{
-        const res = await fetch("/api/session/signout",{
+        const res = await fetchWithCsrf("/api/session/signout",{
             method:'POST',
             headers: { "Content-Type": "application/json" },
         })
@@ -14,7 +16,7 @@ export async function handleSignout(setUser){
   export async function  handleSignup(info,phone){
     const {email,firstName,lastName,password,organization} = info
     try {
-      const res = await fetch("/api/session/signup", {
+      const res = await fetchWithCsrf("/api/session/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -37,7 +39,7 @@ export async function handleSignout(setUser){
   export async function handleLogin(setUser,info)  {
     const {email,password} = info
   try {
-    const res = await fetch("/api/session/login", {
+    const res = await fetchWithCsrf("/api/session/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -77,6 +79,7 @@ export async function checkUser(setUser) {
         setUser(null);
       }
 }
+
 
 
 

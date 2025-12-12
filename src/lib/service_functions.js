@@ -1,18 +1,18 @@
+import { fetchWithCsrf } from "./csrf";
 
-export async function handleDownload(user,pdfUrl,type,relativePath) {
+export async function handleDownload(pdfUrl, type, relativePath) {
     try {
-        const res = await fetch("/api/download", {
+        const res = await fetchWithCsrf("/api/download", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include', // Send cookies for authentication
           body: JSON.stringify({
-               email:user.email,
-               pdfUrl:pdfUrl,
+               pdfUrl: pdfUrl,
                type: type,
-               relativePath:relativePath
+               relativePath: relativePath
           }),
         });
         const data = await res.json();
-     
         return data;
       } catch (err) {
         console.error(err);
@@ -33,18 +33,18 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
               }
   }
   
-  export async function postDeal(user, deal) {
+  export async function postDeal(deal) {
     try {
       // 1️⃣ Save to your DB/API
       
       // 2️⃣ If user is interested, call HubSpot sync route
-     
-        let fetchI = await fetch('/api/hubspot/post-ticket', {
+      
+        let fetchI = await fetchWithCsrf('/api/hubspot/post-ticket', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
             deal: deal,
-            user: user// optional: any info your API route needs
+            
           }),
         });
   
@@ -62,24 +62,23 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
   
 
   
-  export async function fetchPartnerTickets(user) {
-    const hubspotID = user?.hubspotID;
-    if (!hubspotID) {
-      throw new Error("Missing hubspotID for HubSpot request");
+  export async function fetchPartnerTickets() {
+    // Authentication is handled by middleware, cookies are sent automatically
+    const res = await fetch(`/api/hubspot/get-tickets`, {
+      credentials: 'include' // Ensure cookies are sent
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to fetch tickets");
     }
-  
-    const res = await fetch(`/api/hubspot/get-tickets?hubspotID=${encodeURIComponent(hubspotID)}`);
-    if (!res.ok) throw new Error("Failed to fetch deals");
     const data = await res.json();
     return data;
   }
   
-  export async function getMyDeals(hubspotID) {
-    
-     if (!hubspotID) {
-      throw new Error("Missing hubspotID for HubSpot request");
-    }
-     const res = await fetch(`/api/hubspot/get-deals?hubspotID=${encodeURIComponent(hubspotID)}`);
+  export async function getMyDeals() {
+    const res = await fetch(`/api/hubspot/get-deals`, {
+      credentials: 'include' // Send cookies for authentication
+    });
     if (!res.ok) throw new Error("Failed to fetch deals");
     const data = await res.json();
     return data;
@@ -87,9 +86,11 @@ export async function handleDownload(user,pdfUrl,type,relativePath) {
   
   
   // lib/auth_functions.js
-  export async function getAllDeals(email, { limit = 20, after = null } = {}) {
-    const url = `/api/hubspot/all-deals?email=${encodeURIComponent(email)}&limit=${limit}${after ? `&after=${after}` : ""}`;
-    const res = await fetch(url);
+  export async function getAllDeals({ limit = 20, after = null } = {}) {
+    const url = `/api/hubspot/all-deals?limit=${limit}${after ? `&after=${after}` : ""}`;
+    const res = await fetch(url, {
+      credentials: 'include' // Send cookies for authentication
+    });
     if (!res.ok) throw new Error("Failed to fetch deals");
     const data = await res.json()
     return data

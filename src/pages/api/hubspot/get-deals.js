@@ -1,3 +1,4 @@
+import { authenticateUser } from "@/lib/authMiddleware";
 import axios from "axios";
 
 export default async function handler(req, res) {
@@ -6,7 +7,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { hubspotID } = req.query;
+    const auth = await authenticateUser(req)
+    if (!auth.authenticated || !auth.user) {
+          return res.status(401).json({ error: "Unauthorized" });
+    }
+    const hubspotID = auth.user.hubspotID;
     if (!hubspotID) {
       return res.status(400).json({ error: "Missing hubspotID" });
     }
@@ -82,10 +87,10 @@ export default async function handler(req, res) {
 
     res.status(200).json({ deals });
   } catch (error) {
-    console.error("Error fetching deals:", error.response?.data || error.message);
+    console.error("Error fetching deals:");
     res.status(500).json({
       error: "Failed to fetch deals",
-      details: error.response?.data || error.message,
+      
     });
   }
 }

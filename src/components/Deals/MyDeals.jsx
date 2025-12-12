@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Filters from "../Dashboard/Filters";
-import Heading from "../Activity/Heading";
+import Filters from "./Filters";
+import { Heading } from "@/components/shared";
 import { useAuth } from "@/context/auth";
 import { fetchPartnerTickets,getMyDeals } from "@/lib/service_functions";
 import { AnimatePresence,motion } from "framer-motion";
@@ -46,7 +46,7 @@ function MyDeals({props}){
   async function fetchDeals() {
     try {
       if (!user?.hubspotID) return; // wait until user is loaded
-      const data = await getMyDeals(user.hubspotID); // ✅ await the Promise
+      const data = await getMyDeals(); // ✅ await the Promise
       setDeals(data.deals || []);
     } catch (err) {
       console.error("Failed to fetch user's deals:", err);
@@ -60,7 +60,7 @@ function MyDeals({props}){
   async function fetchTickets() {
     try {
       if (!user?.hubspotID) return; // wait until user is loaded
-      const data = await fetchPartnerTickets(user); // ✅ await the Promise
+      const data = await fetchPartnerTickets(); // ✅ await the Promise
       setTickets(data.tickets || []);
     } catch (err) {
       console.error("Failed to fetch user's deals:", err);

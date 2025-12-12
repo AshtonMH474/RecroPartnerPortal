@@ -1,3 +1,4 @@
+import { authenticateUser } from "@/lib/authMiddleware";
 import axios from "axios";
 
 const HUBSPOT_API_URL =
@@ -12,7 +13,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { hubspotID } = req.query;
+    const auth = await authenticateUser(req)
+    if (!auth.authenticated || !auth.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const hubspotID = auth.user.hubspotID;
     if (!hubspotID)
       return res.status(400).json({ error: "Missing hubspotID in query" });
 
@@ -62,7 +67,7 @@ export default async function handler(req, res) {
       tickets: ticketsRes.data.results,
     });
   } catch (error) {
-    console.error("HubSpot fetch tickets error:", error.response?.data || error);
+    console.error("HubSpot fetch tickets error",);
     return res
       .status(500)
       .json({ error: "Failed to fetch tickets from HubSpot" });

@@ -5,6 +5,7 @@ import { handleSignup } from "@/lib/auth_functions";
 import { useAuth } from "@/context/auth";
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
+import { fetchWithCsrf } from "@/lib/csrf";
 function Register({onClose}){
     const { openModal } = useAuth();
     const [errors,setErrors] = useState({})
@@ -210,7 +211,7 @@ function Register({onClose}){
       disabled={cooldown > 0}
       type="button"
       onClick={async () => {
-        const res = await fetch("/api/session/resend", {
+        const res = await fetchWithCsrf("/api/session/resend", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: formData.email }),

@@ -1,6 +1,6 @@
 import { handleDownload } from "./service_functions";
 
-export async function downloadPdf(content,user){
+export async function downloadPdf(content){
     
     if (!content) return;
 
@@ -15,9 +15,11 @@ export async function downloadPdf(content,user){
 
        
     try{
-        await handleDownload(user,pdfUrl,type,relativePath)
+        let data = await handleDownload(pdfUrl,type,relativePath)
+        if(data?.error) return
     }catch(e){
         console.log(e)
+        return
     }
     
 
