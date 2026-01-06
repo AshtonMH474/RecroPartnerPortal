@@ -3,7 +3,7 @@ import csrf from 'csurf';
 // Initialize CSRF protection with cookie-based tokens
 const csrfProtection = csrf({
   cookie: {
-    httpOnly: false, // Must be false so JavaScript can read it
+    httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
   }

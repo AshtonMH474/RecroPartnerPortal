@@ -1,7 +1,7 @@
 import IconRenderer from "../utils/IconRenderer";
 import { useState, useEffect } from "react";
 
-function EditCategories({categories,activeCategories,toggleCategory,user}){
+function EditCategories({categories,activeCategories,toggleCategory}){
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     useEffect(() => {
         setIsSmallScreen(window.innerWidth < 768);
