@@ -2,7 +2,7 @@ import axios from "axios";
 import clientPromise from "@/lib/mongodb";
 import { authenticateUser } from "@/lib/authMiddleware";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
-import withRateLimit from "@/lib/rateLimit";
+import { withRateLimit } from "@/lib/rateLimit";
 
 const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
