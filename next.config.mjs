@@ -9,7 +9,7 @@ const nextConfig = {
         headers: [
           {
             key: 'X-Frame-Options',
-            value: 'DENY', // Prevents clickjacking - can't embed your site in iframes
+            value: 'SAMEORIGIN', // Prevents clickjacking - can't embed your site in iframes
           },
           {
             key: 'X-Content-Type-Options',

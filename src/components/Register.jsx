@@ -169,7 +169,7 @@ function Register({onClose}){
               value={phone}
               onChange={setPhone}
               defaultCountry="US" // or whatever default
-              className="w-[50%] p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
+              className="sm:w-[50%] p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
               containerStyle={{ border: '2px solid blue', borderRadius: '5px' }}
               inputStyle={{ backgroundColor: 'lightblue', color: 'darkblue', padding: '10px' }}
             />

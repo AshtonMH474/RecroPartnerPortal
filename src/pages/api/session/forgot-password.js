@@ -2,6 +2,7 @@ import clientPromise from "@/lib/mongodb";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
+import { withRateLimit } from "@/lib/rateLimit";
 
  async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
@@ -62,4 +63,8 @@ import { withCsrfProtection } from "@/lib/csrfMiddleware";
   res.status(200).json({ ok: true });
 }
 
-export default withCsrfProtection(handler);
+export default withRateLimit(withCsrfProtection(handler), {
+  windowMs: 60 * 1000,
+  max: 5,
+  message: 'Too many form submissions. Please wait a minute before trying again.'
+});

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { setCookie } from "cookies-next";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
-
+import { withRateLimit } from "@/lib/rateLimit";
  async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
@@ -74,4 +74,8 @@ import { withCsrfProtection } from "@/lib/csrfMiddleware";
   }
 }
 
-export default withCsrfProtection(handler);
+export default withRateLimit(withCsrfProtection(handler), {
+  windowMs: 60 * 1000,
+  max: 10,
+  message: 'Too many form submissions. Please wait a minute before trying again.'
+});
