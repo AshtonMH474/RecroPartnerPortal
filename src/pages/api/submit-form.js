@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import clientPromise from "@/lib/mongodb";
 import { isFreeEmail } from "free-email-domains-list";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
+import { withRateLimit } from "@/lib/rateLimit";
  async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -86,4 +87,8 @@ import { withCsrfProtection } from "@/lib/csrfMiddleware";
 }
 
 
-export default withCsrfProtection(handler);
+export default withRateLimit(withCsrfProtection(handler), {
+  windowMs: 60 * 1000,
+  max: 5,
+  message: 'Too many form submissions. Please wait a minute before trying again.'
+});

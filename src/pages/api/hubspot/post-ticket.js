@@ -2,6 +2,7 @@ import axios from "axios";
 import clientPromise from "@/lib/mongodb";
 import { authenticateUser } from "@/lib/authMiddleware";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
+import withRateLimit from "@/lib/rateLimit";
 
 const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
@@ -209,5 +210,9 @@ async function handler(req, res) {
 }
 
 // Export with CSRF protection
-export default withCsrfProtection(handler);
+export default withRateLimit(withCsrfProtection(handler), {
+  windowMs: 60 * 1000,
+  max: 5,
+  message: 'Too many form submissions. Please wait a minute before trying again.'
+});
 
