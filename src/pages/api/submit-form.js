@@ -3,37 +3,25 @@ import clientPromise from "@/lib/mongodb";
 import { isFreeEmail } from "free-email-domains-list";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
 import { withRateLimit } from "@/lib/rateLimit";
+import { sanitizeContactFormData } from "@/lib/sanitize";
+
  async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { firstName, lastName, email, organization, subject, message, phone } = req.body;
-
-  // ✅ NoSQL Injection Protection: Validate input types
-  if (typeof email !== 'string' || typeof subject !== 'string' ||
-      typeof message !== 'string' || typeof firstName !== 'string' ||
-      typeof lastName !== 'string') {
-    return res.status(400).json({ error: "Invalid input format" });
+  // Validate and sanitize input
+  const result = sanitizeContactFormData(req.body);
+  if (!result.valid) {
+    return res.status(400).json({ error: result.error });
   }
 
-  // Organization and phone are optional but must be strings if provided
-  if (organization && typeof organization !== 'string') {
-    return res.status(400).json({ error: "Invalid organization format" });
-  }
-  if (phone && typeof phone !== 'string') {
-    return res.status(400).json({ error: "Invalid phone format" });
-  }
-
-  if (!email || !subject || !message) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
+  const { firstName, lastName, email, organization, subject, message, phone } = result.data;
 
   if(isFreeEmail(email)){
     return res.status(403).json({ error: "Free email providers are not allowed. Please use your company email." });
   }
-  
+
   try {
     // 1️⃣ Setup email transport
     const transporter = nodemailer.createTransport({

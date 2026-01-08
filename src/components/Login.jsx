@@ -7,6 +7,7 @@ import { handleLogin } from "@/lib/auth_functions";
 import { useAuth } from "@/context/auth";
 import { useRouter } from "next/router";
 import { fetchWithCsrf } from "@/lib/csrf";
+import { isValidEmail } from "@/lib/sanitize";
 
 function Login({ onClose,modalData }) {
   const { setUser, openModal } = useAuth();
@@ -71,8 +72,11 @@ function Login({ onClose,modalData }) {
       return;
     }
 
- 
-    
+    // Validate email format
+    if (!isValidEmail(formData.email)) {
+      setErrors({ error: "Please enter a valid email address" });
+      return;
+    }
 
     try {
       setLoading(true)

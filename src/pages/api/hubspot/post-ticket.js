@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { authenticateUser } from "@/lib/authMiddleware";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
 import { withRateLimit } from "@/lib/rateLimit";
+import { sanitizeDealData } from "@/lib/sanitize";
 
 const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
@@ -12,7 +13,6 @@ async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { deal } = req.body;
     const auth = await authenticateUser(req)
     const user = auth.user;
     if (!user || !auth.authenticated) return res.status(401).json({ error: "Unauthorized" });
@@ -20,47 +20,13 @@ async function handler(req, res) {
     if (!contactId)
       return res.status(400).json({ error: "User does not have a HubSpot contact ID" });
 
-    // Extract opportunity details
-    const subject = deal?.subject;
-    const description = deal?.description;
-    const agency = deal?.agency || "";
-    const rawAmount = deal?.amount || 0;
-    
-    const program = deal?.program || "";
-    const solicitationLink = deal?.solicitationLink || "";
-    const vehicle = deal?.vehicle || "";
-    const amount = typeof rawAmount === "string"
-    ? parseFloat(rawAmount.replace(/,/g, ""))
-    : Number(rawAmount);
-
-    // Validate
-   
-    if (isNaN(amount) || amount <= 0) {
-      return res.status(400).json({ error: "Invalid amount provided" });
+    // Validate and sanitize deal data
+    const result = sanitizeDealData(req.body.deal);
+    if (!result.valid) {
+      return res.status(400).json({ error: result.error });
     }
 
-    if (
-    typeof subject !== "string" ||
-    typeof description !== "string" ||
-    subject.trim().length === 0 ||
-    description.trim().length === 0 ||
-    amount === 0){
-      return res.status(400).json({error:'Not all required fields were filled out'})
-    }
-
-
-    const optionalFields = {
-      agency,
-      program,
-      solicitationLink,
-      vehicle,
-    };
-
-  for (const [key, value] of Object.entries(optionalFields)) {
-    if (value !== "" && typeof value !== "string") {
-      return res.status(400).json({ error: `${key} must be a string` });
-    }
-  }
+    const { subject, description, amount, agency, program, vehicle, solicitationLink } = result.data;
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);

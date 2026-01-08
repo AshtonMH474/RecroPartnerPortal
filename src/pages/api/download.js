@@ -1,6 +1,7 @@
 import { authenticateUser } from "@/lib/authMiddleware";
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
 import clientPromise from "@/lib/mongodb";
+import { sanitizeDownloadData } from "@/lib/sanitize";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -8,19 +9,27 @@ async function handler(req, res) {
   }
 
   try {
-    const {pdfUrl, type, relativePath } = req.body;
     const auth = await authenticateUser(req)
     if (!auth.authenticated || !auth.user) {
           return res.status(401).json({ error: "Unauthorized" });
     }
     const email = auth.user.email;
     if (!email) return res.status(400).json({ error: "Missing email" });
-    if ( !pdfUrl || !type || !relativePath) {
+
+    // Validate and sanitize input
+    const result = sanitizeDownloadData(req.body);
+    if (!result.valid) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    const { pdfUrl, type, relativePath } = result.data;
+
+    if (!pdfUrl || !type || !relativePath) {
       return res
         .status(400)
-        .json({ error: "pdfUrl, type, or relativePath" });
+        .json({ error: "Missing pdfUrl, type, or relativePath" });
     }
-    
+
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
 
