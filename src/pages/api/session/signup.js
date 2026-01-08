@@ -5,44 +5,18 @@ import nodemailer from "nodemailer";
 import { isFreeEmail } from 'free-email-domains-list';
 import { withCsrfProtection } from "@/lib/csrfMiddleware";
 import { withRateLimit } from "@/lib/rateLimit";
+import { sanitizeSignupData } from "@/lib/sanitize";
 
  async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { email, password, firstName, lastName, organization, phone } = req.body;
-
-  // ✅ NoSQL Injection Protection: Validate input types
-  if (typeof email !== 'string' || typeof password !== 'string' ||
-      typeof firstName !== 'string' || typeof lastName !== 'string' ||
-      typeof organization !== 'string' || typeof phone !== 'string') {
-    return res.status(400).json({ error: "Invalid input format" });
+  // Validate and sanitize input
+  const result = sanitizeSignupData(req.body);
+  if (!result.valid) {
+    return res.status(400).json({ error: result.error });
   }
 
-  // Additional validation
-  if (!email || !password || !firstName || !lastName || !organization || !phone) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
-
-  // ✅ Password Complexity Requirements
-  if (password.length < 8) {
-    return res.status(400).json({ error: "Password must be at least 8 characters" });
-  }
-
-  if (password.length > 128) {
-    return res.status(400).json({ error: "Password must be less than 128 characters" });
-  }
-
-  // Require at least: 1 uppercase, 1 lowercase, 1 number, 1 special character
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecialChar = /[@$!%*?&]/.test(password);
-
-  if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
-    return res.status(400).json({
-      error: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)"
-    });
-  }
+  const { email, password, firstName, lastName, organization, phone } = result.data;
 
   // Block free email domains
   if (isFreeEmail(email)) {

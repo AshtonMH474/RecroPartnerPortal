@@ -1,6 +1,7 @@
 import { fetchWithCsrf } from "@/lib/csrf";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { isValidEmail, isValidPhone } from "@/lib/sanitize";
 
 
 function ContactUsForm({sidebarWidth}) {
@@ -8,43 +9,56 @@ function ContactUsForm({sidebarWidth}) {
     const [success, setSuccess] = useState(false);
     const [isCareers,setCareers] = useState(false)
     const [errors,setErrors] = useState({})
-    
-     // checks if ur in the careers section 
+
+     // checks if ur in the careers section
     useEffect(() => {
       if(router.query.slug?.[0] === "careers") setCareers(true)
     },[])
-    
-    
+
+
     const handleSubmit = async(e) => {
         e.preventDefault();
         let formData;
         // based on careers certian data is sent through email for either people looking for jobs or companies
         if(isCareers){
                  formData = {
-                    firstName:e.target.firstName.value,
-                    lastName:e.target.lastName.value,
-                    email:e.target.email.value,
-                    phone:e.target.phone.value,
-                    subject:e.target.subject.value,
-                    message:e.target.message.value,
+                    firstName:e.target.firstName.value.trim(),
+                    lastName:e.target.lastName.value.trim(),
+                    email:e.target.email.value.trim(),
+                    phone:e.target.phone.value.trim(),
+                    subject:e.target.subject.value.trim(),
+                    message:e.target.message.value.trim(),
                 }
-                
+
         }else{
 
                 formData = {
-                    firstName:e.target.firstName.value,
-                    lastName:e.target.lastName.value,
-                    email:e.target.email.value,
-                    organization:e.target.organization.value,
-                    subject:e.target.subject.value,
-                    message:e.target.message.value,
-                  
+                    firstName:e.target.firstName.value.trim(),
+                    lastName:e.target.lastName.value.trim(),
+                    email:e.target.email.value.trim(),
+                    organization:e.target.organization.value.trim(),
+                    subject:e.target.subject.value.trim(),
+                    message:e.target.message.value.trim(),
+
                 }
         }
                 if(!formData.email || !formData.firstName || !formData.lastName || !formData.subject || !formData.message || (!formData.organization && !formData.phone)){
                  setErrors({error: 'Make sure everything is filled out'})
                  return
                 }
+
+                // Validate email format
+                if(!isValidEmail(formData.email)){
+                  setErrors({error: 'Please enter a valid email address'})
+                  return
+                }
+
+                // Validate phone format (for careers form)
+                if(isCareers && formData.phone && !isValidPhone(formData.phone)){
+                  setErrors({error: 'Please enter a valid phone number'})
+                  return
+                }
+
                 const res = await fetchWithCsrf("/api/submit-form",{
                     method:"POST",
                     headers: { "Content-Type": "application/json" },

@@ -1,11 +1,12 @@
 import { useState,useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
-import { motion, number } from "framer-motion";
+import { motion } from "framer-motion";
 import { handleSignup } from "@/lib/auth_functions";
 import { useAuth } from "@/context/auth";
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import { fetchWithCsrf } from "@/lib/csrf";
+import { isValidEmail, validatePassword } from "@/lib/sanitize";
 function Register({onClose}){
     const { openModal } = useAuth();
     const [errors,setErrors] = useState({})
@@ -59,13 +60,24 @@ function Register({onClose}){
         return
     }
     const obj = {}
-    if(formData?.password?.length < 8){
-        obj.pass = 'Password Must be 8 Characters or More'
+
+    // Validate email format
+    if(!isValidEmail(formData.email)){
+        obj.email = 'Please enter a valid email address'
+        setErrors(obj)
+        return
     }
+
+    // Validate password complexity
+    const passwordValidation = validatePassword(formData.password);
+    if(!passwordValidation.valid){
+        obj.pass = passwordValidation.error
+        setErrors(obj)
+        return
+    }
+
     if(formData.password !== formData.confirmPassword){
         obj.password = 'Make Sure Passwords Match'
-    }
-    if(obj.password || obj.pass){
         setErrors(obj)
         return
     }
@@ -74,7 +86,7 @@ function Register({onClose}){
         setErrors(obj)
         return
     }
-    
+
     try {
       setLoading(true); // <-- show "Sending..."
       let res = await handleSignup(formData,phone);
@@ -200,6 +212,7 @@ function Register({onClose}){
             placeholder="Re-enter Password"
             className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
           />
+          {errors?.email && <div className="text-red-600">{errors.email}</div>}
           {errors?.number && <div className="text-red-600">{errors.number}</div>}
           {errors?.password && <div className="text-red-600">{errors.password}</div>}
           {errors?.pass && <div className="text-red-600">{errors.pass}</div>}

@@ -4,6 +4,7 @@ import { IoMdClose } from "react-icons/io";
 
 import { postDeal,fetchPartnerTickets } from "@/lib/service_functions";
 import { useAuth } from "@/context/auth";
+import { sanitizeAmount, isValidUrl } from "@/lib/sanitize";
 
 function DealFormModal({  onClose,grabTickets,setTickets }) {
   const [errors, setErrors] = useState({})
@@ -47,35 +48,46 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      subject:e.target.subject.value,
-      amount:Number(value.replace(/,/g, "")),
-      description:e.target.description.value,
-      agency: e.target.agency.value,
-      program: e.target.program.value,
-      vehicle: e.target.vehicle.value,
-      solicitationLink: e.target.solicitationLink.value,
-    };
-    
     const obj = {}
 
-    if(!formData.subject.length || formData.subject.length < 1){
+    const subject = e.target.subject.value.trim();
+    const description = e.target.description.value.trim();
+    const solicitationLink = e.target.solicitationLink.value.trim();
+
+    // Validate required fields
+    if(!subject || subject.length < 1){
       obj.subject = "Please fill out the subject"
     }
 
-    if(!formData.amount|| formData.amount < 1){
-      obj.amount = "Please fill out the amount"
+    // Validate and sanitize amount
+    const amountResult = sanitizeAmount(value);
+    if(!amountResult.valid){
+      obj.amount = amountResult.error || "Please fill out the amount"
     }
 
-
-     if(!formData.description.length || formData.description.length < 1){
+    if(!description || description.length < 1){
       obj.description = "Please fill out a description"
     }
 
-    if(obj.amount || obj.description || obj.subject){
+    // Validate URL format for solicitation link (if provided)
+    if(solicitationLink && !isValidUrl(solicitationLink)){
+      obj.solicitationLink = "Please enter a valid URL (e.g., https://example.com)"
+    }
+
+    if(obj.amount || obj.description || obj.subject || obj.solicitationLink){
       setErrors(obj)
       return
-    } 
+    }
+
+    const formData = {
+      subject: subject,
+      amount: amountResult.value,
+      description: description,
+      agency: e.target.agency.value.trim(),
+      program: e.target.program.value.trim(),
+      vehicle: e.target.vehicle.value.trim(),
+      solicitationLink: solicitationLink,
+    };
 
      try {
           let data = await postDeal( formData);
@@ -198,6 +210,9 @@ function DealFormModal({  onClose,grabTickets,setTickets }) {
               )}
               {errors?.amount && (
                 <div className="text-red-500 text-[14px] md:text-[16px] font-medium">{errors.amount}</div>
+              )}
+              {errors?.solicitationLink && (
+                <div className="text-red-500 text-[14px] md:text-[16px] font-medium">{errors.solicitationLink}</div>
               )}
             {message && <div className="mb-4 text-green-500 text-[14px] md:text-[16px] font-medium">{message}</div>}
               <div className="flex justify-center">
