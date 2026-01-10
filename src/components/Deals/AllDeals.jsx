@@ -9,19 +9,7 @@ import { SearchFilter, Heading } from "@/components/shared";
 import AgenciesDropdown from "./AgenciesDropdown";
 import DealFormModal from "../DealForm";
 import { tinaField } from "tinacms/dist/react";
-
-// ✅ Move variants outside component to prevent recreation on every render
-const variants = {
-    enter: (direction) => ({
-        x: direction > 0 ? 100 : -100,
-        opacity: 0,
-    }),
-    center: { x: 0, opacity: 1 },
-    exit: (direction) => ({
-        x: direction > 0 ? -100 : 100,
-        opacity: 0,
-    }),
-};
+import { pageSlideVariants } from "@/lib/animations";
 
 function AllDeals({props}){
     const {user} = useAuth()
@@ -72,7 +60,7 @@ function AllDeals({props}){
             }
         }
         fetchDeals()
-    }, [user])
+    }, [user?.hubspotID])
 
     // ✅ Memoize the filtered cards computation
     const filteredCards = useMemo(() => {
@@ -129,9 +117,7 @@ function AllDeals({props}){
             {/* ✅ Error state */}
             {error && !loading && (
                 <div className="flex justify-center items-center py-20">
-                    {/* <div className="text-red-500 text-lg">Error: {error}</div>
-                     */}
-                    
+                    <div className="text-red-500 text-lg">Error: {error}</div>
                 </div>
             )}
 
@@ -142,7 +128,7 @@ function AllDeals({props}){
                         <motion.div
                         key={startIndex}
                         custom={direction}
-                        variants={variants}
+                        variants={pageSlideVariants}
                         initial="enter"
                         animate="center"
                         exit="exit"

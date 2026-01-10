@@ -29,7 +29,7 @@ export async function handleDownload(pdfUrl, type, relativePath) {
                  
                }
               }catch(e){
-                  console.log('Error grabbing Intrestes:', e)
+                  console.error('Error grabbing interests:', e)
               }
   }
   
@@ -52,9 +52,9 @@ export async function handleDownload(pdfUrl, type, relativePath) {
           const data = await fetchI.json();
           return data.message;
         }
-      
-  
-      return data;
+
+        const errorData = await fetchI.json();
+        throw new Error(errorData.error || "Failed to post deal");
     } catch (err) {
       console.error(err);
     }

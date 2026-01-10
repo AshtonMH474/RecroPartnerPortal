@@ -9,6 +9,7 @@ import Pagination from "../utils/Pagination";
 import Deals from "./Deals";
 import DealFormModal from "../DealForm";
 import { tinaField } from "tinacms/dist/react";
+import { pageSlideVariants } from "@/lib/animations";
 
 
 function MyDeals({props}){
@@ -26,21 +27,10 @@ function MyDeals({props}){
     const goToPage = (pageIndex) => {
         const newStartIndex = pageIndex * visibleCount;
         const goingForward = pageIndex > startIndex / visibleCount;
-        
+
         setDirection(goingForward ? 1 : -1);
         setStartIndex(newStartIndex);
-        
-    };
-    const variants = {
-            enter: (direction) => ({
-            x: direction > 0 ? 100 : -100,
-            opacity: 0,
-            }),
-            center: { x: 0, opacity: 1 },
-            exit: (direction) => ({
-            x: direction > 0 ? -100 : 100,
-            opacity: 0,
-            }),
+
     };
     useEffect(() => {
   async function fetchDeals() {
@@ -93,7 +83,7 @@ function MyDeals({props}){
                     <motion.div
                     key={startIndex}
                     custom={direction}
-                    variants={variants}
+                    variants={pageSlideVariants}
                     initial="enter"
                     animate="center"
                     exit="exit"

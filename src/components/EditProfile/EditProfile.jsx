@@ -8,23 +8,16 @@ import EditCategories from "./EditCategories";
 import { checkUser } from "@/lib/auth_functions";
 import { getCategories } from "@/lib/service_functions";
 import { fetchWithCsrf } from "@/lib/csrf";
+import { useScrollLock } from "@/hooks/useScrollLock";
+import { backdropVariants, modalContentVariants } from "@/lib/animations";
+
 function EditProfile({onClose}){
     const {user,setUser} = useAuth()
 
     if(!user) return null
 
-    useEffect(() => {
-    // Lock scrolling when modal opens
-        const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.overflow = "hidden";
-        document.body.style.paddingRight = `${scrollBarWidth}px`;
-
-        // ✅ Cleanup when modal unmounts or closes
-        return () => {
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = "";
-        };
-    }, []);
+    // Lock body scroll when modal opens
+    useScrollLock();
     
     const [formData, setFormData] = useState({
         firstName:user.firstName,
@@ -118,19 +111,19 @@ function EditProfile({onClose}){
     >
             <motion.div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={backdropVariants.initial}
+            animate={backdropVariants.animate}
+            exit={backdropVariants.exit}
+            transition={backdropVariants.transition}
         />
 
         {/* Modal Content */}
         <motion.div
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.4 }}
+            initial={modalContentVariants.initial}
+            animate={modalContentVariants.animate}
+            exit={modalContentVariants.exit}
+            transition={modalContentVariants.transition}
             className="relative z-[1001] w-[90%] max-w-[1500px] max-h-[90%] overflow-y-auto bg-[#1A1A1E] rounded-[12px] p-6"
         >
             <div className="flex justify-end">

@@ -4,19 +4,7 @@ import Pagination from "../utils/Pagination";
 import Cards from "../Cards/Cards";
 import { getCategories } from "@/lib/service_functions";
 import { SearchFilter,Heading } from "@/components/shared";
-
-// ✅ Move variants outside component to prevent recreation
-const variants = {
-    enter: (direction) => ({
-        x: direction > 0 ? 100 : -100,
-        opacity: 0,
-    }),
-    center: { x: 0, opacity: 1 },
-    exit: (direction) => ({
-        x: direction > 0 ? -100 : 100,
-        opacity: 0,
-    }),
-};
+import { pageSlideVariants } from "@/lib/animations";
 
 function Materials({props,materials}){
     const [direction, setDirection] = useState(0);
@@ -114,7 +102,7 @@ function Materials({props,materials}){
                         <motion.div
                         key={startIndex} // triggers animation on page change
                         custom={direction}
-                        variants={variants}
+                        variants={pageSlideVariants}
                         initial="enter"
                         animate="center"
                         exit="exit"
