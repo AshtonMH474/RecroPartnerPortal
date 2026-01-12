@@ -3,7 +3,7 @@ import { useAuth } from "@/context/auth"
 import Logo from "./Logo"
 import ProfileUser from "./ProfileUser"
 import {useEffect, useRef, useState } from "react";
-import MenuToggle from "./MenuToogle";
+import MenuToggle from "./MenuToggle";
 import MobileMenu from "./MobileMenu";
 
 import { useRouter } from "next/router";
@@ -61,7 +61,7 @@ const Nav = React.memo(function Nav(props){
         router.replace("/", undefined, { shallow: true });
       }
     }
-  }, [router.isReady]);
+  }, [router.isReady, router.asPath, openModal, router]);
 
     
     

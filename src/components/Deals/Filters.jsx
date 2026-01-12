@@ -18,7 +18,7 @@ function Filters({ props, setActive, active, recent }) {
     };
   }, []);
   return (
-    <> 
+    <>
       <div className="flex flex-wrap gap-x-6 gap-y-4">
         {filters.map((filter, i) => {
           if (filter.filter === "recent" && recent?.length === 0) return null;
@@ -52,5 +52,5 @@ function Filters({ props, setActive, active, recent }) {
   );
 }
 
-// Prevent unnecessary re-renders if props haven’t changed
+// Prevent unnecessary re-renders if props haven't changed
 export default memo(Filters);

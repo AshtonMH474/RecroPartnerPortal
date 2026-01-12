@@ -1,28 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { fetchWithCsrf } from "@/lib/csrf";
+import { useScrollLock } from "@/hooks/useScrollLock";
+import { backdropVariants, modalContentVariants } from "@/lib/animations";
 
 function NewPasswordModal({ onClose,setShowLoginModal }) {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.overflow = "hidden";
-    document.body.style.width = "100%";
-
-    return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.overflow = "";
-      document.body.style.width = "";
-      window.scrollTo(0, scrollY);
-    };
-  }, []);
+  // Lock body scroll when modal opens
+  useScrollLock();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -81,19 +70,19 @@ function NewPasswordModal({ onClose,setShowLoginModal }) {
       {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={backdropVariants.initial}
+        animate={backdropVariants.animate}
+        exit={backdropVariants.exit}
+        transition={backdropVariants.transition}
       />
 
       {/* Modal Content */}
       <motion.div
         onClick={(e) => e.stopPropagation()}
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -30 }}
-        transition={{ duration: 0.4 }}
+        initial={modalContentVariants.initial}
+        animate={modalContentVariants.animate}
+        exit={modalContentVariants.exit}
+        transition={modalContentVariants.transition}
         className="relative z-[1001] w-[90%] max-w-[800px] max-h-[90%] overflow-y-auto bg-[#1A1A1E] rounded-[12px] p-6"
       >
         {/* Header */}

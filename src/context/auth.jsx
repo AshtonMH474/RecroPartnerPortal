@@ -26,9 +26,9 @@ export function AuthProvider({ children }) {
     // Polling removed - user status checked on mount and when explicitly refreshed
   }, [refreshUser]);
 
- const openModal = (type, data = null, onChange = null) => {
+ const openModal = (type, data = null) => {
   setActiveModal(type);
-  setModalData({ data, onChange }); // ✅ store both the opp and the callback
+  setModalData({ data });
 };
 
 
@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
         {activeModal === "changePassword" && (
           <ChangePassword token={modalData?.data?.token} onClose={closeModal} />
         )}
-        {activeModal == 'Edit' && (
+        {activeModal === 'Edit' && (
           <EditProfile onClose={closeModal}/>
         )}
       </Suspense>
