@@ -37,6 +37,8 @@ function TabFilter({
         return (
           <button
             key={i}
+            data-testid={`tab-${tab.filter}`}
+            data-active={isActive}
             data-tina-field={useTinaFields ? tinaField(tab, 'label') : undefined}
             onClick={() => setActive(tab.filter)}
             className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}

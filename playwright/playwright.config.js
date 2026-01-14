@@ -1,4 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load env from playwright/.env
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 module.exports = defineConfig({
 testDir: './tests',

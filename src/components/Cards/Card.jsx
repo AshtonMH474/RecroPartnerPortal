@@ -51,6 +51,8 @@ function Card({ card }) {
 
   return (
     <div
+      data-testid="material-card"
+      data-expanded={expanded}
       className="bg-[#1A1A1E] rounded-xl w-[100%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out"
     >
       <div className="flex justify-between">
@@ -101,10 +103,11 @@ function Card({ card }) {
           </h3>
           <div className="md:pb-11 pb-7 flex items-center justify-center pl-20 md:pl-14 gap-x-2">
             <BsDownload
+              data-testid="card-download"
               onClick={handleDownload}
               className="text-[24px] md:text-[32px] cursor-pointer"
             />
-            <div className="hidden md:block">
+            <div className="hidden md:block" data-testid="card-expand">
               <PlusMinusButton expanded={expanded} setExpanded={setExpanded} />
             </div>
           </div>

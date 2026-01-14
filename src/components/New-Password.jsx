@@ -3,13 +3,14 @@ import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { fetchWithCsrf } from "@/lib/csrf";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useAuth } from "@/context/auth";
 import { backdropVariants, modalContentVariants } from "@/lib/animations";
 
-function NewPasswordModal({ onClose,setShowLoginModal }) {
+function NewPasswordModal({ onClose }) {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const { openModal } = useAuth();
   // Lock body scroll when modal opens
   useScrollLock();
 
@@ -59,7 +60,7 @@ function NewPasswordModal({ onClose,setShowLoginModal }) {
 
   const handleLogin = async(e) => {
     await onClose()
-    await setShowLoginModal(true)
+    openModal("login")
   }
 
   return (
