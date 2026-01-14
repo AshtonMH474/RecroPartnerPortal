@@ -33,6 +33,7 @@ function Landing(props){
     return (
         <div
         style={{ minHeight: '100vh' }}
+        data-testid="landing-block"
         className={`landing flex flex-col items-center justify-center w-full text-center`}
         > 
             <div className=" px-4" style={{ width: inlineWidth }}>
@@ -83,7 +84,7 @@ function Landing(props){
                     // REGISTER button
                     if (button?.type === "register") {
                         return (
-                        <button key={i} {...commonProps} onClick={handleRegister}>
+                        <button key={i} {...commonProps} data-type="register" onClick={handleRegister}>
                             {button.label}
                         </button>
                         );
@@ -92,7 +93,7 @@ function Landing(props){
                     // LOGIN button
                     if (button?.type === "login") {
                         return (
-                        <button key={i} {...commonProps} onClick={handleLogin}>
+                        <button key={i} {...commonProps} data-type="login" onClick={handleLogin}>
                             {button.label}
                         </button>
                         );
