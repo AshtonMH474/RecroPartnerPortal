@@ -1,13 +1,4 @@
-import csrf from 'csurf';
-
-// Initialize CSRF protection with cookie-based tokens
-const csrfProtection = csrf({
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-  }
-});
+import { generateCsrfToken } from '@/lib/csrfMiddleware';
 
 /**
  * GET /api/csrf-token
@@ -21,18 +12,15 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  csrfProtection(req, res, (err) => {
-    if (err) {
-      console.error('CSRF token generation error:', err);
-      return res.status(500).json({ error: 'Failed to generate CSRF token' });
-    }
-
-    // Generate and return the token
-    const token = req.csrfToken();
+  try {
+    const token = generateCsrfToken(req, res);
 
     res.status(200).json({
       csrfToken: token,
-      message: 'CSRF token generated successfully'
+      message: 'CSRF token generated successfully',
     });
-  });
+  } catch (err) {
+    console.error('CSRF token generation error:', err);
+    return res.status(500).json({ error: 'Failed to generate CSRF token' });
+  }
 }
