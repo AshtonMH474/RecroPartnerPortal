@@ -199,9 +199,10 @@ function SearchFilter({
         // Agencies dropdown (using custom component if provided)
         if (filter.filter === "agencies" && customDropdownComponent) {
           return (
-            <div key={i} className="relative" ref={dropdownRef}>
+            <div key={i} data-testid="filter-agencies" className="relative" ref={dropdownRef}>
               <div
                 type="button"
+                data-testid="filter-agencies-toggle"
                 onClick={() => setOpen(!open)}
                 className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center gap-x-3 md:gap-x-8 w-full"
                 aria-expanded={open}

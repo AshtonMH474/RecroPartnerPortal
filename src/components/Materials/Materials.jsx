@@ -7,7 +7,6 @@ import { SearchFilter,Heading } from "@/components/shared";
 import { pageSlideVariants } from "@/lib/animations";
 
 function Materials({props,materials}){
-    console.log("Materials Props:", props);
     const [direction, setDirection] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const [cards,setCards] = useState(materials)
