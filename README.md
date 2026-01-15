@@ -46,3 +46,16 @@ Use the following commands depending on what you need:
     ```bash
     npm run build
     ```
+---
+## 5. Playwright Test
+
+Create a `.env` file in the root of the Playwright directory.
+
+You can use the provided `.env.example` as a template — copy all of the variables listed there into your new `.env` file and fill them out with the correct values for your environment.
+
+
+Use the following command to run all test:
+
+```bash
+npm run test:e2e
+```

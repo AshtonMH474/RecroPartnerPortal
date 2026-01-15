@@ -120,6 +120,7 @@ function SearchFilter({
   const handleClear = () => {
     setSelectedInterests([]);
     setSelectedAgencies([]);
+    setLocalName('');
     if (onClear) onClear();
   };
 
@@ -131,6 +132,7 @@ function SearchFilter({
           return (
             <input
               key={i}
+              data-testid="filter-name"
               data-tina-field={useTinaFields ? tinaField(filter, 'label') : undefined}
               name={filter.filter}
               onChange={handleChange}
@@ -158,12 +160,14 @@ function SearchFilter({
           return (
             <div
               key={i}
+              data-testid="filter-interests"
               data-tina-field={useTinaFields ? tinaField(filter, 'label') : undefined}
               className="relative text-[14px] md:text-[16px]"
               ref={dropdownRef}
             >
               <div
                 type="button"
+                data-testid="filter-interests-toggle"
                 onClick={() => setOpen(!open)}
                 className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center gap-x-3 md:gap-x-8 w-full"
                 aria-expanded={open}
@@ -240,6 +244,7 @@ function SearchFilter({
 
       {/* Clear Button */}
       <button
+        data-testid="filter-clear"
         onClick={handleClear}
         className="bg-primary text-[14px] md:text-[16px] capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white"
       >
@@ -248,6 +253,7 @@ function SearchFilter({
 
       {/* Search Button */}
       <button
+        data-testid="filter-search"
         onClick={onSubmit}
         className="text-[14px] md:text-[16px] bg-[#1A1A1E] border border-white/15 capitalize cursor-pointer px-6 md:px-8 py-1 md:py-2 w-auto rounded hover:opacity-80 text-white"
       >

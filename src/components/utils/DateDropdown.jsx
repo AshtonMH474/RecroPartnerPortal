@@ -35,15 +35,16 @@ export default function DateDropdown({filter,handleChange,formData}){
     };
 
     return (
-        <div ref={dropdownRef} className="relative" data-tina-field={tinaField(filter,'label')}>
+        <div ref={dropdownRef} data-testid="filter-date" className="relative" data-tina-field={tinaField(filter,'label')}>
             <div
                 type="button"
+                data-testid="filter-date-toggle"
                 onClick={() => setOpen(!open)}
                 className="capitalize px-3 md:px-4 py-1 md:py-2 text-[14px] md:text-[16px] border primary-border rounded-xl bg-transparent text-white focus:outline-none flex items-center md:gap-x-8 gap-x-3 w-full"
                 aria-expanded={open}
                 aria-haspopup="true"
             >
-                <span>{displayText}</span>
+                <span data-testid="filter-date-value">{displayText}</span>
                 <svg 
                     className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
                     fill="none" 
@@ -54,10 +55,11 @@ export default function DateDropdown({filter,handleChange,formData}){
                 </svg>
             </div>
             {open && (
-                <div className="absolute top-full left-0 mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[110px]  z-10 shadow-lg">
+                <div data-testid="filter-date-options" className="absolute top-full left-0 mt-2 bg-[#1A1A1E] border border-white/15 rounded-xl md:min-w-[250px] min-w-[110px]  z-10 shadow-lg">
                     {options.map((opt, i) => (
                         <div
                         key={i}
+                        data-testid={`filter-date-option-${opt.value}`}
                         className="flex items-center justify-between px-2 md:px-4 py-2 hover:bg-white/10 cursor-pointer transition-colors first:rounded-t-xl last:rounded-b-xl"
                         onClick={() => handleOptionClick(opt.value)}
                         >
