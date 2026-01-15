@@ -27,7 +27,7 @@ const csrfProtection = csrf({
  * });
  */
 export function withCsrfProtection(handler) {
-  return (req, res) => {
+  return async (req, res) => {
     // Only validate CSRF for state-changing methods
     const statefulMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
 
@@ -36,18 +36,22 @@ export function withCsrfProtection(handler) {
       return handler(req, res);
     }
 
-    // Apply CSRF protection
-    csrfProtection(req, res, (err) => {
-      if (err) {
-        console.error('CSRF validation failed:', err.message);
-        return res.status(403).json({
-          error: 'CSRF token validation failed',
-          message: 'Invalid or missing CSRF token'
-        });
-      }
+    // Apply CSRF protection with Promise wrapper
+    return new Promise((resolve) => {
+      csrfProtection(req, res, async (err) => {
+        if (err) {
+          console.error('CSRF validation failed:', err.message);
+          res.status(403).json({
+            error: 'CSRF token validation failed',
+            message: 'Invalid or missing CSRF token'
+          });
+          return resolve();
+        }
 
-      // CSRF token is valid, proceed to handler
-      return handler(req, res);
+        // CSRF token is valid, proceed to handler
+        await handler(req, res);
+        resolve();
+      });
     });
   };
 }

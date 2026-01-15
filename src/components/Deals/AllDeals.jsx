@@ -86,7 +86,7 @@ function AllDeals({props}){
 
 
     return(
-        <div className="pb-20 px-0 md:px-12" style={{minHeight:'100dvh'}}>
+        <div data-testid={props.__typename} className="pb-20 px-0 md:px-12" style={{minHeight:'100dvh'}}>
             <div className="mt-20  max-w-[1400px] mx-auto">
                 <div className="flex flex-col px-6 md:px-14">
                     <Heading props={props}/>

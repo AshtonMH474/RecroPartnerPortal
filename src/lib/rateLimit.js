@@ -90,6 +90,11 @@ export function withRateLimit(handler, options = {}) {
   const limiter = rateLimit(options);
 
   return async (req, res) => {
+    // Skip rate limiting in development/test environment
+    if (process.env.NODE_ENV !== 'production') {
+      return handler(req, res);
+    }
+
     const result = limiter(req, res);
 
     // Set rate limit headers

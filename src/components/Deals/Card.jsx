@@ -43,7 +43,7 @@ const Card = React.memo(function Card({ card }) {
 
 
   return (
-      <div className="bg-[#1A1A1E] rounded-xl w-[100%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out shadow-lg hover:shadow-primary/30">
+      <div data-testid="deal-card" data-expanded={expanded} className="bg-[#1A1A1E] rounded-xl w-[100%] border border-white/15 overflow-hidden transition-all duration-500 ease-in-out shadow-lg hover:shadow-primary/30">
             <div className="flex justify-between items-start p-2 md:p-5 gap-5">
                 <div className="flex gap-x-2 md:gap-x-4">
                       <div className="md:w-[70px] md:h-[70px] w-[40px] h-[40px] bg-primary rounded-lg flex justify-center items-center flex-shrink-0">
@@ -65,7 +65,7 @@ const Card = React.memo(function Card({ card }) {
                             </div>)}
                   </div>
                 </div>
-                <div className="flex items-start flex-shrink-0">
+                <div data-testid="deal-card-expand" className="flex items-start flex-shrink-0">
                   <PlusMinusButton expanded={expanded} setExpanded={setExpanded} />
                 </div>
                 

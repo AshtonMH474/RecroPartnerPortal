@@ -79,7 +79,7 @@ function Materials({props,materials}){
         setCards(filteredCards);
     }, [filteredCards]);
     return(
-        <div className="pb-20" style={{minHeight:'100vh'}}>
+        <div data-testid={props.__typename} className="pb-20" style={{minHeight:'100vh'}}>
              <div className="mt-20 px-4  md:px-12">
                     <div className="flex items-center gap-x-4">
                         <Heading props={props}/>

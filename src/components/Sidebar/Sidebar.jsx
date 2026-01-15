@@ -30,6 +30,8 @@ const Sidebar = React.memo(function Sidebar({ res, onWidthChange }) {
     <div className="fixed hidden lg:flex top-0 left-0 h-full z-[101] flex items-center">
       {/* Sidebar container */}
       <div
+      data-testid="sidebar"
+      data-state={isOpen ? "open" : "closed"}
       className={`fixed top-0 left-0 h-full w-[240px]
         bg-black border-r border-[#222]
         text-white shadow-lg
@@ -51,6 +53,7 @@ const Sidebar = React.memo(function Sidebar({ res, onWidthChange }) {
       {/* Toggle circle button (hidden on mobile) */}
       {isLargeScreen && (
         <button
+          data-testid="sidebar-toggle"
           onClick={() => setIsOpen(!isOpen)}
           className={`absolute top-1/2 -translate-y-1/2
             rounded-full w-10 h-10 flex items-center justify-center cursor-pointer
