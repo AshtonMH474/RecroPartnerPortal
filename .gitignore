@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-/playwright-results
+playwright/playwright-results
 # next.js
 /.next/
 /out/
