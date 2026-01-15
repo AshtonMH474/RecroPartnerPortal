@@ -8,7 +8,8 @@
     "build": "tinacms build && next build",
     "start": "next start",
     "test:e2e": "npx playwright test --config=playwright/playwright.config.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tinacms/datalayer": "^2.0.0",
@@ -16,7 +17,7 @@
     "bcryptjs": "^3.0.2",
     "cookies-next": "^6.1.0",
     "cross-env": "^10.1.0",
-    "csurf": "^1.11.0",
+    "csrf-csrf": "^4.0.3",
     "framer-motion": "^12.23.22",
     "free-email-domains-list": "^1.0.16",
     "jsonwebtoken": "^9.0.2",
@@ -29,13 +30,18 @@
     "next-tinacms-s3": "^14.0.0",
     "nodemailer": "^7.0.11",
     "react": "^19.2.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.2.1",
     "react-hook-form": "^7.66.0",
     "react-phone-number-input": "^3.4.13",
     "tinacms": "^3.0.2",
-    "tinacms-gitprovider-github": "^4.0.0"
+    "tinacms-gitprovider-github": "^4.0.0",
+    "validator": "^13.15.26"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4",
@@ -43,6 +49,13 @@
     "@types/cookie": "^0.6.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.0",
     "tailwindcss": "^4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --fix",
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   }
 }
