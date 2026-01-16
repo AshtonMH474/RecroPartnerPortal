@@ -1,41 +1,37 @@
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { IoMdClose } from 'react-icons/io';
+import { handleLogin } from '@/lib/auth_functions';
+import { useAuth } from '@/context/auth';
+import { useRouter } from 'next/router';
+import { fetchWithCsrf } from '@/lib/csrf';
+import { isValidEmail } from '@/lib/sanitize';
+import { useScrollLock } from '@/hooks/useScrollLock';
+import { backdropVariants, modalContentVariants } from '@/lib/animations';
 
-
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { IoMdClose } from "react-icons/io";
-import { handleLogin } from "@/lib/auth_functions";
-import { useAuth } from "@/context/auth";
-import { useRouter } from "next/router";
-import { fetchWithCsrf } from "@/lib/csrf";
-import { isValidEmail } from "@/lib/sanitize";
-import { useScrollLock } from "@/hooks/useScrollLock";
-import { backdropVariants, modalContentVariants } from "@/lib/animations";
-
-function Login({ onClose,modalData }) {
+function Login({ onClose, modalData }) {
   const { setUser, openModal } = useAuth();
   const [errors, setErrors] = useState({});
-  const [isToken,setToken] = useState(false)
-  const [loading,setLoading] = useState(false)
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isToken, setToken] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const router = useRouter();
-  
-    useEffect(() => {
-        const verify = async(token) => {
-            if(token){
-                 
-                setToken(true)
-                await fetchWithCsrf(`/api/session/verify`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ token }),
-              });
-                
-            }
-        }
-        verify(modalData?.token)
-    },[])
+
+  useEffect(() => {
+    const verify = async (token) => {
+      if (token) {
+        setToken(true);
+        await fetchWithCsrf(`/api/session/verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        });
+      }
+    };
+    verify(modalData?.token);
+  }, [modalData?.token]);
 
   // Lock body scroll when modal opens
   useScrollLock();
@@ -46,50 +42,47 @@ function Login({ onClose,modalData }) {
 
   const handleRegister = () => {
     onClose();
-    openModal("register");
+    openModal('register');
   };
 
   const handleForgotPassword = () => {
     onClose();
-    openModal("newPassword");
+    openModal('newPassword');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!allFilled) {
-      alert("Please fill all the fields");
+      alert('Please fill all the fields');
       return;
     }
 
     // Validate email format
     if (!isValidEmail(formData.email)) {
-      setErrors({ error: "Please enter a valid email address" });
+      setErrors({ error: 'Please enter a valid email address' });
       return;
     }
 
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await handleLogin(setUser, formData);
       if (res && res.error) {
         setErrors({ error: res.error });
         return;
       }
       onClose();
-      router.push("/dashboard");
-    } catch (err) {
-      alert("Failed to submit.");
-    }finally{
-        setLoading(false)
+      router.push('/dashboard');
+    } catch {
+      alert('Failed to submit.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const allFilled = Object.values(formData).every((val) => val.trim() !== "");
+  const allFilled = Object.values(formData).every((val) => val.trim() !== '');
 
   return (
-    <div
-      className="fixed inset-0 z-[1000] flex justify-center items-center"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-[1000] flex justify-center items-center" onClick={onClose}>
       {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -134,11 +127,11 @@ function Login({ onClose,modalData }) {
             className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
           />
 
-          {errors?.error && (
-            <div className="text-red-600">{errors.error}</div>
-          )}
+          {errors?.error && <div className="text-red-600">{errors.error}</div>}
           {isToken && (
-            <div className="pl-2 text-green-500 text-sm">Verification successful! You can now log in.</div>
+            <div className="pl-2 text-green-500 text-sm">
+              Verification successful! You can now log in.
+            </div>
           )}
 
           <button
@@ -155,11 +148,11 @@ function Login({ onClose,modalData }) {
               disabled={!allFilled || loading}
               className={`w-full py-2 rounded text-white transition ${
                 allFilled && !loading
-                  ? "bg-primary cursor-pointer"
-                  : "bg-[#B55914]/60 cursor-not-allowed"
+                  ? 'bg-primary cursor-pointer'
+                  : 'bg-[#B55914]/60 cursor-not-allowed'
               }`}
             >
-              {loading ? "Sending..." : "Login"}
+              {loading ? 'Sending...' : 'Login'}
             </button>
 
             <button

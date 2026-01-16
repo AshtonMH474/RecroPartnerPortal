@@ -1,22 +1,22 @@
-import clientPromise from "@/lib/mongodb";
-import { withCsrfProtection } from "@/lib/csrfMiddleware";
-import { withRateLimit } from "@/lib/rateLimit";
+import clientPromise from '@/lib/mongodb';
+import { withCsrfProtection } from '@/lib/csrfMiddleware';
+import { withRateLimit } from '@/lib/rateLimit';
 
 async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
+  if (req.method !== 'POST') return res.status(405).end();
   const { token } = req.body;
-  if (!token) return res.status(400).send("Invalid token");
+  if (!token) return res.status(400).send('Invalid token');
 
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB_NAME);
 
-  const user = await db.collection("users").findOne({ verificationToken: token });
-  if (!user) return res.status(400).send("Invalid or expired token");
+  const user = await db.collection('users').findOne({ verificationToken: token });
+  if (!user) return res.status(400).send('Invalid or expired token');
 
   if (user.verificationExpires < new Date()) {
     // expired
-    await db.collection("users").deleteOne({ _id: user._id });
-    return res.status(400).send("Token expired, please sign up again.");
+    await db.collection('users').deleteOne({ _id: user._id });
+    return res.status(400).send('Token expired, please sign up again.');
   }
 
   // -----------------------------
@@ -27,29 +27,29 @@ async function handler(req, res) {
 
   // Check if HubSpot API key is configured (required before verification)
   if (!hubspotApiKey) {
-    console.error("HUBSPOT_TOKEN not configured - verification blocked");
-    return res.status(500).send("System configuration error. Please contact support.");
+    console.error('HUBSPOT_TOKEN not configured - verification blocked');
+    return res.status(500).send('System configuration error. Please contact support.');
   }
 
   try {
     // 1. Search for existing contact by email
     const searchResponse = await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/search`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${hubspotApiKey}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${hubspotApiKey}`,
       },
       body: JSON.stringify({
-        filterGroups: [
-          { filters: [{ propertyName: "email", operator: "EQ", value: email }] }
-        ],
-        properties: ["email", "firstname", "lastname", "company"]
-      })
+        filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: email }] }],
+        properties: ['email', 'firstname', 'lastname', 'company'],
+      }),
     });
 
     // Check response status
     if (!searchResponse.ok) {
-      throw new Error(`HubSpot search failed: ${searchResponse.status} ${searchResponse.statusText}`);
+      throw new Error(
+        `HubSpot search failed: ${searchResponse.status} ${searchResponse.statusText}`
+      );
     }
 
     const searchData = await searchResponse.json();
@@ -58,24 +58,23 @@ async function handler(req, res) {
     if (searchData.total > 0) {
       // contact exists
       contactId = searchData.results[0].id;
-
     } else {
       // contact does not exist, create new one
       const createResponse = await fetch(`https://api.hubapi.com/crm/v3/objects/contacts`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${hubspotApiKey}`
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${hubspotApiKey}`,
         },
         body: JSON.stringify({
           properties: {
             email: user.email,
-            firstname: user.firstName || "",
-            lastname: user.lastName || "",
-            company: user.organization || "",
-            phone: user.phone || ""
-          }
-        })
+            firstname: user.firstName || '',
+            lastname: user.lastName || '',
+            company: user.organization || '',
+            phone: user.phone || '',
+          },
+        }),
       });
 
       // Check response status
@@ -86,32 +85,33 @@ async function handler(req, res) {
 
       const createData = await createResponse.json();
       contactId = createData.id;
-      
     }
 
     // Mark user as verified and store HubSpot contact ID
-    await db.collection("users").updateOne(
+    await db.collection('users').updateOne(
       { _id: user._id },
       {
         $set: { verified: true, hubspotContactId: contactId },
-        $unset: { verificationToken: "", verificationExpires: "" }
+        $unset: { verificationToken: '', verificationExpires: '' },
       }
     );
 
-    return res.send("Email verified! HubSpot contact synced. You can now log in.");
-
-  } catch (hubspotError) {
+    return res.send('Email verified! HubSpot contact synced. You can now log in.');
+  } catch {
     // Log error - HubSpot sync failed, so verification fails
-    console.error("HubSpot sync failed");
-    
+    console.error('HubSpot sync failed');
 
     // Verification fails if HubSpot sync fails
-    return res.status(500).send("Email verification failed due to HubSpot sync error. Please try again or contact support.");
+    return res
+      .status(500)
+      .send(
+        'Email verification failed due to HubSpot sync error. Please try again or contact support.'
+      );
   }
 }
 
 export default withRateLimit(withCsrfProtection(handler), {
   windowMs: 60 * 1000,
   max: 5,
-  message: 'Too many form submissions. Please wait a minute before trying again.'
+  message: 'Too many form submissions. Please wait a minute before trying again.',
 });

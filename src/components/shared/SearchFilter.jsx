@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { tinaField } from "tinacms/dist/react";
-import InterestDropdown from "@/components/utils/InterestDropdown";
-import DateDropdown from "@/components/utils/DateDropdown";
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { tinaField } from 'tinacms/dist/react';
+import InterestDropdown from '@/components/utils/InterestDropdown';
+import DateDropdown from '@/components/utils/DateDropdown';
 
 /**
  * Reusable SearchFilter component for filtering with inputs and dropdowns
@@ -24,7 +24,7 @@ function SearchFilter({
   onClear,
   categories = [],
   useTinaFields = true,
-  customDropdownComponent = null
+  customDropdownComponent = null,
 }) {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [selectedAgencies, setSelectedAgencies] = useState([]);
@@ -34,9 +34,13 @@ function SearchFilter({
   const debounceTimerRef = useRef(null);
 
   // Sync local state when formData.name changes externally (e.g., clear button)
-  useEffect(() => {
-    setLocalName(formData?.name || '');
-  }, [formData?.name]);
+  const prevFormDataName = useRef(formData?.name);
+  if (prevFormDataName.current !== formData?.name) {
+    prevFormDataName.current = formData?.name;
+    if (localName !== (formData?.name || '')) {
+      setLocalName(formData?.name || '');
+    }
+  }
 
   // Debounced update to formData when user types
   useEffect(() => {
@@ -46,7 +50,7 @@ function SearchFilter({
 
     debounceTimerRef.current = setTimeout(() => {
       if (localName !== formData?.name) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           name: localName,
         }));
@@ -60,48 +64,49 @@ function SearchFilter({
     };
   }, [localName, formData?.name, setFormData]);
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
 
-    // For name field, update local state immediately (visual feedback)
-    if (name === 'name') {
-      setLocalName(value);
-      return;
-    }
+      // For name field, update local state immediately (visual feedback)
+      if (name === 'name') {
+        setLocalName(value);
+        return;
+      }
 
-    // For other fields, update formData immediately
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  }, [setFormData]);
+      // For other fields, update formData immediately
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    [setFormData]
+  );
 
   const toggleInterest = useCallback((category) => {
-    setSelectedInterests(prev => {
+    setSelectedInterests((prev) => {
       const updated = prev.includes(category)
-        ? prev.filter(c => c !== category)
+        ? prev.filter((c) => c !== category)
         : [...prev, category];
       return updated;
     });
   }, []);
 
   const toggleAgency = useCallback((agency) => {
-    setSelectedAgencies(prev => {
-      const updated = prev.includes(agency)
-        ? prev.filter(a => a !== agency)
-        : [...prev, agency];
+    setSelectedAgencies((prev) => {
+      const updated = prev.includes(agency) ? prev.filter((a) => a !== agency) : [...prev, agency];
       return updated;
     });
   }, []);
 
   // Update formData when interests change
   useEffect(() => {
-    setFormData(prev => ({ ...prev, interests: selectedInterests }));
+    setFormData((prev) => ({ ...prev, interests: selectedInterests }));
   }, [selectedInterests, setFormData]);
 
   // Update formData when agencies change
   useEffect(() => {
-    setFormData(prev => ({ ...prev, agencies: selectedAgencies }));
+    setFormData((prev) => ({ ...prev, agencies: selectedAgencies }));
   }, [selectedAgencies, setFormData]);
 
   // Close dropdown if click happens outside
@@ -111,9 +116,9 @@ function SearchFilter({
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -128,7 +133,7 @@ function SearchFilter({
     <div className="flex flex-wrap items-start gap-x-4 gap-y-4">
       {filters.map((filter, i) => {
         // Name input
-        if (filter.filter === "name") {
+        if (filter.filter === 'name') {
           return (
             <input
               key={i}
@@ -146,17 +151,12 @@ function SearchFilter({
         // Date dropdown
         if (filter.filter === 'date') {
           return (
-            <DateDropdown
-              key={i}
-              formData={formData}
-              filter={filter}
-              handleChange={handleChange}
-            />
+            <DateDropdown key={i} formData={formData} filter={filter} handleChange={handleChange} />
           );
         }
 
         // Interests dropdown
-        if (filter.filter === "interests") {
+        if (filter.filter === 'interests') {
           return (
             <div
               key={i}
@@ -182,7 +182,12 @@ function SearchFilter({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
               {open && (
@@ -197,7 +202,7 @@ function SearchFilter({
         }
 
         // Agencies dropdown (using custom component if provided)
-        if (filter.filter === "agencies" && customDropdownComponent) {
+        if (filter.filter === 'agencies' && customDropdownComponent) {
           return (
             <div key={i} data-testid="filter-agencies" className="relative" ref={dropdownRef}>
               <div
@@ -217,7 +222,12 @@ function SearchFilter({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
               {open && customDropdownComponent({ selectedAgencies, toggleAgency: toggleAgency })}
