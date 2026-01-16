@@ -6,14 +6,17 @@
 const rateLimitStore = new Map();
 
 // Clean up old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, data] of rateLimitStore.entries()) {
-    if (now - data.windowStart > data.windowMs) {
-      rateLimitStore.delete(key);
+setInterval(
+  () => {
+    const now = Date.now();
+    for (const [key, data] of rateLimitStore.entries()) {
+      if (now - data.windowStart > data.windowMs) {
+        rateLimitStore.delete(key);
+      }
     }
-  }
-}, 5 * 60 * 1000);
+  },
+  5 * 60 * 1000
+);
 
 /**
  * Get client IP from request
@@ -43,10 +46,10 @@ export function rateLimit(options = {}) {
   const {
     windowMs = 60 * 1000, // 1 minute default
     max = 10, // 10 requests per window default
-    message = 'Too many requests, please try again later.'
+    message = 'Too many requests, please try again later.',
   } = options;
 
-  return (req, res) => {
+  return (req) => {
     const ip = getClientIp(req);
     const key = `${ip}:${req.url}`;
     const now = Date.now();
@@ -58,7 +61,7 @@ export function rateLimit(options = {}) {
       record = {
         count: 1,
         windowStart: now,
-        windowMs
+        windowMs,
       };
       rateLimitStore.set(key, record);
       return { allowed: true, remaining: max - 1 };
@@ -72,7 +75,7 @@ export function rateLimit(options = {}) {
         allowed: false,
         remaining: 0,
         retryAfter,
-        message
+        message,
       };
     }
 

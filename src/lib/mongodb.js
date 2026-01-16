@@ -1,7 +1,7 @@
-import { MongoClient } from "mongodb";
-import fs from "fs";
-import os from "os";
-import path from "path";
+import { MongoClient } from 'mongodb';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
 const uri = process.env.MONGODB_URI;
 
@@ -15,22 +15,22 @@ function buildOptions() {
   }
 
   const tmpDir = os.tmpdir(); // cross-platform temp directory
-  const caPath = path.join(tmpDir, "ca.pem");
-  const keyPath = path.join(tmpDir, "mongo.pem");
+  const caPath = path.join(tmpDir, 'ca.pem');
+  const keyPath = path.join(tmpDir, 'mongo.pem');
 
   // Only write files if they don't exist or content has changed
-  const ca = Buffer.from(process.env.MONGODB_CA_B64, "base64").toString("utf-8");
-  const key = Buffer.from(process.env.MONGODB_KEY_B64, "base64").toString("utf-8");
+  const ca = Buffer.from(process.env.MONGODB_CA_B64, 'base64').toString('utf-8');
+  const key = Buffer.from(process.env.MONGODB_KEY_B64, 'base64').toString('utf-8');
 
   // Check if files exist and have correct content before writing
   let needsWrite = false;
   try {
-    const existingCa = fs.readFileSync(caPath, "utf-8");
-    const existingKey = fs.readFileSync(keyPath, "utf-8");
+    const existingCa = fs.readFileSync(caPath, 'utf-8');
+    const existingKey = fs.readFileSync(keyPath, 'utf-8');
     if (existingCa !== ca || existingKey !== key) {
       needsWrite = true;
     }
-  } catch (error) {
+  } catch {
     // Files don't exist, need to write them
     needsWrite = true;
   }
@@ -55,10 +55,10 @@ let client;
 let clientPromise;
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local");
+  throw new Error('Please add your Mongo URI to .env.local');
 }
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === 'development') {
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
     global._mongoClientPromise = client.connect();
@@ -70,5 +70,3 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default clientPromise;
-
-

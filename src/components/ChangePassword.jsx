@@ -1,22 +1,20 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { IoMdClose } from "react-icons/io";
-import { fetchWithCsrf } from "@/lib/csrf";
-import { useScrollLock } from "@/hooks/useScrollLock";
-import { backdropVariants, modalContentVariants } from "@/lib/animations";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { IoMdClose } from 'react-icons/io';
+import { fetchWithCsrf } from '@/lib/csrf';
+import { useScrollLock } from '@/hooks/useScrollLock';
+import { backdropVariants, modalContentVariants } from '@/lib/animations';
 
+function ChangePassword({ onClose, token }) {
+  const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(null);
 
-
-function ChangePassword({onClose,token}){
-    const [errors,setErrors] = useState({})
-    const [success, setSuccess] = useState(null);
-
-    // Lock body scroll when modal opens
-    useScrollLock();
+  // Lock body scroll when modal opens
+  useScrollLock();
 
   const [formData, setFormData] = useState({
-    newPassword: "",
-    confirmPassword:''
+    newPassword: '',
+    confirmPassword: '',
   });
 
   const handleChange = (e) => {
@@ -26,31 +24,29 @@ function ChangePassword({onClose,token}){
     }));
   };
 
-  const allFilled = Object.values(formData).every((val) => val.trim() !== "");
-  
-  
+  const allFilled = Object.values(formData).every((val) => val.trim() !== '');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const obj = {}
-    if(formData?.newPassword?.length < 8){
-        obj.pass = 'Password Must be 8 Characters or More'
+    const obj = {};
+    if (formData?.newPassword?.length < 8) {
+      obj.pass = 'Password Must be 8 Characters or More';
     }
-    if(formData.newPassword !== formData.confirmPassword){
-        obj.password = 'Make Sure Passwords Match'
+    if (formData.newPassword !== formData.confirmPassword) {
+      obj.password = 'Make Sure Passwords Match';
     }
 
-    if(obj.password || obj.pass) {
-        setErrors(obj)
-        return
+    if (obj.password || obj.pass) {
+      setErrors(obj);
+      return;
     }
     setErrors({});
-    setSuccess("");
-    
+    setSuccess('');
 
     try {
-      const res = await fetchWithCsrf("/api/session/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetchWithCsrf('/api/session/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token,
           newPassword: formData.newPassword,
@@ -60,21 +56,18 @@ function ChangePassword({onClose,token}){
       const data = await res.json();
 
       if (!res.ok) {
-        setErrors({ error: data.error || "Something went wrong" });
+        setErrors({ error: data.error || 'Something went wrong' });
       } else {
-        setSuccess("Password has been reset successfully!");
+        setSuccess('Password has been reset successfully!');
         // Optional: auto-close modal or redirect after success
         // setTimeout(() => onClose(), 2000);
       }
-    } catch (err) {
-      setErrors({ error: "Network error, please try again." });
-    } 
+    } catch {
+      setErrors({ error: 'Network error, please try again.' });
+    }
   };
-    return (
-    <div
-      className="fixed inset-0 z-[1000] flex justify-center items-center"
-      onClick={onClose}
-    >
+  return (
+    <div className="fixed inset-0 z-[1000] flex justify-center items-center" onClick={onClose}>
       {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -118,25 +111,19 @@ function ChangePassword({onClose,token}){
             placeholder="Confirm Password"
             className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
           />
-            {errors?.password && <div className="text-red-600">{errors.password}</div>}
+          {errors?.password && <div className="text-red-600">{errors.password}</div>}
           {errors?.pass && <div className="text-red-600">{errors.pass}</div>}
-          {errors?.error && (
-            <div className="text-red-500 text-sm">{errors.error}</div>
-          )}
-          {success && (
-            <div className="text-green-500 text-sm">{success}</div>
-          )}
+          {errors?.error && <div className="text-red-500 text-sm">{errors.error}</div>}
+          {success && <div className="text-green-500 text-sm">{success}</div>}
 
           <button
             type="submit"
             disabled={!allFilled}
             className={`w-full py-2 rounded text-white transition ${
-              allFilled 
-                ? "bg-primary cursor-pointer"
-                : "bg-[#B55914]/60 cursor-not-allowed"
+              allFilled ? 'bg-primary cursor-pointer' : 'bg-[#B55914]/60 cursor-not-allowed'
             }`}
           >
-             Change Password
+            Change Password
           </button>
         </form>
       </motion.div>
@@ -144,4 +131,4 @@ function ChangePassword({onClose,token}){
   );
 }
 
-export default ChangePassword
+export default ChangePassword;

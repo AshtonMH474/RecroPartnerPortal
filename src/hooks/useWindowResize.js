@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore, useCallback } from 'react';
 
 /**
  * Custom hook to detect window resize and check if screen width is below a breakpoint
+ * Uses useSyncExternalStore for better React 18 compatibility and avoids
+ * the set-state-in-effect ESLint warning
+ *
  * @param {number} breakpoint - The pixel width to check against (default: 768)
  * @returns {boolean} - Returns true if window width is below breakpoint
  *
@@ -10,22 +13,19 @@ import { useState, useEffect } from 'react';
  * const isMobile = useWindowResize(640);
  */
 export function useWindowResize(breakpoint = 768) {
-  const [isSmall, setIsSmall] = useState(false);
+  const subscribe = useCallback((callback) => {
+    window.addEventListener('resize', callback);
+    return () => window.removeEventListener('resize', callback);
+  }, []);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmall(window.innerWidth < breakpoint);
-    };
-
-    // Set initial value
-    handleResize();
-
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+  const getSnapshot = useCallback(() => {
+    return window.innerWidth < breakpoint;
   }, [breakpoint]);
 
-  return isSmall;
+  const getServerSnapshot = useCallback(() => {
+    // Default to false on server (SSR)
+    return false;
+  }, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

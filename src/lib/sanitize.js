@@ -7,7 +7,8 @@
  * RFC 5322 compliant email regex pattern
  * Validates: local-part@domain format with proper characters
  */
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
 /**
  * URL validation pattern for solicitation links
@@ -28,7 +29,7 @@ const htmlEntities = {
   "'": '&#x27;',
   '/': '&#x2F;',
   '`': '&#x60;',
-  '=': '&#x3D;'
+  '=': '&#x3D;',
 };
 
 /**
@@ -91,7 +92,8 @@ export function validatePassword(password) {
   if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
     return {
       valid: false,
-      error: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)'
+      error:
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)',
     };
   }
 
@@ -105,7 +107,7 @@ export function validatePassword(password) {
  */
 export function escapeHtml(str) {
   if (typeof str !== 'string') return str;
-  return str.replace(/[&<>"'`=/]/g, char => htmlEntities[char]);
+  return str.replace(/[&<>"'`=/]/g, (char) => htmlEntities[char]);
 }
 
 /**
@@ -123,6 +125,7 @@ export function sanitizeString(str) {
   sanitized = sanitized.replace(/\0/g, '');
 
   // Remove control characters (except newlines and tabs for messages)
+  // eslint-disable-next-line no-control-regex
   sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 
   // Escape HTML entities
@@ -146,6 +149,7 @@ export function sanitizeMultilineString(str) {
   sanitized = sanitized.replace(/\0/g, '');
 
   // Remove control characters except newlines (\n), carriage returns (\r), and tabs (\t)
+  // eslint-disable-next-line no-control-regex
   sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 
   // Escape HTML entities
@@ -196,7 +200,7 @@ export function sanitizeObject(obj) {
   if (typeof obj === 'string') return sanitizeString(obj);
   if (typeof obj !== 'object') return obj;
   if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeObject(item));
+    return obj.map((item) => sanitizeObject(item));
   }
 
   const sanitized = {};
@@ -281,8 +285,8 @@ export function sanitizeSignupData(data) {
       firstName: sanitizeString(data.firstName),
       lastName: sanitizeString(data.lastName),
       organization: sanitizeString(data.organization),
-      phone: sanitizeString(data.phone)
-    }
+      phone: sanitizeString(data.phone),
+    },
   };
 }
 
@@ -308,8 +312,8 @@ export function sanitizeLoginData(data) {
     valid: true,
     data: {
       email: sanitizeString(data.email).toLowerCase(),
-      password: data.password // Don't sanitize password
-    }
+      password: data.password, // Don't sanitize password
+    },
   };
 }
 
@@ -336,7 +340,12 @@ export function sanitizeDealData(deal) {
   }
 
   // Validate optional string fields
-  const optionalValidation = validateOptionalStrings(deal, ['agency', 'program', 'vehicle', 'solicitationLink']);
+  const optionalValidation = validateOptionalStrings(deal, [
+    'agency',
+    'program',
+    'vehicle',
+    'solicitationLink',
+  ]);
   if (!optionalValidation.valid) {
     return optionalValidation;
   }
@@ -355,8 +364,8 @@ export function sanitizeDealData(deal) {
       agency: sanitizeString(deal.agency || ''),
       program: sanitizeString(deal.program || ''),
       vehicle: sanitizeString(deal.vehicle || ''),
-      solicitationLink: sanitizeString(deal.solicitationLink || '')
-    }
+      solicitationLink: sanitizeString(deal.solicitationLink || ''),
+    },
   };
 }
 
@@ -371,7 +380,13 @@ export function sanitizeContactFormData(form) {
   }
 
   // Validate required fields
-  const requiredValidation = validateRequiredStrings(form, ['email', 'subject', 'message', 'firstName', 'lastName']);
+  const requiredValidation = validateRequiredStrings(form, [
+    'email',
+    'subject',
+    'message',
+    'firstName',
+    'lastName',
+  ]);
   if (!requiredValidation.valid) {
     return { valid: false, error: 'Missing required fields' };
   }
@@ -401,8 +416,8 @@ export function sanitizeContactFormData(form) {
       subject: sanitizeString(form.subject),
       message: sanitizeMultilineString(form.message),
       organization: form.organization ? sanitizeString(form.organization) : null,
-      phone: form.phone ? sanitizeString(form.phone) : null
-    }
+      phone: form.phone ? sanitizeString(form.phone) : null,
+    },
   };
 }
 
@@ -450,8 +465,8 @@ export function sanitizeProfileData(data) {
       return { valid: false, error: 'Interests must be an array' };
     }
     sanitized.interests = data.interests
-      .filter(i => typeof i === 'string')
-      .map(i => sanitizeString(i));
+      .filter((i) => typeof i === 'string')
+      .map((i) => sanitizeString(i));
   }
 
   return { valid: true, data: sanitized };
@@ -490,8 +505,8 @@ export function sanitizePasswordResetData(data) {
     valid: true,
     data: {
       resetToken: data.resetToken.trim(),
-      newPassword: data.newPassword // Don't sanitize password
-    }
+      newPassword: data.newPassword, // Don't sanitize password
+    },
   };
 }
 
@@ -519,8 +534,8 @@ export function sanitizeDownloadData(data) {
     data: {
       pdfUrl: sanitizeString(data.pdfUrl),
       type: data.type,
-      relativePath: data.relativePath ? sanitizeString(data.relativePath) : ''
-    }
+      relativePath: data.relativePath ? sanitizeString(data.relativePath) : '',
+    },
   };
 }
 
@@ -531,7 +546,9 @@ export function sanitizeDownloadData(data) {
  * @returns {{ limit: number, offset: number }} - Sanitized pagination params
  */
 export function sanitizePagination(query, maxLimit = 200) {
-  const limit = query?.limit ? Math.min(Math.max(1, parseInt(query.limit, 10) || 100), maxLimit) : 100;
+  const limit = query?.limit
+    ? Math.min(Math.max(1, parseInt(query.limit, 10) || 100), maxLimit)
+    : 100;
   const offset = query?.offset ? Math.max(0, parseInt(query.offset, 10) || 0) : 0;
 
   return { limit, offset };
