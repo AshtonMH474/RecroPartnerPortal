@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.2.0",
     "jwt-decode": "^4.0.0",
-    "mongodb": "^7.0.0",
+    "mongodb": "^7.0.28",
     "mongodb-level": "^0.0.4",
     "next": "^16.0.7",
     "next-auth": "^4.24.11",
