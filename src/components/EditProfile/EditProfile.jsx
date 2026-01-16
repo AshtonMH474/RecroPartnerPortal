@@ -23,16 +23,13 @@ function EditProfile({ onClose }) {
   });
 
   const [categories, setCategories] = useState([]);
-  const [activeCategories, setActiveCategories] = useState([]);
+  // Initialize activeCategories with user's interests directly
+  const [activeCategories, setActiveCategories] = useState(user?.interests || []);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     getCategories(setCategories);
   }, []);
-
-  useEffect(() => {
-    setActiveCategories(user?.interests || []);
-  }, [user]);
 
   // Early return after all hooks
   if (!user) return null;
@@ -143,3 +140,4 @@ function EditProfile({ onClose }) {
 }
 
 export default EditProfile;
+
