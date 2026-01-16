@@ -1,11 +1,11 @@
-import { GitHubProvider } from "tinacms-gitprovider-github";
-import { MongodbLevel } from "mongodb-level";
-import { createLocalDatabase, createDatabase } from "@tinacms/datalayer";
-import fs from "fs";
-import os from "os";
-import path from "path";
+import { GitHubProvider } from 'tinacms-gitprovider-github';
+import { MongodbLevel } from 'mongodb-level';
+import { createLocalDatabase, createDatabase } from '@tinacms/datalayer';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
-const isLocal = process.env.TINA_PUBLIC_IS_LOCAL === "true";
+const isLocal = process.env.TINA_PUBLIC_IS_LOCAL === 'true';
 
 // Cache URL to avoid repeated file writes
 let cachedMongoUrl = null;
@@ -17,22 +17,22 @@ function buildMongoUrl() {
   }
 
   const tmpDir = os.tmpdir();
-  const caPath = path.join(tmpDir, "ca.pem");
-  const keyPath = path.join(tmpDir, "mongo.pem");
+  const caPath = path.join(tmpDir, 'ca.pem');
+  const keyPath = path.join(tmpDir, 'mongo.pem');
 
   // Only write files if they don't exist or content has changed
-  const ca = Buffer.from(process.env.MONGODB_CA_B64, "base64").toString("utf-8");
-  const key = Buffer.from(process.env.MONGODB_KEY_B64, "base64").toString("utf-8");
+  const ca = Buffer.from(process.env.MONGODB_CA_B64, 'base64').toString('utf-8');
+  const key = Buffer.from(process.env.MONGODB_KEY_B64, 'base64').toString('utf-8');
 
   // Check if files exist and have correct content before writing
   let needsWrite = false;
   try {
-    const existingCa = fs.readFileSync(caPath, "utf-8");
-    const existingKey = fs.readFileSync(keyPath, "utf-8");
+    const existingCa = fs.readFileSync(caPath, 'utf-8');
+    const existingKey = fs.readFileSync(keyPath, 'utf-8');
     if (existingCa !== ca || existingKey !== key) {
       needsWrite = true;
     }
-  } catch (error) {
+  } catch {
     // Files don't exist, need to write them
     needsWrite = true;
   }
@@ -64,5 +64,3 @@ export default isLocal
       }),
       // other TinaCMS config here...
     });
-      
-      

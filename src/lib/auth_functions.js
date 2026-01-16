@@ -1,47 +1,47 @@
-import { fetchWithCsrf } from "./csrf";
+import { fetchWithCsrf } from './csrf';
 
-export async function handleSignout(setUser){
-    try{
-        const res = await fetchWithCsrf("/api/session/signout",{
-            method:'POST',
-            headers: { "Content-Type": "application/json" },
-        })
-       await res.json();
-        await checkUser(setUser)
-    }catch (err) {
-      console.error(err);
-    }
- }
-
-  export async function  handleSignup(info,phone){
-    const {email,firstName,lastName,password,organization} = info
-    try {
-      const res = await fetchWithCsrf("/api/session/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-             email:email, 
-             password:password,
-             firstName:firstName,
-            lastName:lastName ,
-            organization:organization,
-            phone:phone
-        }),
-      });
-      const data = await res.json();
-     
-      return data;
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  export async function handleLogin(setUser,info)  {
-    const {email,password} = info
+export async function handleSignout(setUser) {
   try {
-    const res = await fetchWithCsrf("/api/session/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetchWithCsrf('/api/session/signout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    await res.json();
+    await checkUser(setUser);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function handleSignup(info, phone) {
+  const { email, firstName, lastName, password, organization } = info;
+  try {
+    const res = await fetchWithCsrf('/api/session/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        organization: organization,
+        phone: phone,
+      }),
+    });
+    const data = await res.json();
+
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function handleLogin(setUser, info) {
+  const { email, password } = info;
+  try {
+    const res = await fetchWithCsrf('/api/session/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email,
         password: password,
@@ -49,37 +49,32 @@ export async function handleSignout(setUser){
     });
 
     const data = await res.json();
-    
+
     if (res.ok) {
-        await checkUser(setUser)
+      await checkUser(setUser);
     } else {
       return data;
     }
   } catch (err) {
     console.error(err);
   }
-};
-
-
-export async function checkUser(setUser) {
-    try {
-        const res = await fetch("/api/session/user", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          setUser(null);
-          return;
-        }
-
-        const data = await res.json();
-        setUser(data.user || null);
-      } catch (err) {
-        setUser(null);
-      }
 }
 
+export async function checkUser(setUser) {
+  try {
+    const res = await fetch('/api/session/user', {
+      method: 'GET',
+      credentials: 'include',
+    });
 
+    if (!res.ok) {
+      setUser(null);
+      return;
+    }
 
-
+    const data = await res.json();
+    setUser(data.user || null);
+  } catch {
+    setUser(null);
+  }
+}

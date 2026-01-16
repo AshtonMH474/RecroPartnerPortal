@@ -1,102 +1,74 @@
-import { fetchWithCsrf } from "@/lib/csrf";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { isValidEmail, isValidPhone } from "@/lib/sanitize";
+import { fetchWithCsrf } from '@/lib/csrf';
+import { useState } from 'react';
+import { isValidEmail } from '@/lib/sanitize';
 
+function ContactUsForm({ sidebarWidth }) {
+  const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState({});
 
-function ContactUsForm({sidebarWidth}) {
-    const router = useRouter()
-    const [success, setSuccess] = useState(false);
-    const [isCareers,setCareers] = useState(false)
-    const [errors,setErrors] = useState({})
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
+      firstName: e.target.firstName.value.trim(),
+      lastName: e.target.lastName.value.trim(),
+      email: e.target.email.value.trim(),
+      organization: e.target.organization.value.trim(),
+      subject: e.target.subject.value.trim(),
+      message: e.target.message.value.trim(),
+    };
 
-     // checks if ur in the careers section
-    useEffect(() => {
-      if(router.query.slug?.[0] === "careers") setCareers(true)
-    },[])
-
-
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        let formData;
-        // based on careers certian data is sent through email for either people looking for jobs or companies
-        if(isCareers){
-                 formData = {
-                    firstName:e.target.firstName.value.trim(),
-                    lastName:e.target.lastName.value.trim(),
-                    email:e.target.email.value.trim(),
-                    phone:e.target.phone.value.trim(),
-                    subject:e.target.subject.value.trim(),
-                    message:e.target.message.value.trim(),
-                }
-
-        }else{
-
-                formData = {
-                    firstName:e.target.firstName.value.trim(),
-                    lastName:e.target.lastName.value.trim(),
-                    email:e.target.email.value.trim(),
-                    organization:e.target.organization.value.trim(),
-                    subject:e.target.subject.value.trim(),
-                    message:e.target.message.value.trim(),
-
-                }
-        }
-                if(!formData.email || !formData.firstName || !formData.lastName || !formData.subject || !formData.message || (!formData.organization && !formData.phone)){
-                 setErrors({error: 'Make sure everything is filled out'})
-                 return
-                }
-
-                // Validate email format
-                if(!isValidEmail(formData.email)){
-                  setErrors({error: 'Please enter a valid email address'})
-                  return
-                }
-
-                // Validate phone format (for careers form)
-                if(isCareers && formData.phone && !isValidPhone(formData.phone)){
-                  setErrors({error: 'Please enter a valid phone number'})
-                  return
-                }
-
-                const res = await fetchWithCsrf("/api/submit-form",{
-                    method:"POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData),
-                })
-                
-
-                if (res.ok) {
-                e.target.firstName.value = ""
-                e.target.lastName.value = ""
-                e.target.email.value = ""
-                e.target.subject.value = ""
-                e.target.message.value = ""
-
-                if(e.target.organization){
-                  e.target.organization.value = ""
-                } else e.target.phone.value = ""
-                
-                setErrors({})
-                setSuccess(true)
-                return
-                }
-
-                setErrors({error: 'Make sure everything is filled out and you are using your company email'})
-                return 
-         
-      
+    if (
+      !formData.email ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.subject ||
+      !formData.message ||
+      !formData.organization
+    ) {
+      setErrors({ error: 'Make sure everything is filled out' });
+      return;
     }
-  
-    return (
-    <div className="flex justify-center items-center w-screen px-4 pb-16" style={{paddingRight: sidebarWidth > 0 ? '240px' : ''}}>
+
+    // Validate email format
+    if (!isValidEmail(formData.email)) {
+      setErrors({ error: 'Please enter a valid email address' });
+      return;
+    }
+
+    const res = await fetchWithCsrf('/api/submit-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    if (res.ok) {
+      e.target.firstName.value = '';
+      e.target.lastName.value = '';
+      e.target.email.value = '';
+      e.target.subject.value = '';
+      e.target.message.value = '';
+      e.target.organization.value = '';
+
+      setErrors({});
+      setSuccess(true);
+      return;
+    }
+
+    setErrors({ error: 'Make sure everything is filled out and you are using your company email' });
+    return;
+  };
+
+  return (
+    <div
+      className="flex justify-center items-center w-screen px-4 pb-16"
+      style={{ paddingRight: sidebarWidth > 0 ? '240px' : '' }}
+    >
       <div className="w-full max-w-[800px] bg-[#1A1A1E] rounded-[12px] p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
-
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
-              name='firstName'
+              name="firstName"
               placeholder="First Name"
               className="w-full sm:w-1/2 p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
             />
@@ -112,19 +84,17 @@ function ContactUsForm({sidebarWidth}) {
             <input
               type="email"
               name="email"
-              placeholder={isCareers ? "Email" : "Company Email"}
+              placeholder="Company Email"
               className="w-full sm:w-1/2 p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
             />
             <input
               type="text"
-              name={isCareers ? "phone":"organization"}
-              placeholder={isCareers ? "Phone Number" : "Organization"}
+              name="organization"
+              placeholder="Organization"
               className="w-full sm:w-1/2 p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70"
             />
           </div>
 
-          
-         
           <input
             type="text"
             name="subject"
@@ -138,11 +108,9 @@ function ContactUsForm({sidebarWidth}) {
             rows={4}
             className="w-full p-2 rounded bg-[#2A2A2E] text-white placeholder-white/70 resize-none"
           ></textarea>
-          {errors?.error && (<div className="text-red-600">{errors.error}</div>)}
+          {errors?.error && <div className="text-red-600">{errors.error}</div>}
           {success && (
-            <div className="text-green-500">
-              Submitted successfully! We will be in touch soon.
-            </div>
+            <div className="text-green-500">Submitted successfully! We will be in touch soon.</div>
           )}
           <button
             type="submit"

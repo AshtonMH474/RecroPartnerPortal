@@ -1,9 +1,7 @@
-
 // ID im using comapny for placeholder: 9391926107
 
-
-import { authenticateUser } from "@/lib/authMiddleware";
-import axios from "axios";
+import { authenticateUser } from '@/lib/authMiddleware';
+import axios from 'axios';
 
 // ✅ Cache axios instance globally (reuse across requests)
 let hubspotClient = null;
@@ -11,10 +9,10 @@ let hubspotClient = null;
 function getHubspotClient() {
   if (!hubspotClient) {
     hubspotClient = axios.create({
-      baseURL: "https://api.hubapi.com",
+      baseURL: 'https://api.hubapi.com',
       headers: {
         Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       timeout: 30000, // 30s timeout
     });
@@ -23,15 +21,15 @@ function getHubspotClient() {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const auth = await authenticateUser(req)
+  const auth = await authenticateUser(req);
   if (!auth.authenticated || !auth.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-      const email = auth.user.email;
+  const email = auth.user.email;
 
   try {
     const hubspot = getHubspotClient();
@@ -50,7 +48,7 @@ export default async function handler(req, res) {
 
       // If we have more pages, fetch them sequentially (HubSpot rate limits)
       while (after && pageCount < maxPages) {
-        const response = await hubspot.get(`${url}${url.includes("?") ? "&" : "?"}after=${after}`);
+        const response = await hubspot.get(`${url}${url.includes('?') ? '&' : '?'}after=${after}`);
         results.push(...(response.data.results || []));
         after = response.data.paging?.next?.after || null;
         pageCount++;
@@ -63,10 +61,10 @@ export default async function handler(req, res) {
     const contactSearch = await hubspot.post(`/crm/v3/objects/contacts/search`, {
       filterGroups: [
         {
-          filters: [{ propertyName: "email", operator: "EQ", value: email }],
+          filters: [{ propertyName: 'email', operator: 'EQ', value: email }],
         },
       ],
-      properties: ["email", "firstname", "lastname"],
+      properties: ['email', 'firstname', 'lastname'],
       limit: 1,
     });
 
@@ -78,7 +76,7 @@ export default async function handler(req, res) {
     const contactId = contact.id;
 
     // 2️⃣ & 3️⃣ Parallelize: Get companies AND company details simultaneously
-    const [associatedCompaniesResponse, companyDealsResponse] = await Promise.all([
+    const [associatedCompaniesResponse] = await Promise.all([
       hubspotGetAll(`/crm/v4/objects/contacts/${contactId}/associations/companies`),
       // Start fetching deals early (we'll use the correct companyId after)
       Promise.resolve([]), // Placeholder, will be replaced
@@ -96,11 +94,11 @@ export default async function handler(req, res) {
     const [companyDeals, companyResponse] = await Promise.all([
       hubspotGetAll(`/crm/v4/objects/companies/${companyId}/associations/deals`),
       hubspot.get(`/crm/v3/objects/companies/${companyId}`, {
-        params: { properties: "name" },
+        params: { properties: 'name' },
       }),
     ]);
 
-    const companyName = companyResponse.data.properties?.name || "Unknown Company";
+    const companyName = companyResponse.data.properties?.name || 'Unknown Company';
 
     if (!companyDeals.length) {
       return res.status(200).json({
@@ -119,7 +117,7 @@ export default async function handler(req, res) {
     // 5️⃣ Fetch detailed deal info in PARALLEL batches (much faster!)
     const batchSize = 100;
     const batches = [];
-    
+
     // Create all batch promises upfront
     const batchPromises = [];
     for (let i = 0; i < dealIds.length; i += batchSize) {
@@ -127,16 +125,16 @@ export default async function handler(req, res) {
       batchPromises.push(
         hubspot.post(`/crm/v3/objects/deals/batch/read`, {
           properties: [
-            "dealname",
-            "amount",
-            "description",
-            "agency",
-            "type_of_work",
-            "pipeline",
-            "dealstage",
-            "closedate",
-            "hs_lastmodifieddate",
-            "contract_vehicle",
+            'dealname',
+            'amount',
+            'description',
+            'agency',
+            'type_of_work',
+            'pipeline',
+            'dealstage',
+            'closedate',
+            'hs_lastmodifieddate',
+            'contract_vehicle',
           ],
           inputs: batch.map((id) => ({ id })),
         })
@@ -152,20 +150,20 @@ export default async function handler(req, res) {
     // 6️⃣ Format data for frontend (optimized mapping)
     const deals = batches.map((d) => ({
       id: d.id,
-      name: d.properties.dealname || "Untitled Deal",
-      amount: d.properties.amount || "0",
-      description: d.properties.description || "",
-      agency: d.properties.agency || "",
-      typeOfWork: d.properties.type_of_work || "",
-      pipeline: d.properties.pipeline || "",
-      stage: d.properties.dealstage || "",
-      closeDate: d.properties.closedate || "",
-      lastUpdated: d.properties.hs_lastmodifieddate || "",
-      vehicle: d.properties.contract_vehicle || "",
+      name: d.properties.dealname || 'Untitled Deal',
+      amount: d.properties.amount || '0',
+      description: d.properties.description || '',
+      agency: d.properties.agency || '',
+      typeOfWork: d.properties.type_of_work || '',
+      pipeline: d.properties.pipeline || '',
+      stage: d.properties.dealstage || '',
+      closeDate: d.properties.closedate || '',
+      lastUpdated: d.properties.hs_lastmodifieddate || '',
+      vehicle: d.properties.contract_vehicle || '',
     }));
 
     // ✅ Set cache headers for better performance
-    res.setHeader("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
+    res.setHeader('Cache-Control', 'private, s-maxage=60, stale-while-revalidate=120');
     res.status(200).json({
       user: {
         name: `${contact.properties.firstname} ${contact.properties.lastname}`.trim(),
@@ -178,8 +176,8 @@ export default async function handler(req, res) {
       total: deals.length,
       deals,
     });
-  } catch (error) {
-    console.error("Error fetching deals by email:");
+  } catch {
+    console.error('Error fetching deals by email:');
     res.status(500).json({
       error: "Failed to fetch deals for user's company",
     });

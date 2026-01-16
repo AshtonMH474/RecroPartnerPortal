@@ -1,25 +1,22 @@
-import { authenticateUser } from "@/lib/authMiddleware";
-import axios from "axios";
+import { authenticateUser } from '@/lib/authMiddleware';
+import axios from 'axios';
 
-const HUBSPOT_API_URL =
-  process.env.HUBSPOT_API_URL || "https://api.hubapi.com";
+const HUBSPOT_API_URL = process.env.HUBSPOT_API_URL || 'https://api.hubapi.com';
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 
-
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', ['GET']);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
   }
 
   try {
-    const auth = await authenticateUser(req)
+    const auth = await authenticateUser(req);
     if (!auth.authenticated || !auth.user) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
     const hubspotID = auth.user.hubspotID;
-    if (!hubspotID)
-      return res.status(400).json({ error: "Missing hubspotID in query" });
+    if (!hubspotID) return res.status(400).json({ error: 'Missing hubspotID in query' });
 
     // 🔹 Step 1: Get all associated ticket IDs for this contact
     const associationsRes = await axios.get(
@@ -27,7 +24,7 @@ export default async function handler(req, res) {
       {
         headers: {
           Authorization: `Bearer ${HUBSPOT_TOKEN}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );
@@ -43,21 +40,21 @@ export default async function handler(req, res) {
     const ticketsRes = await axios.post(
       `${HUBSPOT_API_URL}/crm/v3/objects/tickets/batch/read`,
       {
-         properties: [
-      "subject",
-      "agency",
-      "amount",
-      "content",
-      "hs_pipeline",
-      "hs_pipeline_stage",
-      "createdate",
-    ],
+        properties: [
+          'subject',
+          'agency',
+          'amount',
+          'content',
+          'hs_pipeline',
+          'hs_pipeline_stage',
+          'createdate',
+        ],
         inputs: ticketIds.map((id) => ({ id })),
       },
       {
         headers: {
           Authorization: `Bearer ${HUBSPOT_TOKEN}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );
@@ -66,10 +63,8 @@ export default async function handler(req, res) {
       success: true,
       tickets: ticketsRes.data.results,
     });
-  } catch (error) {
-    console.error("HubSpot fetch tickets error",);
-    return res
-      .status(500)
-      .json({ error: "Failed to fetch tickets from HubSpot" });
+  } catch {
+    console.error('HubSpot fetch tickets error');
+    return res.status(500).json({ error: 'Failed to fetch tickets from HubSpot' });
   }
 }
