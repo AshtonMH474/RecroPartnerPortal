@@ -45,7 +45,7 @@
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4",
-    "@tinacms/cli": "^2.1.0",
+    "@tinacms/cli": "^2.1.1",
     "@types/cookie": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
