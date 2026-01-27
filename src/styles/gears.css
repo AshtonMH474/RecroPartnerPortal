@@ -8,7 +8,7 @@
 
 .gear2 {
   position: relative;
-  z-index: -3;
+  z-index: -1;
   bottom: 70px;
   right: 100px;
   mix-blend-mode: soft-light;
@@ -17,7 +17,7 @@
 
 .gear3 {
   position: relative;
-  z-index: -2;
+  z-index: -1;
   bottom: 180px;
   left: 100px;
   mix-blend-mode: soft-light;
@@ -25,7 +25,7 @@
 
 .gear4 {
   position: relative;
-  z-index: -3;
+  z-index: -1;
   right: 250px;
   bottom: 250px;
   mix-blend-mode: soft-light;
