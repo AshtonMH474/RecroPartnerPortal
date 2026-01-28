@@ -2,7 +2,7 @@
 
 ## 1. Logging In
 
-- Go to: [https://recro-website.vercel.app/admin](https://recro-website.vercel.app/admin)
+- Go to: /admin
 - Click the **“Enter Edit Mode”** button when the prompt appears.
   ![Edit Mode](https://recro-landing-site.s3.us-east-1.amazonaws.com/QuickGuide/unnamed.png)
 
