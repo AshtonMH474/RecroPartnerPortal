@@ -21,7 +21,7 @@
     "framer-motion": "^12.28.1",
     "free-email-domains-list": "^1.0.16",
     "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.2.1",
+    "jwks-rsa": "^3.2.2",
     "jwt-decode": "^4.0.0",
     "mongodb": "^7.0.0",
     "mongodb-level": "^0.0.4",
