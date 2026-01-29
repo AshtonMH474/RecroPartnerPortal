@@ -1,55 +1,55 @@
-import clientPromise from "@/lib/mongodb";
-import { withCsrfProtection } from "@/lib/csrfMiddleware";
-import { sanitizeProfileData, isValidEmail } from "@/lib/sanitize";
+import clientPromise from '@/lib/mongodb';
+import { withCsrfProtection } from '@/lib/csrfMiddleware';
+import { authenticateUser } from '@/lib/authMiddleware';
+import { sanitizeProfileData } from '@/lib/sanitize';
 
- async function handler(req,res) {
-    if (req.method !== "PUT") {
-    return res.status(405).json({ error: "Method not allowed" });
+async function handler(req, res) {
+  if (req.method !== 'PUT') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try{
+  try {
+    const auth = await authenticateUser(req);
+    if (!auth.authenticated || !auth.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const email = auth.user.email;
+
     // Validate and sanitize input
     const result = sanitizeProfileData(req.body);
     if (!result.valid) {
       return res.status(400).json({ error: result.error });
     }
 
-    const { email, firstName, lastName, interests } = result.data;
+    const { firstName, lastName, interests } = result.data;
 
-    if (!email || !firstName || !lastName || !interests) {
-      return res
-        .status(400)
-        .json({ error: "Missing email, first name, last name, or interests" });
-    }
-
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
+    if (!firstName || !lastName || !interests) {
+      return res.status(400).json({ error: 'Missing first name, last name, or interests' });
     }
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
 
-    const mongoUser = await db.collection("users").findOne({ email });
+    const mongoUser = await db.collection('users').findOne({ email });
     if (!mongoUser) {
-      return res.status(401).json({ error: "No user found" });
+      return res.status(401).json({ error: 'No user found' });
     }
 
-    await db.collection("users").updateOne(
-    { _id: mongoUser._id },
-    {
+    await db.collection('users').updateOne(
+      { _id: mongoUser._id },
+      {
         $set: {
-        firstName: firstName,
-        lastName: lastName,
-        ...(interests && { interests }),
-        }
-    },
+          firstName: firstName,
+          lastName: lastName,
+          ...(interests && { interests }),
+        },
+      }
     );
 
-    return res.status(200).json({success:true})
-
-  }catch(error){
-    console.error("Error tracking download:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error tracking download:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
 

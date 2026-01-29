@@ -30,7 +30,7 @@ async function handler(req, res) {
 
     // Generate short-lived access token (1 hour)
     const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: '1hr',
+      expiresIn: '1h',
     });
 
     // Generate long-lived refresh token (30 days)
