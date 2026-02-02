@@ -32,7 +32,7 @@
     "react": "^19.2.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-dom": "^19.2.1",
+    "react-dom": "^19.2.4",
     "react-hook-form": "^7.66.0",
     "react-phone-number-input": "^3.4.13",
     "tinacms": "^3.0.2",
