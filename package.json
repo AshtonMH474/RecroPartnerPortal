@@ -27,7 +27,7 @@
     "mongodb-level": "^0.0.4",
     "next": "^16.1.6",
     "next-auth": "^4.24.11",
-    "next-tinacms-s3": "^17.0.1",
+    "next-tinacms-s3": "^18.0.1",
     "nodemailer": "^7.0.13",
     "react": "^19.2.1",
     "react-dnd": "^16.0.1",
